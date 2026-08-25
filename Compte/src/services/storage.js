@@ -82,7 +82,7 @@ export function getOperations(month) {
  * @param {string} month - mois initial du compte, au format "2026-04"
  */
 
-function setFirstMonth(month){
+export function setFirstMonth(month){
     const firstMonth = JSON.stringify(month);
     localStorage.setItem("firstMonth",firstMonth)
 }
@@ -92,7 +92,7 @@ function setFirstMonth(month){
  * @returns {string|null} mois initial du compte, au format "2026-04", ou null si non défini
  */
 
-function getFirstMonth(){
+export function getFirstMonth(){
     const firstMonth = localStorage.getItem("firstMonth")
 
     if(firstMonth === null){
