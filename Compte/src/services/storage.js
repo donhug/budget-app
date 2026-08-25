@@ -76,3 +76,28 @@ export function getOperations(month) {
         return JSON.parse(operationsString);
     }
 }
+
+/**
+ * Définit le mois initial de l'App
+ * @param {string} month - mois initial du compte, au format "2026-04"
+ */
+
+function setFirstMonth(month){
+    const firstMonth = JSON.stringify(month);
+    localStorage.setItem("firstMonth",firstMonth)
+}
+
+/**
+ *  Récupère le mois initial de l'App
+ * @returns {string|null} mois initial du compte, au format "2026-04", ou null si non défini
+ */
+
+function getFirstMonth(){
+    const firstMonth = localStorage.getItem("firstMonth")
+
+    if(firstMonth === null){
+        return null
+    }else{
+        return JSON.parse(firstMonth);
+    }
+}

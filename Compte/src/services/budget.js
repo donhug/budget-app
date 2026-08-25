@@ -1,6 +1,6 @@
 /***
  * Calcul le total des opérations pour un mois donné.
- * @param {Array}  listOperations - liste des opération du mois
+ * @param {Array}  listOperations - liste des opérations du mois
  * @returns {number} le total des opérations du mois
  */
 
