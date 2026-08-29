@@ -28,7 +28,6 @@ export function getNextMonth(dateString) {
  * @param {string}  dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois precedent au même format "YYYY-MM"
  */
-
 export function getPreviousMonth(dateString) {
     const dateSplit = dateString.split("-")
     const yearNumber = Number(dateSplit[0])
