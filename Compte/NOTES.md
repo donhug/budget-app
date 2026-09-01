@@ -24,3 +24,5 @@
 
 - Saisie : une modale unique, avec une case "récurrente" (+ option fin)
   qui décide si l'opération devient une règle.
+
+- Ajouter un affichage pour les prélevements a venir, (je suis en juin et un crédit commence en aout il me faut un texte a côté de chaque mois qui indique le prélèvement de aout)
