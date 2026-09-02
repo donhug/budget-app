@@ -31,3 +31,25 @@ export function getBalance(month){
     return getMonthTotal(getOperations(month)) + getBalance(getPreviousMonth(month))
 
 }
+
+/***
+ * vérifie dans la liste des règles de l'utilisateur et les ajoute si,
+ * elle passe la condition pour le mois donné
+ * @param {string} month - mois a metérialiser au format "YYYY-MM"
+ * @param {Array}  rules - tableau des règles
+ * @returns {Array} tableau des opérations du mois
+ */
+ export function materializeRules(month, rules){
+    const operations = [];
+    for(const rule of rules){
+        if (month >= rule.start && (rule.end === null || month <= rule.end) ){
+            operations.push(
+                {
+                    label: rule.label,
+                    value: rule.value,
+                    type: rule.type
+                });
+        }
+    }
+    return operations;
+}
