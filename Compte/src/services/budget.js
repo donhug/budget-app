@@ -1,5 +1,5 @@
-import { getFirstMonth, getInitialBalance, getOperations } from "./storage.js";
-import { getPreviousMonth } from"../utils/dates.js";
+import { getFirstMonth, getInitialBalance, getOperations, getRules, getLastMonth, setFirstMonth, setInitialBalance, setOperations, setLastMonth } from "./storage.js";
+import { getPreviousMonth, getNextMonth } from"../utils/dates.js";
 
 /***
  * Calcul le total des opérations pour un mois donné.
@@ -52,4 +52,39 @@ export function getBalance(month){
         }
     }
     return operations;
+}
+
+/**
+ * génère les mois manquants (format "YYYY-MM"), qui n'ont pas été créés, depuis le dernier
+ * mois généré. Pour chaque mois créé, elle matérialise les règles et stocke les opérations.
+ * Mise à jour du premier mois (si premier lancement) et dernier mois généré avec le setLastMonth
+ * @returns {void}
+ */
+
+export function generateMonths(){
+    const rules = getRules();
+    const lastMonth = getLastMonth();
+    /*affiche la date actuelle au bon format "YYYY-MM", ajout du +1 pour le mois, janvier étant 0*/
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const currentMonth = `${year}-${String(month).padStart(2, '0')}`;
+    /**/
+
+    if(lastMonth === null){
+        setFirstMonth(currentMonth);
+        setInitialBalance(0);
+        const operations = materializeRules(currentMonth, rules);
+        setOperations(currentMonth, operations);
+        setLastMonth(currentMonth);
+        return;
+    }
+
+    let monthToGenerate = lastMonth;
+    while(monthToGenerate !== currentMonth){
+        monthToGenerate = getNextMonth(monthToGenerate);
+        const operations = materializeRules(monthToGenerate, rules);
+        setOperations(monthToGenerate, operations);
+
+    }setLastMonth(currentMonth);
 }
