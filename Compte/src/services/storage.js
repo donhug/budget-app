@@ -93,3 +93,28 @@ export function getFirstMonth(){
         return JSON.parse(firstMonth);
     }
 }
+
+/**
+ * Définit le dernier mois généré de l'App
+ * @param {string} month - dernier mois du compte, au format "2026-04"
+ */
+
+export function setLastMonth(month){
+    const lastMonth = JSON.stringify(month);
+    localStorage.setItem("lastMonth",lastMonth)
+}
+
+/**
+ *  Récupère le dernier mois de l'App
+ * @returns {string|null} dernier mois du compte, au format "2026-04", ou null si aucun
+ */
+
+export function getLastMonth(){
+    const lastMonth = localStorage.getItem("lastMonth")
+
+    if(lastMonth === null){
+        return null
+    }else{
+        return JSON.parse(lastMonth);
+    }
+}
