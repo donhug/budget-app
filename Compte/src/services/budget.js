@@ -37,7 +37,7 @@ export function getBalance(month){
  * elle passe la condition pour le mois donné
  * @param {string} month - mois a metérialiser au format "YYYY-MM"
  * @param {Array}  rules - tableau des règles
- * @returns {Array} tableau des opérations du mois
+ * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
  export function materializeRules(month, rules){
     const operations = [];
@@ -47,7 +47,8 @@ export function getBalance(month){
                 {
                     label: rule.label,
                     value: rule.value,
-                    type: rule.type
+                    type: rule.type,
+                    origin: "rule"
                 });
         }
     }
