@@ -45,6 +45,7 @@ export function getBalance(month){
         if (month >= rule.start && (rule.end === null || month <= rule.end) ){
             operations.push(
                 {
+                    id : crypto.randomUUID(),
                     label: rule.label,
                     value: rule.value,
                     type: rule.type,
