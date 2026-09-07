@@ -1,5 +1,5 @@
 import { getFirstMonth, getInitialBalance, getOperations, getRules, getLastMonth, setFirstMonth, setInitialBalance, setOperations, setLastMonth } from "./storage.js";
-import { getPreviousMonth, getNextMonth } from"../utils/dates.js";
+import { getPreviousMonth, getNextMonth, getCurrentMonth } from"../utils/dates.js";
 
 /***
  * Calcul le total des opérations pour un mois donné.
@@ -65,12 +65,7 @@ export function getBalance(month){
 export function generateMonths(){
     const rules = getRules();
     const lastMonth = getLastMonth();
-    /*affiche la date actuelle au bon format "YYYY-MM", ajout du +1 pour le mois, janvier étant 0*/
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const currentMonth = `${year}-${String(month).padStart(2, '0')}`;
-    /**/
+    const currentMonth = getCurrentMonth();
 
     if(lastMonth === null){
         setFirstMonth(currentMonth);
