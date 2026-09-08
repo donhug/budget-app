@@ -26,3 +26,7 @@
   qui décide si l'opération devient une règle.
 
 - Ajouter un affichage pour les prélevements a venir, (je suis en juin et un crédit commence en aout il me faut un texte a côté de chaque mois qui indique le prélèvement de aout)
+
+- Masquer la ligne de report si le mois courant est le mois racine.
+
+- Formater de l'affichage du mois: "Septembre 2026" a la place du formart "YYYY-MM".
