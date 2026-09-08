@@ -1,20 +1,23 @@
 import './App.css'
 import { generateMonths, getBalance } from './services/budget'
 import { getOperations } from './services/storage';
-import { getCurrentMonth } from './utils/dates'
+import { getCurrentMonth, getPreviousMonth } from './utils/dates'
 import { useEffect, useState } from 'react'
 
 function App() {
   const currentMonth = getCurrentMonth();
+  const previousMonth =getPreviousMonth(currentMonth);
   const [balance, setBalance] = useState(null);
   const [monthOperation, setMonthOperation] = useState([]);
+  const [carryOver, setCarryOver] = useState(null);
 
   useEffect(() => { 
     generateMonths(); 
     setBalance(getBalance(currentMonth));
     setMonthOperation(getOperations(currentMonth));
+    setCarryOver(getBalance(previousMonth));
 
-  },[currentMonth])
+  },[currentMonth, previousMonth])
 
   const monthlyOps = monthOperation.filter(op => op.origin === "rule");
   const ponctualOps = monthOperation.filter(op => op.origin === "manual");
@@ -25,7 +28,8 @@ function App() {
       
       <div>
         <p>Mois  :  {currentMonth}</p>
-        <p>solde  :  {balance}€ </p>
+        <p>Solde  :  {balance}€ </p>
+        <p>Reste de {previousMonth} : {carryOver}€</p>
       </div>
 
     <div>
