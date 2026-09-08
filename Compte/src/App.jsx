@@ -10,6 +10,7 @@ function App() {
   const [balance, setBalance] = useState(null);
   const [monthOperation, setMonthOperation] = useState([]);
   const [carryOver, setCarryOver] = useState(null);
+  const [isModaleOpen, setIsModaleOpen] = useState(false)
 
   useEffect(() => { 
     generateMonths(); 
@@ -32,6 +33,13 @@ function App() {
         <p>Mois  :  {currentMonth}</p>
         <p>Solde  :  {balance}€ </p>
         <p>Reste de {previousMonth} : {carryOver}€</p>
+        <button onClick={() => setIsModaleOpen(true)}>+AJOUTER</button>
+        {isModaleOpen &&(
+          <div>
+            <button onClick={() => setIsModaleOpen(false)}>X</button>
+            <p>coucou</p>
+          </div>
+        )}
       </div>
 
     <div>
