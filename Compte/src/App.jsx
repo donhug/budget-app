@@ -1,5 +1,5 @@
 import './App.css'
-import { generateMonths, getBalance } from './services/budget'
+import { generateMonths, getBalance, getMonthTotal } from './services/budget'
 import { getOperations } from './services/storage';
 import { getCurrentMonth, getPreviousMonth } from './utils/dates'
 import { useEffect, useState } from 'react'
@@ -21,6 +21,8 @@ function App() {
 
   const monthlyOps = monthOperation.filter(op => op.origin === "rule");
   const ponctualOps = monthOperation.filter(op => op.origin === "manual");
+  const monthlyTotal = getMonthTotal(monthlyOps)
+  const ponctualTotal = getMonthTotal(ponctualOps)
 
   return (
 
@@ -37,12 +39,14 @@ function App() {
       {monthlyOps.map((op) => 
       <p key = {op.id}>{op.label} : {op.value}€</p>
       )}
+      <p>total Mensuelle : {monthlyTotal}€</p>
     </div>
     <div>
       <p>Opération ponctuelle : </p>
       {ponctualOps.map((op) => 
       <p key = {op.id}>{op.label} : {op.value}€</p>
       )}
+      <p>total Ponctuelle : {ponctualTotal}€</p>
     </div>
     </section>
   )
