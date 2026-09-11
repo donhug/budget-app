@@ -1,6 +1,6 @@
 import './App.css'
-import { generateMonths, getBalance, getMonthTotal } from './services/budget'
-import { getOperations, setOperations } from './services/storage';
+import { generateMonths, getBalance, getMonthTotal, materializeRules } from './services/budget'
+import { getOperations, setOperations, setRules, getRules } from './services/storage';
 import { getCurrentMonth, getPreviousMonth } from './utils/dates'
 import { useEffect, useState } from 'react'
 
@@ -21,20 +21,37 @@ function App() {
   function handleSubmit() {
     const rawAmount = Number(value);
     const amount = type === "depense" ? -rawAmount : rawAmount;
+    const endOperation = endMonth === "" ? null : endMonth;
     const errors = []; // collection des erreurs 
     setError("")
 
     if(label.trim() === "") errors.push("le libellé");
     if(rawAmount === 0 ) errors.push("le montant");
     if(type === "") errors.push("la nature (dépense ou entrée)");
-    
+
     if(errors.length > 0 ){
       setError("Il manque : " + errors.join(", "));
       return
     }
 
     if(isRecurrent){
-      
+      const newRule = {
+        id : crypto.randomUUID(),
+        label,
+        value : amount,
+        type,
+        start : currentMonth,
+        end : endOperation,
+      }
+      const currentRules = getRules();
+      const upDateRules = [...currentRules, newRule];
+      setRules(upDateRules);
+      const NewOperation = materializeRules(currentMonth, [newRule]);
+      const currentOperation = getOperations(currentMonth)
+      const updatedOperation = [...currentOperation, ...NewOperation];
+      setOperations(currentMonth, updatedOperation);
+      setMonthOperation(getOperations(currentMonth));
+      setBalance(getBalance(currentMonth));
     }else{
       const newOperation = {
         id : crypto.randomUUID(),
@@ -132,18 +149,18 @@ function App() {
       </div>
 
     <div>
-      <p>Opération mensuelle : </p>
+      <h2>Opérations mensuelles : </h2>
       {monthlyOps.map((op) => 
       <p key = {op.id}>{op.label} : {op.value}€</p>
       )}
-      <p>total Mensuelle : {monthlyTotal}€</p>
+      <h3>total Mensuelles : {monthlyTotal}€</h3>
     </div>
     <div>
-      <p>Opération ponctuelle : </p>
+      <h2>Opérations ponctuelles : </h2>
       {ponctualOps.map((op) => 
       <p key = {op.id}>{op.label} : {op.value}€</p>
       )}
-      <p>total Ponctuelle : {ponctualTotal}€</p>
+      <h3>total Ponctuelles : {ponctualTotal}€</h3>
     </div>
     </section>
   )
