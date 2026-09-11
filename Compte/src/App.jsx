@@ -15,11 +15,23 @@ function App() {
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
   const [isRecurrent, setIsRecurrent] = useState(false);
-  const [endMonth, setEndMonth] = useState("")
+  const [endMonth, setEndMonth] = useState("");
+  const [error, setError] = useState("")
 
   function handleSubmit() {
     const rawAmount = Number(value);
     const amount = type === "depense" ? -rawAmount : rawAmount;
+    const errors = []; // collection des erreurs 
+    setError("")
+
+    if(label.trim() === "") errors.push("le libellé");
+    if(rawAmount === 0 ) errors.push("le montant");
+    if(type === "") errors.push("la nature (dépense ou entrée)");
+    
+    if(errors.length > 0 ){
+      setError("Il manque : " + errors.join(", "));
+      return
+    }
 
     if(isRecurrent){
       
@@ -113,6 +125,7 @@ function App() {
               />
               </div>
             )}
+            {error && <p>{error}</p>}
             <button type='button' onClick={handleSubmit}>ajouter l'operation</button>
           </div>
         )}
