@@ -40,3 +40,6 @@
 - Ajouter un composant, pour les livret (A, jeune, PEA, PEL, ...), avec montant brut, possibilitée de,
   re-prendre de l'argent dessus pour le mois en cours.
   Ajouter l'argent depuis les opérations ponctuelle du mois.
+
+- V2 possible : matérialisation à la volée (option C) avec notion de mois clos,
+  pour que les modifs de règles se reflètent sur les mois non clos.
