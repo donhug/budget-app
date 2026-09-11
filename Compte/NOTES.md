@@ -43,3 +43,10 @@
 
 - V2 possible : matérialisation à la volée (option C) avec notion de mois clos,
   pour que les modifs de règles se reflètent sur les mois non clos.
+
+- Blinder generateMonths : si lastMonth > currentMonth,
+  ne rien faire (sortie anticipée).
+
+- generateMonths écrase les opérations d'un mois qu'elle regénère → perte des opérations ponctuelles
+  saisies à la main. À corriger : ne pas regénérer un mois qui existe déjà, 
+  ou fusionner au lieu d'écraser.
