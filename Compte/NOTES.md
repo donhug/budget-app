@@ -26,13 +26,17 @@
   qui décide si l'opération devient une règle.
 
 - Ajouter un affichage pour les prélevements a venir, (je suis en juin et
-  un crédit commence en aout il me faut un texte a côté de chaque moisqui 
+  un crédit commence en aout il me faut un texte a côté de chaque mois qui 
   indique le prélèvement de aout)
 
 - Masquer la ligne de report si le mois courant est le mois racine.
 
 - Formater de l'affichage du mois: "Septembre 2026" a la place du formart "YYYY-MM".
 
-- pour la modale d'ajout, dans le futur, afficher les erreurs a coté des des champs manquant.
+- Pour la modale d'ajout, dans le futur, afficher les erreurs a coté des des champs manquant.
   (le libellé en rouge sous son input, etc.), plutôt qu'un message global. C'est le plus ergonomique,
   mais ça demande un state d'erreur par champ. Note-le comme raffinement pour quand tu feras le CSS.
+
+- Ajouter un composant, pour les livret (A, jeune, PEA, PEL, ...), avec montant brut, possibilitée de,
+  re-prendre de l'argent dessus pour le mois en cours.
+  Ajouter l'argent depuis les opérations ponctuelle du mois.
