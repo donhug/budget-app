@@ -1,5 +1,5 @@
 import { getFirstMonth, getInitialBalance, getOperations, getRules, getLastMonth, setFirstMonth, setInitialBalance, setOperations, setLastMonth } from "./storage.js";
-import { getPreviousMonth, getNextMonth } from"../utils/dates.js";
+import { getPreviousMonth, getNextMonth, getCurrentMonth } from"../utils/dates.js";
 
 /***
  * Calcul le total des opérations pour un mois donné.
@@ -16,13 +16,19 @@ export function getMonthTotal(listOperations) {
 
 /**
  * calcule le solde d'un mois donné, report inclus,
- * Fonction récursive. :remonte de mois en mois jusqu'au mois racine
- * (firstMont), en additionnant le total de chaque mois au solde initial.
- * @param {string} month - le mois a calculer, au foramt "YYYY-MM"
+ * Fonction récursive :remonte de mois en mois jusqu'au mois racine
+ * (firstMonth), en additionnant le total de chaque mois au solde initial.
+ * ajout d'un arrêt, si le l'app vient d'être intialisée.
+ * evite donc a la fonction d'aller avant le premier mois 
+ * @param {string} month - le mois a calculer, au format "YYYY-MM"
  * @returns {number} le solde du mois (+ ou -)
  */
 export function getBalance(month){
     const firstMonth = getFirstMonth();
+
+    if (month < firstMonth){
+        return 0 ;
+    }
 
     if( month === firstMonth){
         return getInitialBalance() + getMonthTotal(getOperations(month));
@@ -45,6 +51,7 @@ export function getBalance(month){
         if (month >= rule.start && (rule.end === null || month <= rule.end) ){
             operations.push(
                 {
+                    id : crypto.randomUUID(),
                     label: rule.label,
                     value: rule.value,
                     type: rule.type,
@@ -65,12 +72,7 @@ export function getBalance(month){
 export function generateMonths(){
     const rules = getRules();
     const lastMonth = getLastMonth();
-    /*affiche la date actuelle au bon format "YYYY-MM", ajout du +1 pour le mois, janvier étant 0*/
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const currentMonth = `${year}-${String(month).padStart(2, '0')}`;
-    /**/
+    const currentMonth = getCurrentMonth();
 
     if(lastMonth === null){
         setFirstMonth(currentMonth);

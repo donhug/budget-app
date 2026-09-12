@@ -47,3 +47,15 @@ export function getPreviousMonth(dateString) {
 
     return `${prevYear}-${prevMonthPadded}`
 }
+/***
+ * récupère le mois actuel
+ * @returns {string} le mois actuelle au format "YYYY-MM"
+ */
+export function getCurrentMonth(){
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const currentMonth = `${year}-${String(month).padStart(2, '0')}`;
+    return currentMonth
+}
