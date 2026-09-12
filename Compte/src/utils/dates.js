@@ -4,23 +4,23 @@
  * @returns {string} le mois suivant au même format "YYYY-MM"
  */
 export function getNextMonth(dateString) {
-    const dateSplit = dateString.split("-")
-    const yearNumber = Number(dateSplit[0])
-    const monthNumber = Number(dateSplit[1])
+  const dateSplit = dateString.split("-");
+  const yearNumber = Number(dateSplit[0]);
+  const monthNumber = Number(dateSplit[1]);
 
-    let nextYear
-    let nextMonth
+  let nextYear;
+  let nextMonth;
 
-    if(monthNumber === 12){
-        nextMonth = 1
-        nextYear = yearNumber + 1
-    }else{
-        nextMonth = monthNumber + 1
-        nextYear = yearNumber
-    }
-    const nextMonthPadded = String(nextMonth).padStart(2, "0")
+  if (monthNumber === 12) {
+    nextMonth = 1;
+    nextYear = yearNumber + 1;
+  } else {
+    nextMonth = monthNumber + 1;
+    nextYear = yearNumber;
+  }
+  const nextMonthPadded = String(nextMonth).padStart(2, "0");
 
-    return `${nextYear}-${nextMonthPadded}`
+  return `${nextYear}-${nextMonthPadded}`;
 }
 
 /***
@@ -29,33 +29,32 @@ export function getNextMonth(dateString) {
  * @returns {string} le mois precedent au même format "YYYY-MM"
  */
 export function getPreviousMonth(dateString) {
-    const dateSplit = dateString.split("-")
-    const yearNumber = Number(dateSplit[0])
-    const monthNumber = Number(dateSplit[1])
+  const dateSplit = dateString.split("-");
+  const yearNumber = Number(dateSplit[0]);
+  const monthNumber = Number(dateSplit[1]);
 
-    let prevYear
-    let prevMonth
+  let prevYear;
+  let prevMonth;
 
-    if(monthNumber === 1){
-        prevMonth = 12
-        prevYear = yearNumber - 1
-    }else{
-        prevMonth = monthNumber - 1
-        prevYear = yearNumber
-    }
-    const prevMonthPadded = String(prevMonth).padStart(2, "0")
+  if (monthNumber === 1) {
+    prevMonth = 12;
+    prevYear = yearNumber - 1;
+  } else {
+    prevMonth = monthNumber - 1;
+    prevYear = yearNumber;
+  }
+  const prevMonthPadded = String(prevMonth).padStart(2, "0");
 
-    return `${prevYear}-${prevMonthPadded}`
+  return `${prevYear}-${prevMonthPadded}`;
 }
 /***
  * récupère le mois actuel
  * @returns {string} le mois actuelle au format "YYYY-MM"
  */
-export function getCurrentMonth(){
-
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const currentMonth = `${year}-${String(month).padStart(2, '0')}`;
-    return currentMonth
+export function getCurrentMonth() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const currentMonth = `${year}-${String(month).padStart(2, "0")}`;
+  return currentMonth;
 }

@@ -26,7 +26,7 @@
   qui décide si l'opération devient une règle.
 
 - Ajouter un affichage pour les prélevements a venir, (je suis en juin et
-  un crédit commence en aout il me faut un texte a côté de chaque mois qui 
+  un crédit commence en aout il me faut un texte a côté de chaque mois qui
   indique le prélèvement de aout)
 
 - Masquer la ligne de report si le mois courant est le mois racine.
@@ -48,5 +48,5 @@
   ne rien faire (sortie anticipée).
 
 - generateMonths écrase les opérations d'un mois qu'elle regénère → perte des opérations ponctuelles
-  saisies à la main. À corriger : ne pas regénérer un mois qui existe déjà, 
+  saisies à la main. À corriger : ne pas regénérer un mois qui existe déjà,
   ou fusionner au lieu d'écraser.

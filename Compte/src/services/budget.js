@@ -1,5 +1,19 @@
-import { getFirstMonth, getInitialBalance, getOperations, getRules, getLastMonth, setFirstMonth, setInitialBalance, setOperations, setLastMonth } from "./storage.js";
-import { getPreviousMonth, getNextMonth, getCurrentMonth } from"../utils/dates.js";
+import {
+  getFirstMonth,
+  getInitialBalance,
+  getOperations,
+  getRules,
+  getLastMonth,
+  setFirstMonth,
+  setInitialBalance,
+  setOperations,
+  setLastMonth,
+} from "./storage.js";
+import {
+  getPreviousMonth,
+  getNextMonth,
+  getCurrentMonth,
+} from "../utils/dates.js";
 
 /***
  * Calcul le total des opérations pour un mois donné.
@@ -7,11 +21,11 @@ import { getPreviousMonth, getNextMonth, getCurrentMonth } from"../utils/dates.j
  * @returns {number} le total des opérations du mois
  */
 export function getMonthTotal(listOperations) {
-    let total = 0;
-    for(const operation of listOperations){
-        total = total + operation.value;
-    }
-    return total;
+  let total = 0;
+  for (const operation of listOperations) {
+    total = total + operation.value;
+  }
+  return total;
 }
 
 /**
@@ -19,23 +33,24 @@ export function getMonthTotal(listOperations) {
  * Fonction récursive :remonte de mois en mois jusqu'au mois racine
  * (firstMonth), en additionnant le total de chaque mois au solde initial.
  * ajout d'un arrêt, si le l'app vient d'être intialisée.
- * evite donc a la fonction d'aller avant le premier mois 
+ * evite donc a la fonction d'aller avant le premier mois
  * @param {string} month - le mois a calculer, au format "YYYY-MM"
  * @returns {number} le solde du mois (+ ou -)
  */
-export function getBalance(month){
-    const firstMonth = getFirstMonth();
+export function getBalance(month) {
+  const firstMonth = getFirstMonth();
 
-    if (month < firstMonth){
-        return 0 ;
-    }
+  if (month < firstMonth) {
+    return 0;
+  }
 
-    if( month === firstMonth){
-        return getInitialBalance() + getMonthTotal(getOperations(month));
-    }
+  if (month === firstMonth) {
+    return getInitialBalance() + getMonthTotal(getOperations(month));
+  }
 
-    return getMonthTotal(getOperations(month)) + getBalance(getPreviousMonth(month))
-
+  return (
+    getMonthTotal(getOperations(month)) + getBalance(getPreviousMonth(month))
+  );
 }
 
 /***
@@ -45,21 +60,20 @@ export function getBalance(month){
  * @param {Array}  rules - tableau des règles
  * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
- export function materializeRules(month, rules){
-    const operations = [];
-    for(const rule of rules){
-        if (month >= rule.start && (rule.end === null || month <= rule.end) ){
-            operations.push(
-                {
-                    id : crypto.randomUUID(),
-                    label: rule.label,
-                    value: rule.value,
-                    type: rule.type,
-                    origin: "rule"
-                });
-        }
+export function materializeRules(month, rules) {
+  const operations = [];
+  for (const rule of rules) {
+    if (month >= rule.start && (rule.end === null || month <= rule.end)) {
+      operations.push({
+        id: crypto.randomUUID(),
+        label: rule.label,
+        value: rule.value,
+        type: rule.type,
+        origin: "rule",
+      });
     }
-    return operations;
+  }
+  return operations;
 }
 
 /**
@@ -69,25 +83,25 @@ export function getBalance(month){
  * @returns {void}
  */
 
-export function generateMonths(){
-    const rules = getRules();
-    const lastMonth = getLastMonth();
-    const currentMonth = getCurrentMonth();
+export function generateMonths() {
+  const rules = getRules();
+  const lastMonth = getLastMonth();
+  const currentMonth = getCurrentMonth();
 
-    if(lastMonth === null){
-        setFirstMonth(currentMonth);
-        setInitialBalance(0);
-        const operations = materializeRules(currentMonth, rules);
-        setOperations(currentMonth, operations);
-        setLastMonth(currentMonth);
-        return;
-    }
+  if (lastMonth === null) {
+    setFirstMonth(currentMonth);
+    setInitialBalance(0);
+    const operations = materializeRules(currentMonth, rules);
+    setOperations(currentMonth, operations);
+    setLastMonth(currentMonth);
+    return;
+  }
 
-    let monthToGenerate = lastMonth;
-    while(monthToGenerate !== currentMonth){
-        monthToGenerate = getNextMonth(monthToGenerate);
-        const operations = materializeRules(monthToGenerate, rules);
-        setOperations(monthToGenerate, operations);
-
-    }setLastMonth(currentMonth);
+  let monthToGenerate = lastMonth;
+  while (monthToGenerate !== currentMonth) {
+    monthToGenerate = getNextMonth(monthToGenerate);
+    const operations = materializeRules(monthToGenerate, rules);
+    setOperations(monthToGenerate, operations);
+  }
+  setLastMonth(currentMonth);
 }

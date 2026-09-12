@@ -3,31 +3,31 @@
  * @param {Array} rulesParm - le tableau des règles à stocker
  */
 export function setRules(rulesParm) {
-    const rulesString = JSON.stringify(rulesParm);
-    localStorage.setItem("rules", rulesString);
+  const rulesString = JSON.stringify(rulesParm);
+  localStorage.setItem("rules", rulesString);
 }
 
 /**
  * Récupère la liste des règles depuis le localStorage.
  * @returns {Array} - le tableau des règles, ou un tableau vide si rien n'est stocké
  */
-export function getRules(){
-    const rulesString = localStorage.getItem("rules");
+export function getRules() {
+  const rulesString = localStorage.getItem("rules");
 
-    if (rulesString === null){
-        return []
-    }else{
-        return JSON.parse(rulesString);
-    }
+  if (rulesString === null) {
+    return [];
+  } else {
+    return JSON.parse(rulesString);
+  }
 }
 
 /**
  * Définit le solde initial du compte
  * @param {number} balance - solde initial du compte
  */
-export function setInitialBalance(balance){
-    const balanceString = JSON.stringify(balance);
-    localStorage.setItem("initialBalance", balanceString);
+export function setInitialBalance(balance) {
+  const balanceString = JSON.stringify(balance);
+  localStorage.setItem("initialBalance", balanceString);
 }
 
 /***
@@ -35,13 +35,13 @@ export function setInitialBalance(balance){
  * @returns {number} solde initial du compte
  */
 export function getInitialBalance() {
-    const balanceString = localStorage.getItem("initialBalance");
+  const balanceString = localStorage.getItem("initialBalance");
 
-    if (balanceString === null){
-        return 0.00
-    }else{
-        return JSON.parse(balanceString);
-    }
+  if (balanceString === null) {
+    return 0.0;
+  } else {
+    return JSON.parse(balanceString);
+  }
 }
 
 /***
@@ -50,9 +50,9 @@ export function getInitialBalance() {
  * @param {Array} operations - liste les opération du mois
  */
 export function setOperations(month, operations) {
-    const key = `operations-${month}`;
-    const operationsString = JSON.stringify(operations);
-    localStorage.setItem(key, operationsString);
+  const key = `operations-${month}`;
+  const operationsString = JSON.stringify(operations);
+  localStorage.setItem(key, operationsString);
 }
 
 /***
@@ -61,37 +61,37 @@ export function setOperations(month, operations) {
  * @returns{Array} - le tableau des opérations, ou un tableau vide si rien n'est stocké
  */
 export function getOperations(month) {
-    const key = `operations-${month}`;
-    const operationsString = localStorage.getItem(key);
+  const key = `operations-${month}`;
+  const operationsString = localStorage.getItem(key);
 
-    if (operationsString === null){
-        return []
-    }else{
-        return JSON.parse(operationsString);
-    }
+  if (operationsString === null) {
+    return [];
+  } else {
+    return JSON.parse(operationsString);
+  }
 }
 
 /**
  * Définit le mois initial de l'App
  * @param {string} month - mois initial du compte, au format "2026-04"
  */
-export function setFirstMonth(month){
-    const firstMonth = JSON.stringify(month);
-    localStorage.setItem("firstMonth",firstMonth)
+export function setFirstMonth(month) {
+  const firstMonth = JSON.stringify(month);
+  localStorage.setItem("firstMonth", firstMonth);
 }
 
 /**
  *  Récupère le mois initial de l'App
  * @returns {string|null} mois initial du compte, au format "2026-04", ou null si non défini
  */
-export function getFirstMonth(){
-    const firstMonth = localStorage.getItem("firstMonth")
+export function getFirstMonth() {
+  const firstMonth = localStorage.getItem("firstMonth");
 
-    if(firstMonth === null){
-        return null
-    }else{
-        return JSON.parse(firstMonth);
-    }
+  if (firstMonth === null) {
+    return null;
+  } else {
+    return JSON.parse(firstMonth);
+  }
 }
 
 /**
@@ -99,9 +99,9 @@ export function getFirstMonth(){
  * @param {string} month - dernier mois du compte, au format "2026-04"
  */
 
-export function setLastMonth(month){
-    const lastMonth = JSON.stringify(month);
-    localStorage.setItem("lastMonth",lastMonth)
+export function setLastMonth(month) {
+  const lastMonth = JSON.stringify(month);
+  localStorage.setItem("lastMonth", lastMonth);
 }
 
 /**
@@ -109,12 +109,12 @@ export function setLastMonth(month){
  * @returns {string|null} dernier mois du compte, au format "2026-04", ou null si aucun
  */
 
-export function getLastMonth(){
-    const lastMonth = localStorage.getItem("lastMonth")
+export function getLastMonth() {
+  const lastMonth = localStorage.getItem("lastMonth");
 
-    if(lastMonth === null){
-        return null
-    }else{
-        return JSON.parse(lastMonth);
-    }
+  if (lastMonth === null) {
+    return null;
+  } else {
+    return JSON.parse(lastMonth);
+  }
 }
