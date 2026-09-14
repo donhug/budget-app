@@ -65,6 +65,7 @@ function App() {
     } else {
       const newOperation = {
         id: crypto.randomUUID(),
+        ruleId: null,
         label,
         value: amount,
         type,
