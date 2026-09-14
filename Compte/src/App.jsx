@@ -10,6 +10,7 @@ import {
   setOperations,
   setRules,
   getRules,
+  deleteOperation,
 } from "./services/storage";
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
@@ -83,6 +84,12 @@ function App() {
     setType("");
     setIsRecurrent(false);
     setEndMonth("");
+  }
+
+  function handleDeleteOperation(operationId) {
+    deleteOperation(currentMonth, operationId);
+    setMonthOperation(getOperations(currentMonth));
+    setBalance(getBalance(currentMonth));
   }
 
   useEffect(() => {
@@ -180,9 +187,15 @@ function App() {
       <div>
         <h2>Opérations ponctuelles : </h2>
         {ponctualOps.map((op) => (
-          <p key={op.id}>
-            {op.label} : {op.value}€
-          </p>
+          <div key={op.id}>
+            <p>
+              {op.label} : {op.value}€
+            </p>
+            <button type="button" onClick={() => handleDeleteOperation(op.id)}>
+              {" "}
+              supprimer l'operation
+            </button>
+          </div>
         ))}
         <h3>total Ponctuelles : {ponctualTotal}€</h3>
       </div>
