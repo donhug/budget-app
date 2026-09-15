@@ -57,12 +57,12 @@ function App() {
         end: ruleEnd,
       };
       const currentRules = getRules();
-      const upDateRules = [...currentRules, newRule];
-      setRules(upDateRules);
+      const updatedRules = [...currentRules, newRule];
+      setRules(updatedRules);
       const newOperation = materializeRules(currentMonth, [newRule]);
-      const currentOperation = getOperations(currentMonth);
-      const updatedOperation = [...currentOperation, ...newOperation];
-      setOperations(currentMonth, updatedOperation);
+      const currentOperations = getOperations(currentMonth);
+      const updatedRuleOperations = [...currentOperations, ...newOperation];
+      setOperations(currentMonth, updatedRuleOperations);
       setMonthOperations(getOperations(currentMonth));
       setBalance(getBalance(currentMonth));
     } else {
@@ -75,8 +75,8 @@ function App() {
         origin: "manual",
       };
       const currentOperations = getOperations(currentMonth);
-      const upDateOperations = [...currentOperations, newOperation];
-      setOperations(currentMonth, upDateOperations);
+      const updatedManualOperations = [...currentOperations, newOperation];
+      setOperations(currentMonth, updatedManualOperations);
       setMonthOperations(getOperations(currentMonth));
       setBalance(getBalance(currentMonth));
     }
@@ -108,9 +108,9 @@ function App() {
   }, [currentMonth, previousMonth]);
 
   const monthlyOps = monthOperations.filter((op) => op.origin === "rule");
-  const ponctualOps = monthOperations.filter((op) => op.origin === "manual");
+  const manualOps = monthOperations.filter((op) => op.origin === "manual");
   const monthlyTotal = getMonthTotal(monthlyOps);
-  const ponctualTotal = getMonthTotal(ponctualOps);
+  const manualTotal = getMonthTotal(manualOps);
 
   return (
     <section>
@@ -217,7 +217,7 @@ function App() {
       </div>
       <div>
         <h2>Opérations ponctuelles : </h2>
-        {ponctualOps.map((op) => (
+        {manualOps.map((op) => (
           <div key={op.id}>
             <p>
               {op.label} : {op.value}€
@@ -228,7 +228,7 @@ function App() {
             </button>
           </div>
         ))}
-        <h3>total Ponctuelles : {ponctualTotal}€</h3>
+        <h3>total Ponctuelles : {manualTotal}€</h3>
       </div>
     </section>
   );
