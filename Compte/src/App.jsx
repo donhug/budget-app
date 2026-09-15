@@ -20,9 +20,9 @@ function App() {
   const currentMonth = getCurrentMonth();
   const previousMonth = getPreviousMonth(currentMonth);
   const [balance, setBalance] = useState(null);
-  const [monthOperation, setMonthOperation] = useState([]);
+  const [monthOperations, setMonthOperations] = useState([]);
   const [carryOver, setCarryOver] = useState(null);
-  const [isModaleOpen, setIsModaleOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
@@ -33,9 +33,9 @@ function App() {
 
   function handleSubmit() {
     const rawAmount = Number(value);
-    const amount = type === "depense" ? -rawAmount : rawAmount;
-    const endOperation = endMonth === "" ? null : endMonth;
-    const errors = []; // collection des erreurs
+    const amount = type === "expense" ? -rawAmount : rawAmount;
+    const ruleEnd = endMonth === "" ? null : endMonth;
+    const errors = [];
     setError("");
 
     if (label.trim() === "") errors.push("le libellé");
@@ -54,16 +54,16 @@ function App() {
         value: amount,
         type,
         start: currentMonth,
-        end: endOperation,
+        end: ruleEnd,
       };
       const currentRules = getRules();
       const upDateRules = [...currentRules, newRule];
       setRules(upDateRules);
-      const NewOperation = materializeRules(currentMonth, [newRule]);
+      const newOperation = materializeRules(currentMonth, [newRule]);
       const currentOperation = getOperations(currentMonth);
-      const updatedOperation = [...currentOperation, ...NewOperation];
+      const updatedOperation = [...currentOperation, ...newOperation];
       setOperations(currentMonth, updatedOperation);
-      setMonthOperation(getOperations(currentMonth));
+      setMonthOperations(getOperations(currentMonth));
       setBalance(getBalance(currentMonth));
     } else {
       const newOperation = {
@@ -77,10 +77,10 @@ function App() {
       const currentOperations = getOperations(currentMonth);
       const upDateOperations = [...currentOperations, newOperation];
       setOperations(currentMonth, upDateOperations);
-      setMonthOperation(getOperations(currentMonth));
+      setMonthOperations(getOperations(currentMonth));
       setBalance(getBalance(currentMonth));
     }
-    setIsModaleOpen(false);
+    setIsModalOpen(false);
     setLabel("");
     setValue("");
     setType("");
@@ -90,7 +90,7 @@ function App() {
 
   function handleDeleteOperation(operationId) {
     deleteOperation(currentMonth, operationId);
-    setMonthOperation(getOperations(currentMonth));
+    setMonthOperations(getOperations(currentMonth));
     setBalance(getBalance(currentMonth));
   }
 
@@ -103,12 +103,12 @@ function App() {
   useEffect(() => {
     generateMonths();
     setBalance(getBalance(currentMonth));
-    setMonthOperation(getOperations(currentMonth));
+    setMonthOperations(getOperations(currentMonth));
     setCarryOver(getBalance(previousMonth));
   }, [currentMonth, previousMonth]);
 
-  const monthlyOps = monthOperation.filter((op) => op.origin === "rule");
-  const ponctualOps = monthOperation.filter((op) => op.origin === "manual");
+  const monthlyOps = monthOperations.filter((op) => op.origin === "rule");
+  const ponctualOps = monthOperations.filter((op) => op.origin === "manual");
   const monthlyTotal = getMonthTotal(monthlyOps);
   const ponctualTotal = getMonthTotal(ponctualOps);
 
@@ -120,10 +120,10 @@ function App() {
         <p>
           Reste de {previousMonth} : {carryOver}€
         </p>
-        <button onClick={() => setIsModaleOpen(true)}>+AJOUTER</button>
-        {isModaleOpen && (
+        <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
+        {isModalOpen && (
           <div>
-            <button type="button" onClick={() => setIsModaleOpen(false)}>
+            <button type="button" onClick={() => setIsModalOpen(false)}>
               X
             </button>
             <input
@@ -140,8 +140,8 @@ function App() {
               <input
                 type="radio"
                 name="type"
-                value="depense"
-                checked={type === "depense"}
+                value="expense"
+                checked={type === "expense"}
                 onChange={(e) => setType(e.target.value)}
               />
               Dépense
