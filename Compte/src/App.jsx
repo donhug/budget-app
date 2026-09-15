@@ -10,6 +10,8 @@ import {
   setOperations,
   setRules,
   getRules,
+  deleteOperation,
+  deleteRule,
 } from "./services/storage";
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
@@ -27,6 +29,7 @@ function App() {
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [endMonth, setEndMonth] = useState("");
   const [error, setError] = useState("");
+  const [operationToDelete, setOperationToDelete] = useState(null);
 
   function handleSubmit() {
     const rawAmount = Number(value);
@@ -65,6 +68,7 @@ function App() {
     } else {
       const newOperation = {
         id: crypto.randomUUID(),
+        ruleId: null,
         label,
         value: amount,
         type,
@@ -82,6 +86,18 @@ function App() {
     setType("");
     setIsRecurrent(false);
     setEndMonth("");
+  }
+
+  function handleDeleteOperation(operationId) {
+    deleteOperation(currentMonth, operationId);
+    setMonthOperation(getOperations(currentMonth));
+    setBalance(getBalance(currentMonth));
+  }
+
+  function handleDeleteRule() {
+    deleteRule(operationToDelete.ruleId);
+    handleDeleteOperation(operationToDelete.id);
+    setOperationToDelete(null);
   }
 
   useEffect(() => {
@@ -170,18 +186,47 @@ function App() {
       <div>
         <h2>Opérations mensuelles : </h2>
         {monthlyOps.map((op) => (
-          <p key={op.id}>
-            {op.label} : {op.value}€
-          </p>
+          <div key={op.id}>
+            <p>
+              {op.label} : {op.value}€
+            </p>
+            <button onClick={() => setOperationToDelete(op)}>supprimer</button>
+          </div>
         ))}
+        {operationToDelete && (
+          <div>
+            <p>supprimer "{operationToDelete.label}"?</p>
+            <button
+              type="button"
+              onClick={() => {
+                handleDeleteOperation(operationToDelete.id);
+                setOperationToDelete(null);
+              }}
+            >
+              Juste ce mois-ci
+            </button>
+            <button type="button" onClick={handleDeleteRule}>
+              Supprimer la règle
+            </button>
+            <button type="button" onClick={() => setOperationToDelete(null)}>
+              Annuler
+            </button>
+          </div>
+        )}
         <h3>total Mensuelles : {monthlyTotal}€</h3>
       </div>
       <div>
         <h2>Opérations ponctuelles : </h2>
         {ponctualOps.map((op) => (
-          <p key={op.id}>
-            {op.label} : {op.value}€
-          </p>
+          <div key={op.id}>
+            <p>
+              {op.label} : {op.value}€
+            </p>
+            <button type="button" onClick={() => handleDeleteOperation(op.id)}>
+              {" "}
+              supprimer l'operation
+            </button>
+          </div>
         ))}
         <h3>total Ponctuelles : {ponctualTotal}€</h3>
       </div>

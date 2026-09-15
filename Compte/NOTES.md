@@ -17,7 +17,7 @@
   Une fois matérialisée, l'opération appartient au mois (passé FIGÉ).
 
 - Modifier une règle = effet sur les mois FUTURS uniquement.
-  Le passé ne bouge pas.
+  Le passé ne bouge pas!!!!!!!!!!
 
 - Report affiché en sous-texte du mois ("reste de avril : X€"),
   mais CALCULÉ depuis le total du mois précédent, pas stocké.
@@ -50,3 +50,6 @@
 - generateMonths écrase les opérations d'un mois qu'elle regénère → perte des opérations ponctuelles
   saisies à la main. À corriger : ne pas regénérer un mois qui existe déjà,
   ou fusionner au lieu d'écraser.
+
+- Extraire la logique pure du handleSubmit() (ajout d'opoération) hors du composant.
+

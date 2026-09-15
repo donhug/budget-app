@@ -57,7 +57,7 @@ export function getBalance(month) {
  * vérifie dans la liste des règles de l'utilisateur et les ajoute si,
  * elle passe la condition pour le mois donné
  * @param {string} month - mois a metérialiser au format "YYYY-MM"
- * @param {Array}  rules - tableau des règles
+ * @param {Array}  rule - tableau des règles
  * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
 export function materializeRules(month, rules) {
@@ -66,6 +66,7 @@ export function materializeRules(month, rules) {
     if (month >= rule.start && (rule.end === null || month <= rule.end)) {
       operations.push({
         id: crypto.randomUUID(),
+        ruleId: rule.id,
         label: rule.label,
         value: rule.value,
         type: rule.type,

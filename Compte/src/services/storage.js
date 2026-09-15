@@ -22,6 +22,16 @@ export function getRules() {
 }
 
 /**
+ * supprime une règle sélectionnée de la liste.
+ * @param {string} ruleId - identification unique de la règle a supprimer.
+ */
+export function deleteRule(ruleId) {
+  const rules = getRules();
+  const updated = rules.filter((rule) => rule.id !== ruleId);
+  setRules(updated);
+}
+
+/**
  * Définit le solde initial du compte
  * @param {number} balance - solde initial du compte
  */
@@ -69,6 +79,19 @@ export function getOperations(month) {
   } else {
     return JSON.parse(operationsString);
   }
+}
+
+/***
+ * Supprime l'opérations du mois séléctionée, depuis le localStorage.
+ * @param {string} month - identifiant du mois au format "YYYY-MM" pour récupérer la liste
+ * @param {string} operationId - identification unique de l'operation a supprimer
+ */
+export function deleteOperation(month, operationId) {
+  const operations = getOperations(month);
+  const updated = operations.filter(
+    (operation) => operation.id !== operationId,
+  );
+  setOperations(month, updated);
 }
 
 /**
