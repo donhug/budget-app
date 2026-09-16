@@ -8,7 +8,7 @@ function OperationFormModal({ onSubmit, onClose }) {
   const [error, setError] = useState("");
 
   function handleValidate() {
-    const rawAmount = Number(value);
+    const rawAmount = Math.abs(Number(value));
     const amount = type === "expense" ? -rawAmount : rawAmount;
     const errors = [];
     setError("");
@@ -36,6 +36,7 @@ function OperationFormModal({ onSubmit, onClose }) {
       <input
         type="number"
         value={value}
+        min="0"
         onChange={(e) => setValue(e.target.value)}
       />
       <label>
