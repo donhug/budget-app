@@ -17,6 +17,7 @@ import {
 } from "./services/storage";
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
+import OperationList from "./components/OperationList/OperationList";
 
 function App() {
   const currentMonth = getCurrentMonth();
@@ -187,15 +188,12 @@ function App() {
       </div>
 
       <div>
-        <h2>Opérations mensuelles : </h2>
-        {monthlyOps.map((op) => (
-          <div key={op.id}>
-            <p>
-              {op.label} : {op.value}€
-            </p>
-            <button onClick={() => setOperationToDelete(op)}>supprimer</button>
-          </div>
-        ))}
+        <OperationList
+          title="Opérations mensuelles : "
+          operations={monthlyOps}
+          total={monthlyTotal}
+          onDelete={(op) => setOperationToDelete(op)}
+        />
         {operationToDelete && (
           <DeleteConfirmation
             label={operationToDelete.label}
@@ -209,23 +207,13 @@ function App() {
             }}
           />
         )}
-        <h3>total Mensuelles : {monthlyTotal}€</h3>
       </div>
-      <div>
-        <h2>Opérations ponctuelles : </h2>
-        {manualOps.map((op) => (
-          <div key={op.id}>
-            <p>
-              {op.label} : {op.value}€
-            </p>
-            <button type="button" onClick={() => handleDeleteOperation(op.id)}>
-              {" "}
-              supprimer l'operation
-            </button>
-          </div>
-        ))}
-        <h3>total Ponctuelles : {manualTotal}€</h3>
-      </div>
+      <OperationList
+        title="Opérations ponctuelles : "
+        operations={manualOps}
+        total={manualTotal}
+        onDelete={(op) => handleDeleteOperation(op.id)}
+      />
     </section>
   );
 }
