@@ -1,4 +1,5 @@
 import "./App.css";
+import MonthSummary from "./components/MonthSummary/MonthSummary";
 import {
   generateMonths,
   getBalance,
@@ -115,11 +116,12 @@ function App() {
   return (
     <section>
       <div>
-        <p>Mois : {currentMonth}</p>
-        <p>Solde : {balance}€ </p>
-        <p>
-          Reste de {previousMonth} : {carryOver}€
-        </p>
+        <MonthSummary
+        currentMonth={currentMonth}
+        balance={balance}
+        previousMonth={previousMonth}
+        carryOver={carryOver}
+        />
         <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
         {isModalOpen && (
           <div>
