@@ -18,37 +18,19 @@ import {
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
 import OperationList from "./components/OperationList/OperationList";
+import OperationFormModal from "./components/OperationFormModal/OperationFormModal";
 
 function App() {
   const currentMonth = getCurrentMonth();
   const previousMonth = getPreviousMonth(currentMonth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [balance, setBalance] = useState(null);
   const [monthOperations, setMonthOperations] = useState([]);
   const [carryOver, setCarryOver] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [label, setLabel] = useState("");
-  const [value, setValue] = useState("");
-  const [type, setType] = useState("");
-  const [isRecurrent, setIsRecurrent] = useState(false);
-  const [endMonth, setEndMonth] = useState("");
-  const [error, setError] = useState("");
   const [operationToDelete, setOperationToDelete] = useState(null);
 
-  function handleSubmit() {
-    const rawAmount = Number(value);
-    const amount = type === "expense" ? -rawAmount : rawAmount;
+  function handleSubmit({ label, amount, type, isRecurrent, endMonth }) {
     const ruleEnd = endMonth === "" ? null : endMonth;
-    const errors = [];
-    setError("");
-
-    if (label.trim() === "") errors.push("le libellé");
-    if (rawAmount === 0) errors.push("le montant");
-    if (type === "") errors.push("la nature (dépense ou entrée)");
-
-    if (errors.length > 0) {
-      setError("Il manque : " + errors.join(", "));
-      return;
-    }
 
     if (isRecurrent) {
       const newRule = {
@@ -84,11 +66,6 @@ function App() {
       setBalance(getBalance(currentMonth));
     }
     setIsModalOpen(false);
-    setLabel("");
-    setValue("");
-    setType("");
-    setIsRecurrent(false);
-    setEndMonth("");
   }
 
   function handleDeleteOperation(operationId) {
@@ -126,64 +103,10 @@ function App() {
         />
         <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
         {isModalOpen && (
-          <div>
-            <button type="button" onClick={() => setIsModalOpen(false)}>
-              X
-            </button>
-            <input
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-            />
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <label>
-              <input
-                type="radio"
-                name="type"
-                value="expense"
-                checked={type === "expense"}
-                onChange={(e) => setType(e.target.value)}
-              />
-              Dépense
-            </label>
-
-            <label>
-              <input
-                type="radio"
-                name="type"
-                value="income"
-                checked={type === "income"}
-                onChange={(e) => setType(e.target.value)}
-              />
-              Entrée
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={isRecurrent}
-                onChange={(e) => setIsRecurrent(e.target.checked)}
-              />
-              Opération récurrente
-            </label>
-            {isRecurrent && (
-              <div>
-                <p>date de fin</p>
-                <input
-                  type="month"
-                  value={endMonth}
-                  onChange={(e) => setEndMonth(e.target.value)}
-                />
-              </div>
-            )}
-            {error && <p>{error}</p>}
-            <button type="button" onClick={handleSubmit}>
-              ajouter l'operation
-            </button>
-          </div>
+          <OperationFormModal
+            onSubmit={handleSubmit}
+            onClose={() => setIsModalOpen(false)}
+          />
         )}
       </div>
 
