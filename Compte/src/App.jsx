@@ -1,5 +1,6 @@
 import "./App.css";
 import MonthSummary from "./components/MonthSummary/MonthSummary";
+import DeleteConfirmation from "./components/DeleteConfirmation/DeleteConfirmation";
 import {
   generateMonths,
   getBalance,
@@ -117,10 +118,10 @@ function App() {
     <section>
       <div>
         <MonthSummary
-        currentMonth={currentMonth}
-        balance={balance}
-        previousMonth={previousMonth}
-        carryOver={carryOver}
+          currentMonth={currentMonth}
+          balance={balance}
+          previousMonth={previousMonth}
+          carryOver={carryOver}
         />
         <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
         {isModalOpen && (
@@ -196,24 +197,17 @@ function App() {
           </div>
         ))}
         {operationToDelete && (
-          <div>
-            <p>supprimer "{operationToDelete.label}"?</p>
-            <button
-              type="button"
-              onClick={() => {
-                handleDeleteOperation(operationToDelete.id);
-                setOperationToDelete(null);
-              }}
-            >
-              Juste ce mois-ci
-            </button>
-            <button type="button" onClick={handleDeleteRule}>
-              Supprimer la règle
-            </button>
-            <button type="button" onClick={() => setOperationToDelete(null)}>
-              Annuler
-            </button>
-          </div>
+          <DeleteConfirmation
+            label={operationToDelete.label}
+            onDeleteOperation={() => {
+              handleDeleteOperation(operationToDelete.id);
+              setOperationToDelete(null);
+            }}
+            onDeleteRule={handleDeleteRule}
+            onCancel={() => {
+              setOperationToDelete(null);
+            }}
+          />
         )}
         <h3>total Mensuelles : {monthlyTotal}€</h3>
       </div>
