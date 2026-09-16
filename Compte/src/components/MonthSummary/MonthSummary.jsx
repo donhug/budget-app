@@ -1,11 +1,13 @@
-function MonthSummary({currentMonth, balance, previousMonth, carryOver}) {
+function MonthSummary({ currentMonth, balance, previousMonth, carryOver, isFirstMonth }) {
   return (
     <div>
       <p>Mois : {currentMonth}</p>
       <p>Solde : {balance}€ </p>
-      <p>
-        Reste de {previousMonth} : {carryOver}€
-      </p>
+      {!isFirstMonth && (
+        <p>
+          Reste de {previousMonth} : {carryOver}€
+        </p>
+      )}
     </div>
   );
 }

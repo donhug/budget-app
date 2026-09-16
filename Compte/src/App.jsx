@@ -14,6 +14,7 @@ import {
   getRules,
   deleteOperation,
   deleteRule,
+  getFirstMonth,
 } from "./services/storage";
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
@@ -28,6 +29,7 @@ function App() {
   const [monthOperations, setMonthOperations] = useState([]);
   const [carryOver, setCarryOver] = useState(null);
   const [operationToDelete, setOperationToDelete] = useState(null);
+  const [isFirstMonth, setIsFirstMonth] = useState(null);
 
   function handleSubmit({ label, amount, type, isRecurrent, endMonth }) {
     const ruleEnd = endMonth === "" ? null : endMonth;
@@ -85,6 +87,7 @@ function App() {
     setBalance(getBalance(currentMonth));
     setMonthOperations(getOperations(currentMonth));
     setCarryOver(getBalance(previousMonth));
+    setIsFirstMonth(getFirstMonth() === currentMonth);
   }, [currentMonth, previousMonth]);
 
   const monthlyOps = monthOperations.filter((op) => op.origin === "rule");
@@ -100,6 +103,7 @@ function App() {
           balance={balance}
           previousMonth={previousMonth}
           carryOver={carryOver}
+          isFirstMonth={isFirstMonth}
         />
         <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
         {isModalOpen && (
