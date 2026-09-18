@@ -1,11 +1,20 @@
-function MonthSummary({ currentMonth, balance, previousMonth, carryOver, isFirstMonth }) {
+import { formatMonth } from "../../utils/dates";
+function MonthSummary({
+  currentMonth,
+  balance,
+  previousMonth,
+  carryOver,
+  isFirstMonth,
+}) {
+  const currentMonthLabel = formatMonth(currentMonth);
+  const previousMonthLabel = formatMonth(previousMonth);
   return (
     <div>
-      <p>Mois : {currentMonth}</p>
+      <p>Mois : {currentMonthLabel}</p>
       <p>Solde : {balance}€ </p>
       {!isFirstMonth && (
         <p>
-          Reste de {previousMonth} : {carryOver}€
+          Reste de {previousMonthLabel} : {carryOver}€
         </p>
       )}
     </div>

@@ -1,3 +1,18 @@
+const MONTHS = [
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
+];
+
 /***
  * récupère le mois suivant, a partie de la date donnée, ajoute 1 au mois ou a l'année
  * @param {string}  dateString - mois de départ au format "YYYY-MM"
@@ -57,4 +72,12 @@ export function getCurrentMonth() {
   const month = now.getMonth() + 1;
   const currentMonth = `${year}-${String(month).padStart(2, "0")}`;
   return currentMonth;
+}
+
+export function formatMonth(dateString) {
+  const dateSplit = dateString.split("-");
+  const monthNumber = Number(dateSplit[1]);
+  const month = MONTHS[monthNumber - 1];
+
+  return `${month} ${dateSplit[0]}`;
 }
