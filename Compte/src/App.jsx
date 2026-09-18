@@ -31,6 +31,10 @@ function App() {
   const [operationToDelete, setOperationToDelete] = useState(null);
   const [isFirstMonth, setIsFirstMonth] = useState(null);
 
+  function refreshMonth() {
+    setMonthOperations(getOperations(currentMonth));
+    setBalance(getBalance(currentMonth));
+  }
   function handleSubmit({ label, amount, type, isRecurrent, endMonth }) {
     const ruleEnd = endMonth === "" ? null : endMonth;
 
@@ -50,8 +54,7 @@ function App() {
       const currentOperations = getOperations(currentMonth);
       const updatedRuleOperations = [...currentOperations, ...newOperation];
       setOperations(currentMonth, updatedRuleOperations);
-      setMonthOperations(getOperations(currentMonth));
-      setBalance(getBalance(currentMonth));
+      refreshMonth()
     } else {
       const newOperation = {
         id: crypto.randomUUID(),
@@ -64,16 +67,14 @@ function App() {
       const currentOperations = getOperations(currentMonth);
       const updatedManualOperations = [...currentOperations, newOperation];
       setOperations(currentMonth, updatedManualOperations);
-      setMonthOperations(getOperations(currentMonth));
-      setBalance(getBalance(currentMonth));
+      refreshMonth()
     }
     setIsModalOpen(false);
   }
 
   function handleDeleteOperation(operationId) {
     deleteOperation(currentMonth, operationId);
-    setMonthOperations(getOperations(currentMonth));
-    setBalance(getBalance(currentMonth));
+    refreshMonth()
   }
 
   function handleDeleteRule() {
