@@ -54,7 +54,7 @@ function App() {
       const currentOperations = getOperations(currentMonth);
       const updatedRuleOperations = [...currentOperations, ...newOperation];
       setOperations(currentMonth, updatedRuleOperations);
-      refreshMonth()
+      refreshMonth();
     } else {
       const newOperation = {
         id: crypto.randomUUID(),
@@ -67,14 +67,14 @@ function App() {
       const currentOperations = getOperations(currentMonth);
       const updatedManualOperations = [...currentOperations, newOperation];
       setOperations(currentMonth, updatedManualOperations);
-      refreshMonth()
+      refreshMonth();
     }
     setIsModalOpen(false);
   }
 
   function handleDeleteOperation(operationId) {
     deleteOperation(currentMonth, operationId);
-    refreshMonth()
+    refreshMonth();
   }
 
   function handleDeleteRule() {
