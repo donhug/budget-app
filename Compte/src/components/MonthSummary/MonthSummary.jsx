@@ -11,10 +11,11 @@ function MonthSummary({
   return (
     <div>
       <p>Mois : {currentMonthLabel}</p>
-      <p>Solde : {balance}€ </p>
+      <p>Solde : {balance === null ? "-" : `${balance}€`} </p>
       {!isFirstMonth && (
         <p>
-          Reste de {previousMonthLabel} : {carryOver}€
+          Reste de {previousMonthLabel} :{" "}
+          {carryOver === null ? "-" : `${carryOver}€`}
         </p>
       )}
     </div>
