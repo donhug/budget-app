@@ -106,6 +106,8 @@ export function generateMonths() {
   while (monthToGenerate !== currentMonth) {
     monthToGenerate = getNextMonth(monthToGenerate);
     const operations = materializeRules(monthToGenerate, rules);
+    const existing = getOperations(monthToGenerate);
+    if (existing.length > 0) continue;
     setOperations(monthToGenerate, operations);
   }
   setLastMonth(currentMonth);
