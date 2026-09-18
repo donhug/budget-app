@@ -52,4 +52,3 @@
   ou fusionner au lieu d'écraser.
 
 - Extraire la logique pure du handleSubmit() (ajout d'opoération) hors du composant.
-

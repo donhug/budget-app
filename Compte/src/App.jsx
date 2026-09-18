@@ -1,4 +1,6 @@
 import "./App.css";
+import MonthSummary from "./components/MonthSummary/MonthSummary";
+import DeleteConfirmation from "./components/DeleteConfirmation/DeleteConfirmation";
 import {
   generateMonths,
   getBalance,
@@ -12,40 +14,29 @@ import {
   getRules,
   deleteOperation,
   deleteRule,
+  getFirstMonth,
 } from "./services/storage";
 import { getCurrentMonth, getPreviousMonth } from "./utils/dates";
 import { useEffect, useState } from "react";
+import OperationList from "./components/OperationList/OperationList";
+import OperationFormModal from "./components/OperationFormModal/OperationFormModal";
 
 function App() {
   const currentMonth = getCurrentMonth();
   const previousMonth = getPreviousMonth(currentMonth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [balance, setBalance] = useState(null);
-  const [monthOperation, setMonthOperation] = useState([]);
+  const [monthOperations, setMonthOperations] = useState([]);
   const [carryOver, setCarryOver] = useState(null);
-  const [isModaleOpen, setIsModaleOpen] = useState(false);
-  const [label, setLabel] = useState("");
-  const [value, setValue] = useState("");
-  const [type, setType] = useState("");
-  const [isRecurrent, setIsRecurrent] = useState(false);
-  const [endMonth, setEndMonth] = useState("");
-  const [error, setError] = useState("");
   const [operationToDelete, setOperationToDelete] = useState(null);
+  const [isFirstMonth, setIsFirstMonth] = useState(null);
 
-  function handleSubmit() {
-    const rawAmount = Number(value);
-    const amount = type === "depense" ? -rawAmount : rawAmount;
-    const endOperation = endMonth === "" ? null : endMonth;
-    const errors = []; // collection des erreurs
-    setError("");
-
-    if (label.trim() === "") errors.push("le libellé");
-    if (rawAmount === 0) errors.push("le montant");
-    if (type === "") errors.push("la nature (dépense ou entrée)");
-
-    if (errors.length > 0) {
-      setError("Il manque : " + errors.join(", "));
-      return;
-    }
+  function refreshMonth() {
+    setMonthOperations(getOperations(currentMonth));
+    setBalance(getBalance(currentMonth));
+  }
+  function handleSubmit({ label, amount, type, isRecurrent, endMonth }) {
+    const ruleEnd = endMonth === "" ? null : endMonth;
 
     if (isRecurrent) {
       const newRule = {
@@ -54,17 +45,16 @@ function App() {
         value: amount,
         type,
         start: currentMonth,
-        end: endOperation,
+        end: ruleEnd,
       };
       const currentRules = getRules();
-      const upDateRules = [...currentRules, newRule];
-      setRules(upDateRules);
-      const NewOperation = materializeRules(currentMonth, [newRule]);
-      const currentOperation = getOperations(currentMonth);
-      const updatedOperation = [...currentOperation, ...NewOperation];
-      setOperations(currentMonth, updatedOperation);
-      setMonthOperation(getOperations(currentMonth));
-      setBalance(getBalance(currentMonth));
+      const updatedRules = [...currentRules, newRule];
+      setRules(updatedRules);
+      const newOperation = materializeRules(currentMonth, [newRule]);
+      const currentOperations = getOperations(currentMonth);
+      const updatedRuleOperations = [...currentOperations, ...newOperation];
+      setOperations(currentMonth, updatedRuleOperations);
+      refreshMonth()
     } else {
       const newOperation = {
         id: crypto.randomUUID(),
@@ -75,23 +65,16 @@ function App() {
         origin: "manual",
       };
       const currentOperations = getOperations(currentMonth);
-      const upDateOperations = [...currentOperations, newOperation];
-      setOperations(currentMonth, upDateOperations);
-      setMonthOperation(getOperations(currentMonth));
-      setBalance(getBalance(currentMonth));
+      const updatedManualOperations = [...currentOperations, newOperation];
+      setOperations(currentMonth, updatedManualOperations);
+      refreshMonth()
     }
-    setIsModaleOpen(false);
-    setLabel("");
-    setValue("");
-    setType("");
-    setIsRecurrent(false);
-    setEndMonth("");
+    setIsModalOpen(false);
   }
 
   function handleDeleteOperation(operationId) {
     deleteOperation(currentMonth, operationId);
-    setMonthOperation(getOperations(currentMonth));
-    setBalance(getBalance(currentMonth));
+    refreshMonth()
   }
 
   function handleDeleteRule() {
@@ -103,133 +86,62 @@ function App() {
   useEffect(() => {
     generateMonths();
     setBalance(getBalance(currentMonth));
-    setMonthOperation(getOperations(currentMonth));
+    setMonthOperations(getOperations(currentMonth));
     setCarryOver(getBalance(previousMonth));
+    setIsFirstMonth(getFirstMonth() === currentMonth);
   }, [currentMonth, previousMonth]);
 
-  const monthlyOps = monthOperation.filter((op) => op.origin === "rule");
-  const ponctualOps = monthOperation.filter((op) => op.origin === "manual");
+  const monthlyOps = monthOperations.filter((op) => op.origin === "rule");
+  const manualOps = monthOperations.filter((op) => op.origin === "manual");
   const monthlyTotal = getMonthTotal(monthlyOps);
-  const ponctualTotal = getMonthTotal(ponctualOps);
+  const manualTotal = getMonthTotal(manualOps);
 
   return (
     <section>
       <div>
-        <p>Mois : {currentMonth}</p>
-        <p>Solde : {balance}€ </p>
-        <p>
-          Reste de {previousMonth} : {carryOver}€
-        </p>
-        <button onClick={() => setIsModaleOpen(true)}>+AJOUTER</button>
-        {isModaleOpen && (
-          <div>
-            <button type="button" onClick={() => setIsModaleOpen(false)}>
-              X
-            </button>
-            <input
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-            />
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <label>
-              <input
-                type="radio"
-                name="type"
-                value="depense"
-                checked={type === "depense"}
-                onChange={(e) => setType(e.target.value)}
-              />
-              Dépense
-            </label>
-
-            <label>
-              <input
-                type="radio"
-                name="type"
-                value="income"
-                checked={type === "income"}
-                onChange={(e) => setType(e.target.value)}
-              />
-              Entrée
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={isRecurrent}
-                onChange={(e) => setIsRecurrent(e.target.checked)}
-              />
-              Opération récurrente
-            </label>
-            {isRecurrent && (
-              <div>
-                <p>date de fin</p>
-                <input
-                  type="month"
-                  value={endMonth}
-                  onChange={(e) => setEndMonth(e.target.value)}
-                />
-              </div>
-            )}
-            {error && <p>{error}</p>}
-            <button type="button" onClick={handleSubmit}>
-              ajouter l'operation
-            </button>
-          </div>
+        <MonthSummary
+          currentMonth={currentMonth}
+          balance={balance}
+          previousMonth={previousMonth}
+          carryOver={carryOver}
+          isFirstMonth={isFirstMonth}
+        />
+        <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
+        {isModalOpen && (
+          <OperationFormModal
+            onSubmit={handleSubmit}
+            onClose={() => setIsModalOpen(false)}
+          />
         )}
       </div>
 
       <div>
-        <h2>Opérations mensuelles : </h2>
-        {monthlyOps.map((op) => (
-          <div key={op.id}>
-            <p>
-              {op.label} : {op.value}€
-            </p>
-            <button onClick={() => setOperationToDelete(op)}>supprimer</button>
-          </div>
-        ))}
+        <OperationList
+          title="Opérations mensuelles : "
+          operations={monthlyOps}
+          total={monthlyTotal}
+          onDelete={(op) => setOperationToDelete(op)}
+        />
         {operationToDelete && (
-          <div>
-            <p>supprimer "{operationToDelete.label}"?</p>
-            <button
-              type="button"
-              onClick={() => {
-                handleDeleteOperation(operationToDelete.id);
-                setOperationToDelete(null);
-              }}
-            >
-              Juste ce mois-ci
-            </button>
-            <button type="button" onClick={handleDeleteRule}>
-              Supprimer la règle
-            </button>
-            <button type="button" onClick={() => setOperationToDelete(null)}>
-              Annuler
-            </button>
-          </div>
+          <DeleteConfirmation
+            label={operationToDelete.label}
+            onDeleteOperation={() => {
+              handleDeleteOperation(operationToDelete.id);
+              setOperationToDelete(null);
+            }}
+            onDeleteRule={handleDeleteRule}
+            onCancel={() => {
+              setOperationToDelete(null);
+            }}
+          />
         )}
-        <h3>total Mensuelles : {monthlyTotal}€</h3>
       </div>
-      <div>
-        <h2>Opérations ponctuelles : </h2>
-        {ponctualOps.map((op) => (
-          <div key={op.id}>
-            <p>
-              {op.label} : {op.value}€
-            </p>
-            <button type="button" onClick={() => handleDeleteOperation(op.id)}>
-              {" "}
-              supprimer l'operation
-            </button>
-          </div>
-        ))}
-        <h3>total Ponctuelles : {ponctualTotal}€</h3>
-      </div>
+      <OperationList
+        title="Opérations ponctuelles : "
+        operations={manualOps}
+        total={manualTotal}
+        onDelete={(op) => handleDeleteOperation(op.id)}
+      />
     </section>
   );
 }
