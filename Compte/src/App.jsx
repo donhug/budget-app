@@ -1,4 +1,4 @@
-import "./App.css";
+import styles from "./App.module.css";
 import MonthSummary from "./components/MonthSummary/MonthSummary";
 import DeleteConfirmation from "./components/DeleteConfirmation/DeleteConfirmation";
 import {
