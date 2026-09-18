@@ -98,6 +98,10 @@ export function generateMonths() {
     return;
   }
 
+  if (lastMonth >= currentMonth) {
+    return;
+  }
+
   let monthToGenerate = lastMonth;
   while (monthToGenerate !== currentMonth) {
     monthToGenerate = getNextMonth(monthToGenerate);
