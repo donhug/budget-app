@@ -8,6 +8,7 @@ function OperationFormModal({ onSubmit, onClose }) {
   const [endMonth, setEndMonth] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState("idle");
 
   function handleValidate() {
     const rawAmount = Math.abs(Number(value));
@@ -24,9 +25,14 @@ function OperationFormModal({ onSubmit, onClose }) {
       return;
     }
     setIsSubmitting(true);
+
+    setStatus("loading");
     setTimeout(() => {
-      onSubmit({ label, amount, type, isRecurrent, endMonth });
-    }, 400);
+      setStatus("success");
+      setTimeout(() => {
+        onSubmit({ label, amount, type, isRecurrent, endMonth });
+      }, 400);
+    });
   }
   return (
     <div className={style.overlay}>
@@ -34,7 +40,7 @@ function OperationFormModal({ onSubmit, onClose }) {
         <button className={style.closeBtn} type="button" onClick={onClose}>
           X
         </button>
-        <h2 className={style.heading}>Ajoutee une opération</h2>
+        <h2 className={style.heading}>Ajouter une opération</h2>
         <div className={style.field}>
           <label htmlFor="label">Libellé</label>
           <input
@@ -61,9 +67,10 @@ function OperationFormModal({ onSubmit, onClose }) {
               name="type"
               value="expense"
               checked={type === "expense"}
+              className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            Dépense
+            <span className={style.radioChip}>Dépense</span>
           </label>
 
           <label className={style.radioLabel}>
@@ -72,13 +79,14 @@ function OperationFormModal({ onSubmit, onClose }) {
               name="type"
               value="income"
               checked={type === "income"}
+              className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            Entrée
+            <span className={style.radioChip}>Entrée</span>
           </label>
         </div>
 
-        <label className={style.checkBoxLabel}>
+        <label className={style.checkboxLabel}>
           <input
             type="checkbox"
             checked={isRecurrent}
@@ -102,9 +110,11 @@ function OperationFormModal({ onSubmit, onClose }) {
           type="button"
           className={style.submitBtn}
           onClick={handleValidate}
-          disabled={isSubmitting}
+          disabled={status!=="idle"}
         >
-          {isSubmitting ? "Ajout en cours...." : "ajouter l'operation"}
+          {status==="idle"&&"Ajouter l'operation"}
+          {status==="loading"&&<span className={style.spinner}/>}
+          {status==="success"&& <span className={style.checkmark}>✓</span>}
         </button>
       </div>
     </div>
