@@ -7,7 +7,6 @@ function OperationFormModal({ onSubmit, onClose }) {
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [endMonth, setEndMonth] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState("idle");
 
   function handleValidate() {
@@ -24,7 +23,6 @@ function OperationFormModal({ onSubmit, onClose }) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
-    setIsSubmitting(true);
 
     setStatus("loading");
     setTimeout(() => {
@@ -110,11 +108,11 @@ function OperationFormModal({ onSubmit, onClose }) {
           type="button"
           className={style.submitBtn}
           onClick={handleValidate}
-          disabled={status!=="idle"}
+          disabled={status !== "idle"}
         >
-          {status==="idle"&&"Ajouter l'operation"}
-          {status==="loading"&&<span className={style.spinner}/>}
-          {status==="success"&& <span className={style.checkmark}>✓</span>}
+          {status === "idle" && "Ajouter l'operation"}
+          {status === "loading" && <span className={style.spinner} />}
+          {status === "success" && <span className={style.checkmark}>✓</span>}
         </button>
       </div>
     </div>
