@@ -1,5 +1,5 @@
 import { formatMonth } from "../../utils/dates";
-import styles from "./MonthSummary.module.css"
+import styles from "./MonthSummary.module.css";
 function MonthSummary({
   currentMonth,
   balance,
@@ -21,7 +21,9 @@ function MonthSummary({
         )}
         <p className={styles.balance}>
           <span className={styles.balanceLabel}>Solde</span>
-          <span className={styles.balanceValue}>{balance === null ? "-" : `${balance}€`}</span>
+          <span className={styles.balanceValue}>
+            {balance === null ? "-" : `${balance}€`}
+          </span>
         </p>
       </div>
     </div>
