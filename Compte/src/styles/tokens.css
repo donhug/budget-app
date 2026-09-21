@@ -6,6 +6,7 @@
   /* Neutres */
   --color-bg: #ffffff;
   --color-surface: #f7f7f8;
+  --color-surface-accend: #f3f0fb;
   --color-text: #1a1a1a;
   --color-text-muted: #6b6b6b;
   --color-border: #e5e5e5;
@@ -34,6 +35,7 @@
 
     --color-bg: #121212;
     --color-surface: #1e1e1e;
+    --color-surface-accend: #2a2438;
     --color-text: #f0f0f0;
     --color-text-muted: #a0a0a0;
     --color-border: #333333;
