@@ -1,5 +1,5 @@
 .card {
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-accend);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: var(--space-3);
