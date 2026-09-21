@@ -97,7 +97,7 @@ function App() {
   const manualTotal = getMonthTotal(manualOps);
 
   return (
-    <section>
+    <section className={styles.appshell}>
       <div>
         <MonthSummary
           currentMonth={currentMonth}
@@ -106,7 +106,7 @@ function App() {
           carryOver={carryOver}
           isFirstMonth={isFirstMonth}
         />
-        <button onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
+        <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>+AJOUTER</button>
         {isModalOpen && (
           <OperationFormModal
             onSubmit={handleSubmit}
@@ -114,34 +114,37 @@ function App() {
           />
         )}
       </div>
-
-      <div>
-        <OperationList
-          title="Opérations mensuelles : "
-          operations={monthlyOps}
-          total={monthlyTotal}
-          onDelete={(op) => setOperationToDelete(op)}
-        />
-        {operationToDelete && (
-          <DeleteConfirmation
-            label={operationToDelete.label}
-            onDeleteOperation={() => {
-              handleDeleteOperation(operationToDelete.id);
-              setOperationToDelete(null);
-            }}
-            onDeleteRule={handleDeleteRule}
-            onCancel={() => {
-              setOperationToDelete(null);
-            }}
+      <div className={styles.listGrid}>
+        <div>
+          <OperationList
+            title="Opérations mensuelles : "
+            operations={monthlyOps}
+            total={monthlyTotal}
+            onDelete={(op) => setOperationToDelete(op)}
           />
-        )}
+          {operationToDelete && (
+            <DeleteConfirmation
+              label={operationToDelete.label}
+              onDeleteOperation={() => {
+                handleDeleteOperation(operationToDelete.id);
+                setOperationToDelete(null);
+              }}
+              onDeleteRule={handleDeleteRule}
+              onCancel={() => {
+                setOperationToDelete(null);
+              }}
+            />
+          )}
+        </div>
+        <div>
+          <OperationList
+            title="Opérations ponctuelles : "
+            operations={manualOps}
+            total={manualTotal}
+            onDelete={(op) => handleDeleteOperation(op.id)}
+          />
+        </div>
       </div>
-      <OperationList
-        title="Opérations ponctuelles : "
-        operations={manualOps}
-        total={manualTotal}
-        onDelete={(op) => handleDeleteOperation(op.id)}
-      />
     </section>
   );
 }

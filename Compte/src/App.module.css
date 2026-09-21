@@ -1,0 +1,45 @@
+.appshell {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-3);
+}
+.listGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.addBtn {
+  width: 100%;
+  padding: var(--space-3);
+  margin: var(--space-3) 0;
+  background-color: var(--color-brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.addBtn:hover {
+  background-color: var(--color-brand-hover);
+}
+@media (min-width: 768px) {
+  .appshell {
+    max-width: 640px;
+    padding: var(--space-4);
+  }
+}
+@media (min-width: 1024px) {
+  .appshell {
+    max-width: 1000px;
+  }
+  .listGrid {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .listGrid > div {
+    flex: 1;
+    min-width: 0;
+  }
+}
