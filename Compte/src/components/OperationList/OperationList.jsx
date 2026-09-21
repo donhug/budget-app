@@ -11,15 +11,18 @@ function OperationList({ title, operations, total, onDelete }) {
             op.type === "expense" ? style.itemExpense : style.itemIncome
           }`}
         >
-          <p className={style.label}>{op.label}</p>
-          <p
-            className={`${style.amount} ${
-              op.type === "expense" ? style.expense : style.income
-            }`}
-          >
-            {op.type === "income" ? "+" : ""}
-            {op.value}€{" "}
-          </p>
+          <div className={style.mainRow}>
+            <p className={style.label}>{op.label}</p>
+            <p
+              className={`${style.amount} ${
+                op.type === "expense" ? style.expense : style.income
+              }`}
+            >
+              {op.type === "income" ? "+" : ""}
+              {op.value}€{" "}
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={() => onDelete(op)}

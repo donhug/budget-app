@@ -161,9 +161,9 @@
   font-weight: 600;
   cursor: pointer;
 }
-.submitBtn:hover:not(:disabled){
-    background-color: var(--color-brand-hover);
+.submitBtn:hover:not(:disabled) {
+  background-color: var(--color-brand-hover);
 }
-.submitBtn:disabled{
-    cursor: default;
+.submitBtn:disabled {
+  cursor: default;
 }
