@@ -1,10 +1,14 @@
 import style from "./Header.module.css";
-import LOGO from "../../assets/LOGO.png"
+import LOGO from "../../assets/LOGO.png";
 
-function Header() {
+function Header({ onMenuClick }) {
   return (
     <header className={style.header}>
-      <button className={style.navToggle} aria-label="Menu">
+      <button
+        className={style.navToggle}
+        aria-label="Menu"
+        onClick={onMenuClick}
+      >
         ☰
       </button>
       <div className={style.logoGroup}>

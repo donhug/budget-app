@@ -22,6 +22,7 @@ import OperationList from "./components/OperationList/OperationList";
 import OperationFormModal from "./components/OperationFormModal/OperationFormModal";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
+import MobileNav from "./components/MobileNav/MobileNav";
 
 function App() {
   const currentMonth = getCurrentMonth();
@@ -32,6 +33,7 @@ function App() {
   const [carryOver, setCarryOver] = useState(null);
   const [operationToDelete, setOperationToDelete] = useState(null);
   const [isFirstMonth, setIsFirstMonth] = useState(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   function refreshMonth() {
     setMonthOperations(getOperations(currentMonth));
@@ -102,8 +104,8 @@ function App() {
     <div className={styles.layoutWrapper}>
       <Sidebar />
       <div className={styles.mainColumn}>
-        <Header />
-
+        <Header onMenuClick={() => setIsNavOpen(true)} />
+        {isNavOpen && <MobileNav onClose={() => setIsNavOpen(false)} />}
         <section className={styles.appShell}>
           <div>
             <MonthSummary

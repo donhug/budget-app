@@ -34,3 +34,9 @@
   font-size: 1.1rem;
   color: var(--color-brand);
 }
+
+@media (min-width: 1024px) {
+  .navToggle {
+    display: none;
+  }
+}
