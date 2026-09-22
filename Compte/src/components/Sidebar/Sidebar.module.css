@@ -1,7 +1,38 @@
 .sidebar {
   display: none;
 }
-
+.nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  position: relative;
+}
+.indicator {
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  background-color: var(--color-brand);
+  opacity: 0.12;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-md);
+  transition:
+    top 0.25s ease,
+    height 0.25s ease;
+}
+.link {
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  position: relative;
+  z-index: 1;
+  transition: color 0.2s ease;
+}
+.link:hover {
+  color: var(--color-brand);
+}
 @media (min-width: 1024px) {
   .sidebar {
     display: flex;
