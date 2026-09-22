@@ -1,0 +1,50 @@
+:root {
+  /* Marque */
+  --color-brand: #7c3aed;
+  --color-brand-hover: #6d28d9;
+
+  /* Neutres */
+  --color-bg: #ffffff;
+  --color-surface: #f7f7f8;
+  --color-surface-accend: #f3f0fb;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b6b6b;
+  --color-border: #e5e5e5;
+
+  /* Sémantique dépense/entrée */
+  --color-expense: #c0392b;
+  --color-expense-bg: #fbe9e7;
+  --color-income: #27824f;
+  --color-income-bg: #e8f5e9;
+
+  /* Espacements */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+
+  /* Autres */
+  --radius-md: 12px;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-brand: #a78bfa;
+    --color-brand-hover: #c4b5fd;
+
+    --color-bg: #121212;
+    --color-surface: #1e1e1e;
+    --color-surface-accend: #2a2438;
+    --color-text: #f0f0f0;
+    --color-text-muted: #a0a0a0;
+    --color-border: #333333;
+
+    --color-expense: #e57373;
+    --color-expense-bg: #3a2020;
+    --color-income: #66bb6a;
+    --color-income-bg: #1e3320;
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}

@@ -1,0 +1,55 @@
+.appShell {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-3);
+}
+.listsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.layoutWrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainColumn {
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.addBtn {
+  width: 100%;
+  padding: var(--space-3);
+  margin: var(--space-3) 0;
+  background-color: var(--color-brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.addBtn:hover {
+  background-color: var(--color-brand-hover);
+}
+@media (min-width: 768px) {
+  .appShell {
+    max-width: 640px;
+    padding: var(--space-4);
+  }
+}
+@media (min-width: 1024px) {
+  .appShell {
+    max-width: 1000px;
+  }
+  .listsGrid {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .listsGrid > div {
+    flex: 1;
+    min-width: 0;
+  }
+}
