@@ -111,60 +111,64 @@ function App() {
       <div className={styles.mainColumn}>
         <Header onMenuClick={() => setIsNavOpen(true)} />
         {isNavOpen && <MobileNav onClose={() => setIsNavOpen(false)} />}
-        <section className={styles.appShell}>
-          <div>
-            <MonthSummary
-              currentMonth={currentMonth}
-              balance={balance}
-              previousMonth={previousMonth}
-              carryOver={carryOver}
-              isFirstMonth={isFirstMonth}
-            />
-            <button
-              className={styles.addBtn}
-              onClick={() => setIsModalOpen(true)}
-            >
-              +AJOUTER
-            </button>
-            {isModalOpen && (
-              <OperationFormModal
-                onSubmit={handleSubmit}
-                onClose={() => setIsModalOpen(false)}
-              />
-            )}
-          </div>
-          <div className={styles.listsGrid}>
+        {isReady ? (
+          <section className={styles.appShell}>
             <div>
-              <OperationList
-                title="Opérations mensuelles : "
-                operations={monthlyOps}
-                total={monthlyTotal}
-                onDelete={(op) => setOperationToDelete(op)}
+              <MonthSummary
+                currentMonth={currentMonth}
+                balance={balance}
+                previousMonth={previousMonth}
+                carryOver={carryOver}
+                isFirstMonth={isFirstMonth}
               />
-              {operationToDelete && (
-                <DeleteConfirmation
-                  label={operationToDelete.label}
-                  onDeleteOperation={() => {
-                    handleDeleteOperation(operationToDelete.id);
-                    setOperationToDelete(null);
-                  }}
-                  onDeleteRule={handleDeleteRule}
-                  onCancel={() => {
-                    setOperationToDelete(null);
-                  }}
+              <button
+                className={styles.addBtn}
+                onClick={() => setIsModalOpen(true)}
+              >
+                +AJOUTER
+              </button>
+              {isModalOpen && (
+                <OperationFormModal
+                  onSubmit={handleSubmit}
+                  onClose={() => setIsModalOpen(false)}
                 />
               )}
             </div>
-            <div>
-              <OperationList
-                title="Opérations ponctuelles : "
-                operations={manualOps}
-                total={manualTotal}
-                onDelete={(op) => handleDeleteOperation(op.id)}
-              />
+            <div className={styles.listsGrid}>
+              <div>
+                <OperationList
+                  title="Opérations mensuelles : "
+                  operations={monthlyOps}
+                  total={monthlyTotal}
+                  onDelete={(op) => setOperationToDelete(op)}
+                />
+                {operationToDelete && (
+                  <DeleteConfirmation
+                    label={operationToDelete.label}
+                    onDeleteOperation={() => {
+                      handleDeleteOperation(operationToDelete.id);
+                      setOperationToDelete(null);
+                    }}
+                    onDeleteRule={handleDeleteRule}
+                    onCancel={() => {
+                      setOperationToDelete(null);
+                    }}
+                  />
+                )}
+              </div>
+              <div>
+                <OperationList
+                  title="Opérations ponctuelles : "
+                  operations={manualOps}
+                  total={manualTotal}
+                  onDelete={(op) => handleDeleteOperation(op.id)}
+                />
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        ) : (
+          <p>chargement</p>
+        )}
       </div>
     </div>
   );
