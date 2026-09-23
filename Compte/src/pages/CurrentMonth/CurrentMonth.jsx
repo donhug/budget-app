@@ -93,6 +93,7 @@ function CurrentMonth() {
   const manualTotal = getMonthTotal(manualOps);
   return (
     <>
+      {/* MonthSummary */}
       <div>
         <MonthSummary
           currentMonth={currentMonth}
@@ -111,6 +112,7 @@ function CurrentMonth() {
           />
         )}
       </div>
+      {/* OperationList */}
       <div className={styles.listsGrid}>
         <div>
           <OperationList
