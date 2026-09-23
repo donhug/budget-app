@@ -34,6 +34,7 @@ function App() {
   const [operationToDelete, setOperationToDelete] = useState(null);
   const [isFirstMonth, setIsFirstMonth] = useState(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   function refreshMonth() {
     setMonthOperations(getOperations(currentMonth));
@@ -88,12 +89,16 @@ function App() {
   }
 
   useEffect(() => {
-    generateMonths();
     setBalance(getBalance(currentMonth));
     setMonthOperations(getOperations(currentMonth));
     setCarryOver(getBalance(previousMonth));
     setIsFirstMonth(getFirstMonth() === currentMonth);
   }, [currentMonth, previousMonth]);
+
+  useEffect(() => {
+    generateMonths();
+    setIsReady(true);
+  }, []);
 
   const monthlyOps = monthOperations.filter((op) => op.origin === "rule");
   const manualOps = monthOperations.filter((op) => op.origin === "manual");
