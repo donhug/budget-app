@@ -1,8 +1,15 @@
 import { useState, useRef } from "react";
+import { NavLink } from "react-router";
 import style from "./Sidebar.module.css";
 import LOGO from "../../assets/LOGO.png";
 
-const links = ["Dashboard", "Modifications", "En Cours", "Epargne", "Compte"];
+const links = [
+  { label: "Dashboard", to: "/dashboard" },
+  { label: "Modifications", to: "/rules-changes" },
+  { label: "En Cours", to: "/" },
+  { label: "Epargne", to: "/savings" },
+  { label: "Compte", to: "/account" },
+];
 
 function Sidebar() {
   const [indicator, setIndicator] = useState(null);
@@ -32,15 +39,15 @@ function Sidebar() {
             style={{ top: indicator.top, height: indicator.height }}
           />
         )}
-        {links.map((label) => (
-          <a
-            key={label}
-            href="#"
+        {links.map((link) => (
+          <NavLink
+            key={link.label}
+            to={link.to}
             className={style.link}
             onMouseEnter={handleEnter}
           >
-            {label}
-          </a>
+            {link.label}
+          </NavLink>
         ))}
       </nav>
     </aside>
