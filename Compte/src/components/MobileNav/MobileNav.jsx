@@ -1,4 +1,7 @@
 import style from "./MobileNav.module.css";
+import { NavLink } from "react-router";
+import { NAV_LINKS } from "../../constants/navLinks";
+
 const links = ["Dashboard", "Modifications", "En Cours", "Epargne", "Compte"];
 function MobileNav({ onClose }) {
   return (
@@ -12,10 +15,17 @@ function MobileNav({ onClose }) {
         >
           X
         </button>
-        {links.map((label) => (
-          <a key={label} href="#" className={style.link} onClick={onClose}>
-            {label}
-          </a>
+        {NAV_LINKS.map((link) => (
+          <NavLink
+            key={link.label}
+            to={link.to}
+            className={({ isActive }) =>
+              `${style.link} ${isActive ? style.active : ""}`
+            }
+            onClick={onClose}
+          >
+            {link.label}
+          </NavLink>
         ))}
       </nav>
     </div>
