@@ -1,10 +1,12 @@
 import { useState } from "react";
 import style from "./OperationFormModal.module.css";
+import { getCurrentMonth } from "../../utils/dates";
 function OperationFormModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
   const [isRecurrent, setIsRecurrent] = useState(false);
+  const [startMonth, setStartMonth] = useState(getCurrentMonth());
   const [endMonth, setEndMonth] = useState("");
   const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
@@ -23,12 +25,16 @@ function OperationFormModal({ onSubmit, onClose }) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
+    if (endMonth !== "" && endMonth < startMonth) {
+      setError("le mois de fin est antérieur au mois de départ");
+      return;
+    }
 
     setStatus("loading");
     setTimeout(() => {
       setStatus("success");
       setTimeout(() => {
-        onSubmit({ label, amount, type, isRecurrent, endMonth });
+        onSubmit({ label, amount, type, isRecurrent, startMonth, endMonth });
       }, 400);
     });
   }
@@ -94,6 +100,13 @@ function OperationFormModal({ onSubmit, onClose }) {
         </label>
         {isRecurrent && (
           <div className={style.field}>
+            <label htmlFor="startMonth">date de début</label>
+            <input
+              id="startMonth"
+              type="month"
+              value={startMonth}
+              onChange={(e) => setStartMonth(e.target.value)}
+            />
             <label htmlFor="endMonth">date de fin</label>
             <input
               id="endMonth"

@@ -41,7 +41,14 @@ function CurrentMonth() {
     setMonthOperations(getOperations(currentMonth));
     setBalance(getBalance(currentMonth));
   }
-  function handleSubmit({ label, amount, type, isRecurrent, endMonth }) {
+  function handleSubmit({
+    label,
+    amount,
+    type,
+    isRecurrent,
+    startMonth,
+    endMonth,
+  }) {
     const ruleEnd = endMonth === "" ? null : endMonth;
 
     if (isRecurrent) {
@@ -50,7 +57,7 @@ function CurrentMonth() {
         label,
         value: amount,
         type,
-        start: currentMonth,
+        start: startMonth,
         end: ruleEnd,
       };
       const currentRules = getRules();
