@@ -1,9 +1,13 @@
 import style from "./UnderConstruction.module.css";
+import WORK from "../../assets/inProgress.png";
 
 function UnderConstruction(props) {
   return (
-    <div>
-      <h1>{props.title} - Bientôt disponible</h1>
+    <div className={style.main}>
+      <div className={style.shell}>
+        <h1 className={style.title}>{props.title} - Bientôt disponible</h1>
+        <img className={style.img} src={WORK} alt="en cours de construction" />
+      </div>
     </div>
   );
 }
