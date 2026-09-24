@@ -13,7 +13,6 @@ import NotFound from "./pages/NotFound/NotFound";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
-
   useEffect(() => {
     generateMonths();
     setIsReady(true);

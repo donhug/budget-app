@@ -43,7 +43,9 @@ function Sidebar() {
           <NavLink
             key={link.label}
             to={link.to}
-            className={style.link}
+            className={({ isActive }) =>
+              `${style.link} ${isActive ? style.active : ""}`
+            }
             onMouseEnter={handleEnter}
           >
             {link.label}
