@@ -2,7 +2,6 @@ import style from "./MobileNav.module.css";
 import { NavLink } from "react-router";
 import { NAV_LINKS } from "../../constants/navLinks";
 
-const links = ["Dashboard", "Modifications", "En Cours", "Epargne", "Compte"];
 function MobileNav({ onClose }) {
   return (
     <div className={style.overlay} onClick={onClose}>
