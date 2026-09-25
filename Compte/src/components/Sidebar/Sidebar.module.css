@@ -33,6 +33,15 @@
 .link:hover {
   color: var(--color-brand);
 }
+.active {
+  border-radius: var(--radius-md);
+  margin: 0 var(--space-2);
+}
+.link.active {
+  background-color: rgba(124, 58, 237, 0.12);
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
 @media (min-width: 1024px) {
   .sidebar {
     display: flex;
