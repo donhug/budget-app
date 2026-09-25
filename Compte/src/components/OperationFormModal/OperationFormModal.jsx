@@ -1,6 +1,7 @@
 import { useState } from "react";
 import style from "./OperationFormModal.module.css";
 import { getCurrentMonth } from "../../utils/dates";
+import MonthPicker from "../MonthPicker/MonthPicker";
 function OperationFormModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
@@ -100,13 +101,9 @@ function OperationFormModal({ onSubmit, onClose }) {
         </label>
         {isRecurrent && (
           <div className={style.field}>
-            <label htmlFor="startMonth">date de début</label>
-            <input
-              id="startMonth"
-              type="month"
-              value={startMonth}
-              onChange={(e) => setStartMonth(e.target.value)}
-            />
+            <p>date de début</p>
+            <MonthPicker value={startMonth} onChange={setStartMonth}/>
+            
             <label htmlFor="endMonth">date de fin</label>
             <input
               id="endMonth"
