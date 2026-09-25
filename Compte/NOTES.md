@@ -1,3 +1,5 @@
+# budget-app — Notes de conception
+
 ## Modèle de données — décisions
 
 - Modèle B : les mois sont CHAÎNÉS. Le solde d'un mois prend en compte
@@ -7,48 +9,108 @@
   Tout le reste (totaux, reports, soldes de fin de mois) est CALCULÉ,
   jamais stocké.
 
-- UNE SEULE valeur de solde stockée : le solde initial (racine, clé fixe
-  "initialBalance"). C'est l'argent présent au démarrage de l'app.
+- UNE SEULE valeur de solde stockée : le solde initial (racine).
+  C'est l'argent présent au démarrage de l'app.
 
-- RÈGLES (loyer, paye, crédit, abonnements) = opérations qui se répètent.
-  Avec ou sans date de fin (crédit sur 5 mois = avec fin).
+- RÈGLES (loyer, paye, crédit, abonnements) = opérations qui se répètent,
+  avec une date de début et une date de fin optionnelle.
 
 - Une règle se MATÉRIALISE en opération à la naissance d'un mois.
   Une fois matérialisée, l'opération appartient au mois (passé FIGÉ).
 
 - Modifier une règle = effet sur les mois FUTURS uniquement.
-  Le passé ne bouge pas!!!!!!!!!!
+  LE PASSÉ NE BOUGE JAMAIS. Seul le mois en cours peut être mis à jour,
+  et seulement si l'utilisateur le demande (case à cocher).
 
-- Report affiché en sous-texte du mois ("reste de avril : X€"),
-  mais CALCULÉ depuis le total du mois précédent, pas stocké.
+- `ruleId` sur une opération = TRACE d'origine, jamais un lien vivant.
+  Ne jamais s'en servir pour mettre à jour les opérations en masse.
 
-- Saisie : une modale unique, avec une case "récurrente" (+ option fin)
-  qui décide si l'opération devient une règle.
+- Report affiché en sous-texte, CALCULÉ depuis le solde du mois précédent.
 
-- Ajouter un affichage pour les prélevements a venir, (je suis en juin et
-  un crédit commence en aout il me faut un texte a côté de chaque mois qui
-  indique le prélèvement de aout)
+## Formes de données
 
-- Masquer la ligne de report si le mois courant est le mois racine.
+- Opération : { id, ruleId, label, value, type, origin }
+  - value SIGNÉ (négatif = dépense)
+  - type : "expense" | "income"
+  - origin : "rule" | "manual"
+  - ruleId : id de la règle d'origine, ou null si saisie manuelle
 
-- Formater de l'affichage du mois: "Septembre 2026" a la place du formart "YYYY-MM".
+- Règle : { id, label, value, type, start, end }
+  - start / end au format "YYYY-MM", end = null si sans fin
 
-- Pour la modale d'ajout, dans le futur, afficher les erreurs a coté des des champs manquant.
-  (le libellé en rouge sous son input, etc.), plutôt qu'un message global. C'est le plus ergonomique,
-  mais ça demande un state d'erreur par champ. Note-le comme raffinement pour quand tu feras le CSS.
+- Clés localStorage :
+  - "rules", "initialBalance", "firstMonth", "lastMonth"
+  - "operations-YYYY-MM" (une clé par mois)
 
-- Ajouter un composant, pour les livret (A, jeune, PEA, PEL, ...), avec montant brut, possibilitée de,
-  re-prendre de l'argent dessus pour le mois en cours.
-  Ajouter l'argent depuis les opérations ponctuelle du mois.
+- Format de mois "YYYY-MM" : se compare et se trie directement en chaîne.
+  Formaté en clair ("septembre 2026") uniquement à l'affichage.
 
-- V2 possible : matérialisation à la volée (option C) avec notion de mois clos,
-  pour que les modifs de règles se reflètent sur les mois non clos.
+## Architecture
 
-- Blinder generateMonths : si lastMonth > currentMonth,
-  ne rien faire (sortie anticipée).
+- services/storage.js : seule couche qui touche au localStorage
+  (à réécrire seule le jour du passage à une BDD)
+- services/budget.js : calculs métier (total, solde récursif,
+  matérialisation, génération des mois)
+- utils/dates.js : outils de mois
+- constants/ : NAV_LINKS, MONTHS
+- pages/ : CurrentMonth ("/"), ChangesRules ("/rules-changes"),
+  UnderConstruction (dashboard, savings, account), NotFound ("*")
+- components/ : MonthSummary, OperationList, OperationFormModal,
+  DeleteConfirmation, MonthPicker, Sidebar, MobileNav, Header
+- App : layout + routes + génération des mois au démarrage (état isReady),
+  les pages ne s'affichent qu'une fois la génération terminée
 
-- generateMonths écrase les opérations d'un mois qu'elle regénère → perte des opérations ponctuelles
-  saisies à la main. À corriger : ne pas regénérer un mois qui existe déjà,
-  ou fusionner au lieu d'écraser.
+## Fait
 
-- Extraire la logique pure du handleSubmit() (ajout d'opoération) hors du composant.
+- Saisie : modale unique, case "récurrente", dates de début/fin, validation
+  groupée des erreurs, montant normalisé (le signe vient du type)
+- Suppression : opération ponctuelle directe ; opération de règle avec
+  choix "juste ce mois-ci" / "supprimer la règle" / "annuler"
+- Report masqué sur le mois racine
+- Mois affichés en clair
+- generateMonths blindé : sortie si lastMonth >= mois courant,
+  et ne régénère jamais un mois qui contient déjà des opérations
+- Navigation React Router, page active en surbrillance, page 404
+- MonthPicker (deux <select>) : remplace <input type="month">,
+  non supporté par Firefox desktop
+
+## V1 — reste à faire
+
+- toMonthKey / parseMonthKey dans dates.js (assembler / découper "YYYY-MM"),
+  puis les utiliser partout où le code est dupliqué
+- MonthPicker pour la date de fin + case "sans date de fin"
+- Page Modifications : lister TOUTES les règles (y compris futures et
+  terminées), les modifier avec la case "inclure le mois en cours"
+- vercel.json : rediriger toutes les routes vers index.html (sinon 404
+  au rechargement d'une page comme /savings)
+- Footer (dans le layout, hors du ternaire isReady)
+
+## V1.1 — Épargne (page /savings)
+
+- Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL...)
+- Opérations et règles avec un accountId optionnel :
+  négatif = versement vers le compte, positif = retrait depuis le compte
+- Solde d'un compte CALCULÉ : solde initial + tous ses mouvements,
+  sur tous les mois de la racine au mois courant
+
+## Raffinements / idées
+
+- Afficher les prélèvements à venir (en juin, signaler qu'un crédit
+  démarre en août)
+- Erreurs de la modale affichées sous chaque champ plutôt qu'un
+  message global (un state d'erreur par champ)
+- Extraire la logique pure de handleSubmit hors du composant
+  (validation, construction des objets)
+- Variante de suppression : supprimer la règle mais garder l'opération
+  du mois en cours (à voir selon les retours utilisateurs)
+- Montants formatés en euros avec décimales (1 240,50 €)
+- Export / import JSON des données (filet contre la perte du localStorage)
+
+## V2
+
+- Base de données : Supabase (données + authentification), front sur Vercel,
+  réécriture de storage.js uniquement
+- Profil utilisateur via Context, données serveur via TanStack Query
+- Option C : matérialisation à la volée avec notion de mois clos,
+  pour que les modifs de règles se reflètent sur les mois non clos
+- Numéro de version du schéma de données, pour les migrations
