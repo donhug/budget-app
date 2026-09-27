@@ -105,6 +105,8 @@
   du mois en cours (à voir selon les retours utilisateurs)
 - Montants formatés en euros avec décimales (1 240,50 €)
 - Export / import JSON des données (filet contre la perte du localStorage)
+- Ajouter une option pour les prélevements annuels / trimestriels, ajout d'un 
+  champ pour la fréquence
 
 ## V2
 
