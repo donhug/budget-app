@@ -5,23 +5,20 @@ import { MONTHS } from "../constants/months";
  * @returns {string} le mois suivant au même format "YYYY-MM"
  */
 export function getNextMonth(dateString) {
-  const dateSplit = dateString.split("-");
-  const yearNumber = Number(dateSplit[0]);
-  const monthNumber = Number(dateSplit[1]);
+  const { year, month } = parseMonthKey(dateString);
 
   let nextYear;
   let nextMonth;
 
-  if (monthNumber === 12) {
+  if (month === 12) {
     nextMonth = 1;
-    nextYear = yearNumber + 1;
+    nextYear = year + 1;
   } else {
-    nextMonth = monthNumber + 1;
-    nextYear = yearNumber;
+    nextMonth = month + 1;
+    nextYear = year;
   }
-  const nextMonthPadded = String(nextMonth).padStart(2, "0");
 
-  return `${nextYear}-${nextMonthPadded}`;
+  return toMonthKey(nextYear, nextMonth);
 }
 
 /***
@@ -30,23 +27,20 @@ export function getNextMonth(dateString) {
  * @returns {string} le mois precedent au même format "YYYY-MM"
  */
 export function getPreviousMonth(dateString) {
-  const dateSplit = dateString.split("-");
-  const yearNumber = Number(dateSplit[0]);
-  const monthNumber = Number(dateSplit[1]);
+  const { year, month } = parseMonthKey(dateString);
 
   let prevYear;
   let prevMonth;
 
-  if (monthNumber === 1) {
+  if (month === 1) {
     prevMonth = 12;
-    prevYear = yearNumber - 1;
+    prevYear = year - 1;
   } else {
-    prevMonth = monthNumber - 1;
-    prevYear = yearNumber;
+    prevMonth = month - 1;
+    prevYear = year;
   }
-  const prevMonthPadded = String(prevMonth).padStart(2, "0");
 
-  return `${prevYear}-${prevMonthPadded}`;
+  return toMonthKey(prevYear, prevMonth);
 }
 /***
  * récupère le mois actuel
@@ -54,12 +48,15 @@ export function getPreviousMonth(dateString) {
  */
 export function getCurrentMonth() {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const currentMonth = `${year}-${String(month).padStart(2, "0")}`;
-  return currentMonth;
+
+  return toMonthKey(now.getFullYear(), now.getMonth() + 1);
 }
 
+/**
+ * Génère la liste des années proposées dans les sélecteurs de date,
+ * de l'année en cours jusqu'à dix ans plus tard.
+ * @returns {number[]} les années, par ordre croissant (ex : [2026, ..., 2036])
+ */
 export function getYearsOption() {
   const years = [];
   const startYear = new Date().getFullYear();
@@ -70,19 +67,35 @@ export function getYearsOption() {
   return years;
 }
 
+/**
+ * Transforme une clé de mois en libellé lisible pour l'affichage.
+ * @param {string} dateString - la clé de mois au format "YYYY-MM"
+ * @returns {string} le libellé (ex : "septembre 2026")
+ */
 export function formatMonth(dateString) {
-  const dateSplit = dateString.split("-");
-  const monthNumber = Number(dateSplit[1]);
-  const month = MONTHS[monthNumber - 1];
-
-  return `${month} ${dateSplit[0]}`;
+  const { year, month } = parseMonthKey(dateString);
+  const monthName = MONTHS[month - 1];
+  return `${monthName} ${year}`;
 }
 
+/**
+ * Assemble une année et un mois en clé de mois au format "YYYY-MM".
+ * Ajoute le zéro devant les mois à un chiffre.
+ * @param {number|string} year - l'année (ex : 2026)
+ * @param {number|string} month - le mois, de 1 à 12
+ * @returns {string} la clé de mois (ex : "2026-03")
+ */
 export function toMonthKey(year, month) {
   const paddedMonth = String(month).padStart(2, "0");
   return `${year}-${paddedMonth}`;
 }
 
+/**
+ * Découpe une clé de mois "YYYY-MM" en année et mois numériques.
+ * Opération inverse de toMonthKey.
+ * @param {string} monthKey - la clé de mois (ex : "2026-03")
+ * @returns {{ year: number, month: number }} l'année et le mois (ex : { year: 2026, month: 3 })
+ */
 export function parseMonthKey(monthKey) {
   const dateSplit = monthKey.split("-");
   const year = Number(dateSplit[0]);
