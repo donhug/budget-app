@@ -13,7 +13,7 @@ function MonthSummary({
     <div className={styles.card}>
       <h2 className={styles.month}>{currentMonthLabel}</h2>
       <div className={styles.row}>
-        {!isFirstMonth && (
+        {isFirstMonth === false && (
           <p className={styles.carryOver}>
             Reste de {previousMonthLabel} :{" "}
             {carryOver === null ? "-" : `${carryOver}€`}
