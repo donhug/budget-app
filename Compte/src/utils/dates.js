@@ -77,3 +77,16 @@ export function formatMonth(dateString) {
 
   return `${month} ${dateSplit[0]}`;
 }
+
+export function toMonthKey(year, month) {
+  const paddedMonth = String(month).padStart(2, "0");
+  return `${year}-${paddedMonth}`;
+}
+
+export function parseMonthKey(monthKey) {
+  const dateSplit = monthKey.split("-");
+  const year = Number(dateSplit[0]);
+  const month = Number(dateSplit[1]);
+
+  return { year, month };
+}

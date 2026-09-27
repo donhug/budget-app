@@ -1,20 +1,18 @@
 import style from "./MonthPicker.module.css";
 import { MONTHS } from "../../constants/months";
-import { getYearsOption } from "../../utils/dates";
+import { getYearsOption, parseMonthKey, toMonthKey } from "../../utils/dates";
 
 function MonthPicker({ value, onChange }) {
-  const dateSplit = value.split("-");
-  const yearNumber = Number(dateSplit[0]);
-  const monthNumber = Number(dateSplit[1]);
-  const year = getYearsOption();
+  const {year, month} = parseMonthKey(value)
+  const yearList = getYearsOption();
 
   return (
     <div>
       <select
-        value={monthNumber}
+        value={month}
         onChange={(e) => {
-          const paddedMonth = e.target.value.padStart(2, "0");
-          onChange(`${yearNumber}-${paddedMonth}`);
+          const date = toMonthKey(year, e.target.value)
+          onChange(date);
         }}
       >
         {MONTHS.map((name, index) => (
@@ -25,16 +23,15 @@ function MonthPicker({ value, onChange }) {
       </select>
 
       <select
-        value={yearNumber}
+        value={year}
         onChange={(e) => {
-          const paddedMonth = monthNumber.toString().padStart(2, "0");
-          const newYear = e.target.value;
-          onChange(`${newYear}-${paddedMonth}`);
+          const date = toMonthKey(e.target.value, month)
+          onChange(date);
         }}
       >
-        {year.map((year) => (
-          <option key={year} value={year}>
-            {year}
+        {yearList.map((yearOption) => (
+          <option key={yearOption} value={yearOption}>
+            {yearOption}
           </option>
         ))}
       </select>
