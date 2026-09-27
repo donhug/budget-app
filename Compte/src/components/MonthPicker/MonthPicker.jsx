@@ -3,7 +3,7 @@ import { MONTHS } from "../../constants/months";
 import { getYearsOption, parseMonthKey, toMonthKey } from "../../utils/dates";
 
 function MonthPicker({ value, onChange }) {
-  const {year, month} = parseMonthKey(value)
+  const { year, month } = parseMonthKey(value);
   const yearList = getYearsOption();
 
   return (
@@ -11,7 +11,7 @@ function MonthPicker({ value, onChange }) {
       <select
         value={month}
         onChange={(e) => {
-          const date = toMonthKey(year, e.target.value)
+          const date = toMonthKey(year, e.target.value);
           onChange(date);
         }}
       >
@@ -25,7 +25,7 @@ function MonthPicker({ value, onChange }) {
       <select
         value={year}
         onChange={(e) => {
-          const date = toMonthKey(e.target.value, month)
+          const date = toMonthKey(e.target.value, month);
           onChange(date);
         }}
       >
