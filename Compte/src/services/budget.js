@@ -14,7 +14,7 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
-
+const MAX_MONTHS_TO_GENERATE = 120;
 /***
  * Calcul le total des opérations pour un mois donné.
  * @param {Array}  listOperations - liste des opérations du mois
@@ -103,12 +103,24 @@ export function generateMonths() {
   }
 
   let monthToGenerate = lastMonth;
-  while (monthToGenerate !== currentMonth) {
+  let monthGenerated = 0;
+
+  while (
+    monthToGenerate !== currentMonth &&
+    monthGenerated < MAX_MONTHS_TO_GENERATE
+  ) {
+    //I.progression
+    monthGenerated++;
     monthToGenerate = getNextMonth(monthToGenerate);
-    const operations = materializeRules(monthToGenerate, rules);
+    //II. verification: si le mois a déjà des données, on passe au suivant
     const existing = getOperations(monthToGenerate);
     if (existing.length > 0) continue;
+    //III.caluler, puis enregistrer
+    const operations = materializeRules(monthToGenerate, rules);
     setOperations(monthToGenerate, operations);
+  }
+  if (monthGenerated === MAX_MONTHS_TO_GENERATE) {
+    console.warn("limite de 120 mois atteinte");
   }
   setLastMonth(currentMonth);
 }
