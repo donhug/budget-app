@@ -1,0 +1,34 @@
+import style from "./RuleList.module.css";
+import { formatMonth } from "../../utils/dates";
+
+function RuleList({ title, rules }) {
+  return (
+    <div>
+      <h3>{title}</h3>
+      {rules.length === 0 ? (
+        <h4>Aucune règle</h4>
+      ) : (
+        rules.map((rule) => (
+          <div key={rule.id}>
+            <div>
+              <p>{rule.label}</p>
+              <p>
+                {rule.type === "income" ? "+" : ""}
+                {rule.value}€{" "}
+              </p>
+            </div>
+            <div>
+              <p>Début de la règle : {formatMonth(rule.start)}</p>
+              <p>
+                {" "}
+                fin :{rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
+              </p>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+export default RuleList;
