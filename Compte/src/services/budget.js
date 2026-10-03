@@ -124,3 +124,22 @@ export function generateMonths() {
   }
   setLastMonth(currentMonth);
 }
+
+/***
+ * Regroupe les règles par mois de début.
+ * @param {Array}  rules - tableau des règles
+ * @returns {object<string, Array} Un objet dont chaque clé est un mois "YYYY-MM"
+ *    et chaque valeur la liste des règles qui commencent ce mois-là
+ *    ( ex : {"2026-11":[règleA règleC], "2026-12":[règleB] })
+ */
+export function groupRulesByStartMonth(rules) {
+  const rulesByMonth = {};
+
+  for (const rule of rules) {
+    if (!rulesByMonth[rule.start]) {
+      rulesByMonth[rule.start] = [];
+    }
+    rulesByMonth[rule.start].push(rule);
+  }
+  return rulesByMonth;
+}

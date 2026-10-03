@@ -25,13 +25,12 @@ function ChangesRules() {
   return (
     <div>
       <h2>Modifications</h2>
-      
+
       <RuleList title="mois en cours" rules={currentRules} />
 
       <RuleList title="à venir" rules={futureRules} />
 
       <RuleList title="Règles terminées " rules={terminatedRules} />
-      
     </div>
   );
 }
