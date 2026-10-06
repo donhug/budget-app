@@ -28,29 +28,36 @@ function ChangesRules() {
   }, []);
 
   return (
-    <div>
-      <h2>Modifications</h2>
-      <h3>Mois en cours</h3>
-      <RuleList
-        title={formatMonth(currentMonth)}
-        rules={currentRules}
-        onEdit={setRuleToEdit}
-      />
-      <h3>À venir</h3>
-      {futureRules.length === 0 ? (
-        <p>Aucune règle à venir</p>
-      ) : (
-        sortFutureMonth.map((month) => (
-          <RuleList
-            key={month}
-            title={formatMonth(month)}
-            rules={futureRulesByMonth[month]}
-            onEdit={setRuleToEdit}
-          />
-        ))
-      )}
-      <h3>Règles terminées</h3>
-      <RuleList rules={terminatedRules} />
+    <div className={style.page}>
+      <h2 className={style.title}>Modifications</h2>
+
+      <section className={style.section}>
+        <h3 className={style.sectionTitle}>Mois en cours</h3>
+        <RuleList
+          title={formatMonth(currentMonth)}
+          rules={currentRules}
+          onEdit={setRuleToEdit}
+        />
+      </section>
+      <section className={style.section}>
+        <h3 className={style.sectionTitle}>À venir</h3>
+        {futureRules.length === 0 ? (
+          <p className={style.empty}>Aucune règle à venir</p>
+        ) : (
+          sortFutureMonth.map((month) => (
+            <RuleList
+              key={month}
+              title={formatMonth(month)}
+              rules={futureRulesByMonth[month]}
+              onEdit={setRuleToEdit}
+            />
+          ))
+        )}
+      </section>
+      <section className={style.section}>
+        <h3 className={style.sectionTitle}>Règles terminées</h3>
+        <RuleList rules={terminatedRules} />
+      </section>
 
       {ruleToEdit && (
         <EditModal rule={ruleToEdit} onClose={() => setRuleToEdit(null)} />

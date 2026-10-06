@@ -3,30 +3,39 @@ import { formatMonth } from "../../utils/dates";
 
 function RuleList({ title, rules, onEdit }) {
   return (
-    <div>
-      {title && <h4>{title}</h4>}
+    <div className={style.list}>
+      {title && <h4 className={style.title}>{title}</h4>}
 
       {rules.length === 0 ? (
-        <p>Aucune règle</p>
+        <p className={style.noRule}>Aucune règle</p>
       ) : (
         rules.map((rule) => (
-          <div key={rule.id}>
-            <div>
-              <p>{rule.label}</p>
-              <p>
+          <div
+            key={rule.id}
+            className={`${style.item} ${rule.type === "expense" ? style.itemExpense : style.itemIncome}`}
+          >
+            <div className={style.mainRow}>
+              <p className={style.label}>{rule.label}</p>
+              <p
+                className={`${style.amount} ${rule.type === "expense" ? style.expense : style.income}`}
+              >
                 {rule.type === "income" ? "+" : ""}
                 {rule.value}€{" "}
               </p>
             </div>
-            <div>
-              <p>Début de la règle : {formatMonth(rule.start)}</p>
-              <p>
+            <div className={style.datesRow}>
+              <span>Début de la règle : {formatMonth(rule.start)}</span>
+              <span>
                 {" "}
-                fin :{rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
-              </p>
+                fin : {rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
+              </span>
             </div>
             {onEdit && (
-              <button type="button" onClick={() => onEdit(rule)}>
+              <button
+                type="button"
+                onClick={() => onEdit(rule)}
+                className={style.editBtn}
+              >
                 Modifier
               </button>
             )}
