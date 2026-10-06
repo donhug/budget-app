@@ -4,9 +4,10 @@ import { formatMonth } from "../../utils/dates";
 function RuleList({ title, rules }) {
   return (
     <div>
-      <h3>{title}</h3>
+      {title && <h4>{title}</h4>}
+
       {rules.length === 0 ? (
-        <h4>Aucune règle</h4>
+        <p>Aucune règle</p>
       ) : (
         rules.map((rule) => (
           <div key={rule.id}>
