@@ -4,9 +4,11 @@ import { getRules } from "../../services/storage";
 import { formatMonth, getCurrentMonth } from "../../utils/dates";
 import { groupRulesByStartMonth } from "../../services/budget";
 import RuleList from "../../components/RuleList/RuleList";
+import EditModal from "../../components/EditModal/EditModal";
 
 function ChangesRules() {
   const [globalRules, setGlobalRules] = useState([]);
+  const [ruleToEdit, setRuleToEdit] = useState(null);
   const currentMonth = getCurrentMonth();
 
   const currentRules = globalRules.filter(
@@ -29,7 +31,11 @@ function ChangesRules() {
     <div>
       <h2>Modifications</h2>
       <h3>Mois en cours</h3>
-      <RuleList title={formatMonth(currentMonth)} rules={currentRules} />
+      <RuleList
+        title={formatMonth(currentMonth)}
+        rules={currentRules}
+        onEdit={setRuleToEdit}
+      />
       <h3>À venir</h3>
       {futureRules.length === 0 ? (
         <p>Aucune règle à venir</p>
@@ -39,11 +45,16 @@ function ChangesRules() {
             key={month}
             title={formatMonth(month)}
             rules={futureRulesByMonth[month]}
+            onEdit={setRuleToEdit}
           />
         ))
       )}
       <h3>Règles terminées</h3>
       <RuleList rules={terminatedRules} />
+
+      {ruleToEdit && (
+        <EditModal rule={ruleToEdit} onClose={() => setRuleToEdit(null)} />
+      )}
     </div>
   );
 }

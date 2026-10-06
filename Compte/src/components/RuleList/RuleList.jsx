@@ -1,7 +1,7 @@
 import style from "./RuleList.module.css";
 import { formatMonth } from "../../utils/dates";
 
-function RuleList({ title, rules }) {
+function RuleList({ title, rules, onEdit }) {
   return (
     <div>
       {title && <h4>{title}</h4>}
@@ -25,6 +25,11 @@ function RuleList({ title, rules }) {
                 fin :{rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
               </p>
             </div>
+            {onEdit && (
+              <button type="button" onClick={() => onEdit(rule)}>
+                Modifier
+              </button>
+            )}
           </div>
         ))
       )}
