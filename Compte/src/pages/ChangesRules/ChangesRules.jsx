@@ -3,6 +3,7 @@ import style from "./ChangesRules.module.css";
 import { getRules } from "../../services/storage";
 import { formatMonth, getCurrentMonth } from "../../utils/dates";
 import { groupRulesByStartMonth } from "../../services/budget";
+import { setRules } from "../../services/storage";
 import RuleList from "../../components/RuleList/RuleList";
 import EditModal from "../../components/EditModal/EditModal";
 
@@ -27,6 +28,12 @@ function ChangesRules() {
     setGlobalRules(getRules());
   }, []);
 
+  function handleEditRule({ updatedRules, includeCurrentMonth }) {
+    const editedRules = getRules().map((rule)=>(
+      rule.id === updatedRules.id ?  updatedRules : rule 
+    ))
+    setRules(editedRules) 
+  }
   return (
     <div className={style.page}>
       <h2 className={style.title}>Modifications</h2>

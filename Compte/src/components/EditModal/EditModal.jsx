@@ -17,7 +17,46 @@ function EditModal({ rule, onClose, onSubmit }) {
   const [status, setStatus] = useState("idle");
   const currentMonth = getCurrentMonth();
   const hasStarted = currentMonth >= rule.start;
-  function handleValidate() {}
+  const [includeCurrentMonth, setIncludeCurrentMonth] = useState(false);
+
+  function handleValidate() {
+    const rawAmount = Math.abs(Number(value));
+    const amount = type === "expense" ? -rawAmount : rawAmount;
+    const errors = [];
+    setError("");
+
+    if (label.trim() === "") errors.push("le libellé");
+    if (rawAmount === 0) errors.push("le montant");
+    if (type === "") errors.push("la nature (dépense ou entrée)");
+
+    if (errors.length > 0) {
+      setError("Il manque : " + errors.join(", "));
+      return;
+    }
+    if (hasEndDate === true && endMonth < startMonth) {
+      setError("le mois de fin est antérieur au mois de départ");
+      return;
+    }
+
+    const updatedRules = {
+      ...rule,
+      label,
+      value: amount,
+      type,
+      start: startMonth,
+      end: hasEndDate ? endMonth : null,
+    };
+    setStatus("loading");
+    setTimeout(() => {
+      setStatus("success");
+      setTimeout(() => {
+        onSubmit({
+          updatedRules,
+          includeCurrentMonth,
+        });
+      }, 400);
+    });
+  }
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
@@ -26,6 +65,19 @@ function EditModal({ rule, onClose, onSubmit }) {
         </button>
         <h2 className={style.heading}>Modifier la règle</h2>
         <div className={style.field}>
+          {hasStarted && (
+            <label className={style.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={includeCurrentMonth}
+                onChange={(e) => {
+                  setIncludeCurrentMonth(e.target.checked);
+                }}
+              />
+              Inclure le mois en cours
+            </label>
+          )}
+
           <label htmlFor="label">Libellé</label>
           <input
             id="label"
