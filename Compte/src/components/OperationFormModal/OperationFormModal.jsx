@@ -1,15 +1,17 @@
 import { useState } from "react";
 import style from "./OperationFormModal.module.css";
-import { getCurrentMonth } from "../../utils/dates";
+import { getCurrentMonth, getNextMonth } from "../../utils/dates";
+import MonthPicker from "../MonthPicker/MonthPicker";
 function OperationFormModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [startMonth, setStartMonth] = useState(getCurrentMonth());
-  const [endMonth, setEndMonth] = useState("");
+  const [endMonth, setEndMonth] = useState(getCurrentMonth());
   const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
+  const [hasEndDate, setHasEndDate] = useState(false);
 
   function handleValidate() {
     const rawAmount = Math.abs(Number(value));
@@ -25,7 +27,7 @@ function OperationFormModal({ onSubmit, onClose }) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
-    if (endMonth !== "" && endMonth < startMonth) {
+    if (hasEndDate === true && endMonth < startMonth) {
       setError("le mois de fin est antérieur au mois de départ");
       return;
     }
@@ -34,7 +36,14 @@ function OperationFormModal({ onSubmit, onClose }) {
     setTimeout(() => {
       setStatus("success");
       setTimeout(() => {
-        onSubmit({ label, amount, type, isRecurrent, startMonth, endMonth });
+        onSubmit({
+          label,
+          amount,
+          type,
+          isRecurrent,
+          startMonth,
+          endMonth: hasEndDate ? endMonth : null,
+        });
       }, 400);
     });
   }
@@ -100,20 +109,25 @@ function OperationFormModal({ onSubmit, onClose }) {
         </label>
         {isRecurrent && (
           <div className={style.field}>
-            <label htmlFor="startMonth">date de début</label>
-            <input
-              id="startMonth"
-              type="month"
-              value={startMonth}
-              onChange={(e) => setStartMonth(e.target.value)}
-            />
-            <label htmlFor="endMonth">date de fin</label>
-            <input
-              id="endMonth"
-              type="month"
-              value={endMonth}
-              onChange={(e) => setEndMonth(e.target.value)}
-            />
+            <p>date de début</p>
+            <MonthPicker value={startMonth} onChange={setStartMonth} />
+
+            <label className={style.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={hasEndDate}
+                onChange={(e) => {
+                  setHasEndDate(e.target.checked);
+                  if (e.target.checked) {
+                    setEndMonth(getNextMonth(startMonth));
+                  }
+                }}
+              />
+              date de fin
+            </label>
+            {hasEndDate && (
+              <MonthPicker value={endMonth} onChange={setEndMonth} />
+            )}
           </div>
         )}
         {error && <p className={style.error}>{error}</p>}

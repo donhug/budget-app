@@ -14,7 +14,7 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
-
+const MAX_MONTHS_TO_GENERATE = 120;
 /***
  * Calcul le total des opérations pour un mois donné.
  * @param {Array}  listOperations - liste des opérations du mois
@@ -103,12 +103,43 @@ export function generateMonths() {
   }
 
   let monthToGenerate = lastMonth;
-  while (monthToGenerate !== currentMonth) {
+  let monthGenerated = 0;
+
+  while (
+    monthToGenerate !== currentMonth &&
+    monthGenerated < MAX_MONTHS_TO_GENERATE
+  ) {
+    //I.progression
+    monthGenerated++;
     monthToGenerate = getNextMonth(monthToGenerate);
-    const operations = materializeRules(monthToGenerate, rules);
+    //II. verification: si le mois a déjà des données, on passe au suivant
     const existing = getOperations(monthToGenerate);
     if (existing.length > 0) continue;
+    //III.caluler, puis enregistrer
+    const operations = materializeRules(monthToGenerate, rules);
     setOperations(monthToGenerate, operations);
   }
+  if (monthGenerated === MAX_MONTHS_TO_GENERATE) {
+    console.warn("limite de 120 mois atteinte");
+  }
   setLastMonth(currentMonth);
+}
+
+/***
+ * Regroupe les règles par mois de début.
+ * @param {Array}  rules - tableau des règles
+ * @returns {object<string, Array} Un objet dont chaque clé est un mois "YYYY-MM"
+ *    et chaque valeur la liste des règles qui commencent ce mois-là
+ *    ( ex : {"2026-11":[règleA règleC], "2026-12":[règleB] })
+ */
+export function groupRulesByStartMonth(rules) {
+  const rulesByMonth = {};
+
+  for (const rule of rules) {
+    if (!rulesByMonth[rule.start]) {
+      rulesByMonth[rule.start] = [];
+    }
+    rulesByMonth[rule.start].push(rule);
+  }
+  return rulesByMonth;
 }
