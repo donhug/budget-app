@@ -37,6 +37,10 @@ function EditModal({ rule, onClose, onSubmit }) {
       setError("le mois de fin est antérieur au mois de départ");
       return;
     }
+    if (hasStarted && hasEndDate && endMonth < currentMonth) {
+      setError("la date de fin ne peut pas être antérieure au mois en cours");
+      return;
+    }
 
     const updatedRules = {
       ...rule,
@@ -149,7 +153,7 @@ function EditModal({ rule, onClose, onSubmit }) {
             <p>pas de date de fin fixe</p>
           )}
         </div>
-
+        {error && <p className={style.error}>{error}</p>}
         <button
           type="button"
           className={style.submitBtn}
