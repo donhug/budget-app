@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import style from "./ChangesRules.module.css";
-import { getRules } from "../../services/storage";
+import { getOperations, getRules, setOperations } from "../../services/storage";
 import { formatMonth, getCurrentMonth } from "../../utils/dates";
-import { groupRulesByStartMonth } from "../../services/budget";
+import {
+  groupRulesByStartMonth,
+  materializeRules,
+} from "../../services/budget";
+import { setRules } from "../../services/storage";
 import RuleList from "../../components/RuleList/RuleList";
 import EditModal from "../../components/EditModal/EditModal";
 
@@ -27,6 +31,35 @@ function ChangesRules() {
     setGlobalRules(getRules());
   }, []);
 
+  function handleEditRule({ updatedRules, includeCurrentMonth }) {
+    const editedRules = getRules().map((rule) =>
+      rule.id === updatedRules.id ? updatedRules : rule,
+    );
+    setRules(editedRules);
+
+    if (includeCurrentMonth) {
+      const updateOperation = getOperations(currentMonth).map((op) =>
+        op.ruleId === updatedRules.id
+          ? {
+              ...op,
+              label: updatedRules.label,
+              value: updatedRules.value,
+              type: updatedRules.type,
+            }
+          : op,
+      );
+      setOperations(currentMonth, updateOperation);
+    }
+
+    if (ruleToEdit.start > currentMonth && updatedRules.start <= currentMonth) {
+      const newOperation = materializeRules(currentMonth, [updatedRules]);
+      const currentOperations = getOperations(currentMonth);
+      const updatedRuleOperations = [...currentOperations, ...newOperation];
+      setOperations(currentMonth, updatedRuleOperations);
+    }
+    setGlobalRules(getRules());
+    setRuleToEdit(null);
+  }
   return (
     <div className={style.page}>
       <h2 className={style.title}>Modifications</h2>
@@ -60,7 +93,11 @@ function ChangesRules() {
       </section>
 
       {ruleToEdit && (
-        <EditModal rule={ruleToEdit} onClose={() => setRuleToEdit(null)} />
+        <EditModal
+          rule={ruleToEdit}
+          onClose={() => setRuleToEdit(null)}
+          onSubmit={handleEditRule}
+        />
       )}
     </div>
   );
