@@ -27,9 +27,11 @@ function OperationFormModal({ onSubmit, onClose }) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
-    if (hasEndDate === true && endMonth < startMonth) {
-      setError("le mois de fin est antérieur au mois de départ");
-      return;
+    if (isRecurrent) {
+      if (hasEndDate === true && endMonth < startMonth) {
+        setError("le mois de fin est antérieur au mois de départ");
+        return;
+      }
     }
 
     setStatus("loading");

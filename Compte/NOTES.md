@@ -5,12 +5,11 @@
 - Modèle B : les mois sont CHAÎNÉS. Le solde d'un mois prend en compte
   le report du mois précédent.
 
-- SOURCE DE VÉRITÉ = les opérations saisies + les règles + le solde initial.
+- SOURCE DE VÉRITÉ = les opérations saisies + les règles.
   Tout le reste (totaux, reports, soldes de fin de mois) est CALCULÉ,
   jamais stocké.
 
-- UNE SEULE valeur de solde stockée : le solde initial (racine).
-  C'est l'argent présent au démarrage de l'app.
+- Le solde initial est volontairement à 0.
 
 - RÈGLES (loyer, paye, crédit, abonnements) = opérations qui se répètent,
   avec une date de début et une date de fin optionnelle.
@@ -54,7 +53,7 @@
 - utils/dates.js : outils de mois
 - constants/ : NAV_LINKS, MONTHS
 - pages/ : CurrentMonth ("/"), ChangesRules ("/rules-changes"),
-  UnderConstruction (dashboard, savings, account), NotFound ("*")
+  UnderConstruction (dashboard, savings, account), NotFound ("\*")
 - components/ : MonthSummary, OperationList, OperationFormModal,
   DeleteConfirmation, MonthPicker, Sidebar, MobileNav, Header
 - App : layout + routes + génération des mois au démarrage (état isReady),
@@ -90,7 +89,7 @@
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL...)
 - Opérations et règles avec un accountId optionnel :
   négatif = versement vers le compte, positif = retrait depuis le compte
-- Solde d'un compte CALCULÉ : solde initial + tous ses mouvements,
+- Solde d'un compte CALCULÉ : tous ses mouvements,
   sur tous les mois de la racine au mois courant
 
 ## Raffinements / idées
@@ -105,7 +104,7 @@
   du mois en cours (à voir selon les retours utilisateurs)
 - Montants formatés en euros avec décimales (1 240,50 €)
 - Export / import JSON des données (filet contre la perte du localStorage)
-- Ajouter une option pour les prélevements annuels / trimestriels, ajout d'un 
+- Ajouter une option pour les prélevements annuels / trimestriels, ajout d'un
   champ pour la fréquence
 
 ## V2
