@@ -1,5 +1,5 @@
 import style from "./OperationList.module.css";
-
+import { formatBalance } from "../../utils/format";
 function OperationList({ title, operations, total, onDelete }) {
   return (
     <div className={style.list}>
@@ -19,7 +19,7 @@ function OperationList({ title, operations, total, onDelete }) {
               }`}
             >
               {op.type === "income" ? "+" : ""}
-              {op.value}€{" "}
+              {formatBalance(op.value)}
             </p>
           </div>
 
@@ -29,11 +29,11 @@ function OperationList({ title, operations, total, onDelete }) {
             className={style.deleteBtn}
           >
             {" "}
-            supprimer l'operation
+            supprimer l'opération
           </button>
         </div>
       ))}
-      <h3 className={style.total}>total:{total}€</h3>
+      <h3 className={style.total}>Total :{formatBalance(total)}</h3>
     </div>
   );
 }

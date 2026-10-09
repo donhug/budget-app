@@ -1,4 +1,5 @@
 import { formatMonth } from "../../utils/dates";
+import { formatBalance } from "../../utils/format";
 import styles from "./MonthSummary.module.css";
 function MonthSummary({
   currentMonth,
@@ -16,13 +17,13 @@ function MonthSummary({
         {isFirstMonth === false && (
           <p className={styles.carryOver}>
             Reste de {previousMonthLabel} :{" "}
-            {carryOver === null ? "-" : `${carryOver}€`}
+            {carryOver === null ? "-" : formatBalance(carryOver)}
           </p>
         )}
         <p className={styles.balance}>
           <span className={styles.balanceLabel}>Solde</span>
           <span className={styles.balanceValue}>
-            {balance === null ? "-" : `${balance}€`}
+            {balance === null ? "-" : formatBalance(balance)}
           </span>
         </p>
       </div>

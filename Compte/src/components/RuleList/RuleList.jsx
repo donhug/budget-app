@@ -1,6 +1,6 @@
 import style from "./RuleList.module.css";
 import { formatMonth } from "../../utils/dates";
-
+import { formatBalance } from "../../utils/format";
 function RuleList({ title, rules, onEdit, onDelete }) {
   return (
     <div className={style.list}>
@@ -20,7 +20,7 @@ function RuleList({ title, rules, onEdit, onDelete }) {
                 className={`${style.amount} ${rule.type === "expense" ? style.expense : style.income}`}
               >
                 {rule.type === "income" ? "+" : ""}
-                {rule.value}€{" "}
+                {formatBalance(rule.value)}
               </p>
             </div>
             <div className={style.datesRow}>
