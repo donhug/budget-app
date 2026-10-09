@@ -106,6 +106,8 @@
 - Export / import JSON des données (filet contre la perte du localStorage)
 - Ajouter une option pour les prélevements annuels / trimestriels, ajout d'un
   champ pour la fréquence
+- Ajouter d'une ligne dans la page de modification qui indique qu'une règles n'est
+  pas activé pour le mois en cours 
 
 ## V2
 
