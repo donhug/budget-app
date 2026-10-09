@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import style from "./ChangesRules.module.css";
-import { getOperations, getRules, setOperations } from "../../services/storage";
+import {
+  deleteOperation,
+  deleteRule,
+  getOperations,
+  getRules,
+  setOperations,
+} from "../../services/storage";
 import { formatMonth, getCurrentMonth } from "../../utils/dates";
 import {
   groupRulesByStartMonth,
@@ -9,10 +15,12 @@ import {
 import { setRules } from "../../services/storage";
 import RuleList from "../../components/RuleList/RuleList";
 import EditModal from "../../components/EditModal/EditModal";
+import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";
 
 function ChangesRules() {
   const [globalRules, setGlobalRules] = useState([]);
   const [ruleToEdit, setRuleToEdit] = useState(null);
+  const [ruleToDelete, setRuleToDelete] = useState(null);
   const currentMonth = getCurrentMonth();
 
   const currentRules = globalRules.filter(
@@ -60,6 +68,27 @@ function ChangesRules() {
     setGlobalRules(getRules());
     setRuleToEdit(null);
   }
+
+  function deleteCurrentOperationOfRule(ruleId) {
+    const monthOperation = getOperations(currentMonth);
+    const linkedOperation = monthOperation.find((op) => op.ruleId === ruleId);
+    if (linkedOperation) {
+      deleteOperation(currentMonth, linkedOperation.id);
+    }
+  }
+
+  function handleDeleteRule() {
+    deleteRule(ruleToDelete.id);
+    deleteCurrentOperationOfRule(ruleToDelete.id);
+    setGlobalRules(getRules());
+    setRuleToDelete(null);
+  }
+
+  function handleDeleteRuleMonth() {
+    deleteCurrentOperationOfRule(ruleToDelete.id);
+    setRuleToDelete(null);
+  }
+
   return (
     <div className={style.page}>
       <h2 className={style.title}>Modifications</h2>
@@ -70,6 +99,7 @@ function ChangesRules() {
           title={formatMonth(currentMonth)}
           rules={currentRules}
           onEdit={setRuleToEdit}
+          onDelete={(rule) => setRuleToDelete(rule)}
         />
       </section>
       <section className={style.section}>
@@ -83,6 +113,7 @@ function ChangesRules() {
               title={formatMonth(month)}
               rules={futureRulesByMonth[month]}
               onEdit={setRuleToEdit}
+              onDelete={(rule) => setRuleToDelete(rule)}
             />
           ))
         )}
@@ -97,6 +128,20 @@ function ChangesRules() {
           rule={ruleToEdit}
           onClose={() => setRuleToEdit(null)}
           onSubmit={handleEditRule}
+        />
+      )}
+      {ruleToDelete && (
+        <DeleteConfirmation
+          label={ruleToDelete.label}
+          onDeleteOperation={
+            ruleToDelete.start <= currentMonth
+              ? handleDeleteRuleMonth
+              : undefined
+          }
+          onDeleteRule={handleDeleteRule}
+          onCancel={() => {
+            setRuleToDelete(null);
+          }}
         />
       )}
     </div>
