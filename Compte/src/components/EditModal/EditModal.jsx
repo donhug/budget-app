@@ -66,7 +66,7 @@ function EditModal({ rule, onClose, onSubmit }) {
     <div className={style.overlay}>
       <div className={style.modal}>
         <button className={style.closeBtn} type="button" onClick={onClose}>
-          <FaXmark/>
+          <FaXmark />
         </button>
         <h2 className={style.heading}>Modifier la règle</h2>
         <div className={style.field}>
@@ -111,7 +111,9 @@ function EditModal({ rule, onClose, onSubmit }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Dépense</span>
+            <span className={`${style.radioChip} ${style.chipExpense}`}>
+              Dépense
+            </span>
           </label>
 
           <label className={style.radioLabel}>
@@ -123,7 +125,9 @@ function EditModal({ rule, onClose, onSubmit }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Entrée</span>
+            <span className={`${style.radioChip} ${style.chipIncome}`}>
+              Entrée
+            </span>
           </label>
         </div>
 

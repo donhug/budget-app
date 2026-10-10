@@ -55,7 +55,7 @@ function OperationFormModal({ onSubmit, onClose }) {
     <div className={style.overlay}>
       <div className={style.modal}>
         <button className={style.closeBtn} type="button" onClick={onClose}>
-          <FaXmark/>
+          <FaXmark />
         </button>
         <h2 className={style.heading}>Ajouter une opération</h2>
         <div className={style.field}>
@@ -87,7 +87,9 @@ function OperationFormModal({ onSubmit, onClose }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Dépense</span>
+            <span className={`${style.radioChip} ${style.chipExpense}`}>
+              Dépense
+            </span>
           </label>
 
           <label className={style.radioLabel}>
@@ -99,7 +101,9 @@ function OperationFormModal({ onSubmit, onClose }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Entrée</span>
+            <span className={`${style.radioChip} ${style.chipIncome}`}>
+              Entrée
+            </span>
           </label>
         </div>
 
