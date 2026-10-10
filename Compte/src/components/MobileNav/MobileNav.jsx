@@ -1,6 +1,7 @@
 import style from "./MobileNav.module.css";
 import { NavLink } from "react-router";
 import { NAV_LINKS } from "../../constants/navLinks";
+import { FaXmark } from "react-icons/fa6";
 
 function MobileNav({ onClose }) {
   return (
@@ -12,7 +13,7 @@ function MobileNav({ onClose }) {
           onClick={onClose}
           aria-label="Fermer le menu"
         >
-          X
+          <FaXmark/>
         </button>
         {NAV_LINKS.map((link) => (
           <NavLink

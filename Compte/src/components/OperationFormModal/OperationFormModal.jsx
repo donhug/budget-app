@@ -2,6 +2,8 @@ import { useState } from "react";
 import style from "./OperationFormModal.module.css";
 import { getCurrentMonth, getNextMonth } from "../../utils/dates";
 import MonthPicker from "../MonthPicker/MonthPicker";
+import { FaXmark } from "react-icons/fa6";
+
 function OperationFormModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
@@ -53,7 +55,7 @@ function OperationFormModal({ onSubmit, onClose }) {
     <div className={style.overlay}>
       <div className={style.modal}>
         <button className={style.closeBtn} type="button" onClick={onClose}>
-          X
+          <FaXmark/>
         </button>
         <h2 className={style.heading}>Ajouter une opération</h2>
         <div className={style.field}>
