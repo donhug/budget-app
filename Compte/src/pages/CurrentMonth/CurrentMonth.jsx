@@ -1,5 +1,5 @@
 import styles from "./CurrentMonth.module.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OperationList from "../../components/OperationList/OperationList";
 import OperationFormModal from "../../components/OperationFormModal/OperationFormModal";
 import MonthSummary from "../../components/MonthSummary/MonthSummary";
@@ -23,19 +23,15 @@ import { getCurrentMonth, getPreviousMonth } from "../../utils/dates";
 function CurrentMonth() {
   const currentMonth = getCurrentMonth();
   const previousMonth = getPreviousMonth(currentMonth);
-  const [balance, setBalance] = useState(null);
-  const [monthOperations, setMonthOperations] = useState([]);
-  const [carryOver, setCarryOver] = useState(null);
-  const [operationToDelete, setOperationToDelete] = useState(null);
-  const [isFirstMonth, setIsFirstMonth] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    setBalance(getBalance(currentMonth));
-    setMonthOperations(getOperations(currentMonth));
-    setCarryOver(getBalance(previousMonth));
-    setIsFirstMonth(getFirstMonth() === currentMonth);
-  }, [currentMonth, previousMonth]);
+  const [balance, setBalance] = useState(() => getBalance(currentMonth));
+  const [monthOperations, setMonthOperations] = useState(() =>
+    getOperations(currentMonth),
+  );
+  const [carryOver] = useState(() => getBalance(previousMonth));
+  const [isFirstMonth] = useState(() => getFirstMonth() === currentMonth);
+  const [operationToDelete, setOperationToDelete] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   function refreshMonth() {
     setMonthOperations(getOperations(currentMonth));

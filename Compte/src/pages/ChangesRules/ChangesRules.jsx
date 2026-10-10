@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import style from "./ChangesRules.module.css";
 import {
   deleteOperation,
@@ -18,7 +18,7 @@ import EditModal from "../../components/EditModal/EditModal";
 import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";
 
 function ChangesRules() {
-  const [globalRules, setGlobalRules] = useState([]);
+  const [globalRules, setGlobalRules] = useState(() => getRules());
   const [ruleToEdit, setRuleToEdit] = useState(null);
   const [ruleToDelete, setRuleToDelete] = useState(null);
   const currentMonth = getCurrentMonth();
@@ -34,10 +34,6 @@ function ChangesRules() {
   const terminatedRules = globalRules.filter(
     (rule) => rule.end !== null && rule.end < currentMonth,
   );
-
-  useEffect(() => {
-    setGlobalRules(getRules());
-  }, []);
 
   function handleEditRule({ updatedRules, includeCurrentMonth }) {
     const editedRules = getRules().map((rule) =>
