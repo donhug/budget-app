@@ -49,14 +49,27 @@
   color: var(--color-income);
 }
 .deleteBtn {
-  align-self: flex-start;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
   background: none;
   border: none;
+  border-radius: 50%;
   padding: 0;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
-  text-decoration: underline;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.deleteBtn:hover {
+  color: var(--color-expense);
+}
+.deleteBtn:active {
+  background-color: var(--color-expense-bg);
 }
 .total {
   margin: var(--space-2) 000;

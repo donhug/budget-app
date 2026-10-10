@@ -1,6 +1,6 @@
 import style from "./Header.module.css";
 import LOGO from "../../assets/LOGO.png";
-
+import { FaBars } from "react-icons/fa6";
 function Header({ onMenuClick }) {
   return (
     <header className={style.header}>
@@ -9,7 +9,7 @@ function Header({ onMenuClick }) {
         aria-label="Menu"
         onClick={onMenuClick}
       >
-        ☰
+        <FaBars />
       </button>
       <div className={style.logoGroup}>
         <img src={LOGO} alt="" className={style.logo} />

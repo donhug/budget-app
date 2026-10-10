@@ -19,7 +19,7 @@ import {
   getFirstMonth,
 } from "../../services/storage";
 import { getCurrentMonth, getPreviousMonth } from "../../utils/dates";
-
+import {FaPlus} from "react-icons/fa6"
 function CurrentMonth() {
   const currentMonth = getCurrentMonth();
   const previousMonth = getPreviousMonth(currentMonth);
@@ -106,7 +106,7 @@ function CurrentMonth() {
           isFirstMonth={isFirstMonth}
         />
         <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>
-          +AJOUTER
+          <FaPlus/> AJOUTER
         </button>
         {isModalOpen && (
           <OperationFormModal

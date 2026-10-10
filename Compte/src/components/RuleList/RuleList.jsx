@@ -1,6 +1,8 @@
 import style from "./RuleList.module.css";
 import { formatMonth } from "../../utils/dates";
 import { formatBalance } from "../../utils/format";
+import {FaPenToSquare, FaTrashCan} from "react-icons/fa6"
+
 function RuleList({ title, rules, onEdit, onDelete }) {
   return (
     <div className={style.list}>
@@ -31,22 +33,22 @@ function RuleList({ title, rules, onEdit, onDelete }) {
               </span>
             </div>
             {onEdit && (
-              <div>
+              <div className={style.actions}>
                 <button
                   type="button"
                   onClick={() => onEdit(rule)}
                   className={style.editBtn}
                 >
-                  Modifier
+                  <FaPenToSquare/>Modifier
                 </button>
 
                 <button
                   type="button"
                   onClick={() => onDelete(rule)}
-                  className={style.editBtn}
+                  className={style.deleteBtn}
+                  aria-label="Supprimer la règle"
                 >
-                  {" "}
-                  Supprimer
+                  <FaTrashCan/>
                 </button>
               </div>
             )}
