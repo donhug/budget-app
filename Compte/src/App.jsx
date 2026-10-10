@@ -9,6 +9,7 @@ import CurrentMonth from "./pages/CurrentMonth/CurrentMonth";
 import ChangesRules from "./pages/ChangesRules/ChangesRules";
 import UnderConstruction from "./pages/Construction/UnderConstruction";
 import NotFound from "./pages/NotFound/NotFound";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -50,6 +51,7 @@ function App() {
             <p>chargement</p>
           )}
         </main>
+        <Footer/>
       </div>
     </div>
   );
