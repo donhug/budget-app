@@ -1,18 +1,26 @@
-import style from './Footer.module.css'
+import style from "./Footer.module.css";
+import { FaGithub, FaCircleInfo } from "react-icons/fa6";
 
 function Footer() {
   return (
-    <footer>
-        <div>
-            <p>Vos données sont enrigistrées uniquement dans ce navigateur. Vider le cache ou changer d'appareil les effacera.</p>
-        </div>
-        <div>
-            <p>
-                <i className="fa-solid fa-hat-cowboy"></i>2026 HUGO - Integrateur Web
-            </p>
-        </div>
+    <footer className={style.footer}>
+      <p className={style.text}>HF — Hugo Finances · v1.0 · © 2026</p>
+      <p className={style.warning}>
+        <FaCircleInfo />
+        Vos données sont enregistrées uniquement dans ce navigateur. Effacer les
+        données de navigation / des sites ou changer d'appareil les supprimera.
+      </p>
+      <a
+        href="https://github.com/donhug"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={style.link}
+        aria-label="GitHub d'Hugo"
+      >
+        <FaGithub />
+      </a>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

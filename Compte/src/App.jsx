@@ -26,7 +26,7 @@ function App() {
       <div className={styles.mainColumn}>
         <Header onMenuClick={() => setIsNavOpen(true)} />
         {isNavOpen && <MobileNav onClose={() => setIsNavOpen(false)} />}
-        <main>
+        <main className={styles.main}>
           {isReady ? (
             <section className={styles.appShell}>
               <Routes>
@@ -51,7 +51,7 @@ function App() {
             <p>chargement</p>
           )}
         </main>
-        <Footer/>
+        <Footer />
       </div>
     </div>
   );
