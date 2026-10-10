@@ -9,7 +9,7 @@
   Tout le reste (totaux, reports, soldes de fin de mois) est CALCULÉ,
   jamais stocké.
 
-- Le solde initial est volontairement à 0.
+- Le solde initial est **volontairement** à 0.
 
 - RÈGLES (loyer, paye, crédit, abonnements) = opérations qui se répètent,
   avec une date de début et une date de fin optionnelle.
@@ -20,6 +20,9 @@
 - Modifier une règle = effet sur les mois FUTURS uniquement.
   LE PASSÉ NE BOUGE JAMAIS. Seul le mois en cours peut être mis à jour,
   et seulement si l'utilisateur le demande (case à cocher).
+
+- Cas particulier délibéré : quand une règle à venir est avancée au mois
+  en cours, son opération est créée automatiquement pour ce mois.
 
 - `ruleId` sur une opération = TRACE d'origine, jamais un lien vivant.
   Ne jamais s'en servir pour mettre à jour les opérations en masse.
@@ -51,11 +54,13 @@
 - services/budget.js : calculs métier (total, solde récursif,
   matérialisation, génération des mois)
 - utils/dates.js : outils de mois
+- utils/format.js : formatage des montants en euros
 - constants/ : NAV_LINKS, MONTHS
 - pages/ : CurrentMonth ("/"), ChangesRules ("/rules-changes"),
-  UnderConstruction (dashboard, savings, account), NotFound ("\*")
+  UnderConstruction (dashboard, savings, account), NotFound ("*")
 - components/ : MonthSummary, OperationList, OperationFormModal,
-  DeleteConfirmation, MonthPicker, Sidebar, MobileNav, Header
+  DeleteConfirmation, MonthPicker, Sidebar, MobileNav, Header, RuleList,
+  EditModal
 - App : layout + routes + génération des mois au démarrage (état isReady),
   les pages ne s'affichent qu'une fois la génération terminée
 
@@ -70,21 +75,43 @@
 - generateMonths blindé : sortie si lastMonth >= mois courant,
   et ne régénère jamais un mois qui contient déjà des opérations
 - Navigation React Router, page active en surbrillance, page 404
-- MonthPicker (deux <select>) : remplace <input type="month">,
+- MonthPicker (deux `<select>`) : remplace `<input type="month">`,
   non supporté par Firefox desktop
+- toMonthKey / parseMonthKey dans dates.js (assembler / découper "YYYY-MM"),
+  utilisés dans les outils de mois et MonthPicker pour éviter le code dupliqué
+- MonthPicker pour la date de fin + possibilité de rester sans date de fin
+  (case "date de fin" décochée)
+- Page Modifications : liste de TOUTES les règles (y compris futures et
+  terminées), modification des règles actives et futures, avec la case
+  "inclure le mois en cours" pour les règles déjà commencées
+- Suppression des règles actives et futures depuis la page Modifications,
+  avec le choix "juste ce mois-ci" pour les règles déjà commencées
+- Règle commencée : date de fin antérieure au mois en cours interdite
+- Saisie ponctuelle : les dates de récurrence masquées ne bloquent plus
+  la validation
+- Affichage des prélèvements à venir dans la page Modifications (en juin,
+  signaler qu'un crédit démarre en août)
+- Montants formatés en euros avec décimales (1 240,50 €)
 
 ## V1 — reste à faire
 
-- toMonthKey / parseMonthKey dans dates.js (assembler / découper "YYYY-MM"),
-  puis les utiliser partout où le code est dupliqué
-- MonthPicker pour la date de fin + case "sans date de fin"
-- Page Modifications : lister TOUTES les règles (y compris futures et
-  terminées), les modifier avec la case "inclure le mois en cours"
+- Page Modifications : modification des règles terminées, partie restante
+  de l'objectif de modification de toutes les règles
 - vercel.json : rediriger toutes les routes vers index.html (sinon 404
   au rechargement d'une page comme /savings)
-- Footer (dans le layout, hors du ternaire isReady)
+- Footer (dans le layout, hors du ternaire isReady) : un message prévient
+  que les données sont stockées uniquement dans le navigateur
 
-## V1.1 — Épargne (page /savings)
+## V1.1
+
+- **Priorité : export / import JSON des données** (filet contre la perte
+  du localStorage)
+- Ajouter dans la page Modifications la mention "non appliquée au mois
+  en cours" pour les règles actives sans opération ce mois-ci
+- Ajouter un champ de fréquence aux règles pour les prélèvements
+  mensuels, trimestriels, annuels…
+
+### Épargne (page /savings)
 
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL...)
 - Opérations et règles avec un accountId optionnel :
@@ -94,20 +121,12 @@
 
 ## Raffinements / idées
 
-- Afficher les prélèvements à venir (en juin, signaler qu'un crédit
-  démarre en août)
 - Erreurs de la modale affichées sous chaque champ plutôt qu'un
   message global (un state d'erreur par champ)
 - Extraire la logique pure de handleSubmit hors du composant
   (validation, construction des objets)
 - Variante de suppression : supprimer la règle mais garder l'opération
   du mois en cours (à voir selon les retours utilisateurs)
-- Montants formatés en euros avec décimales (1 240,50 €)
-- Export / import JSON des données (filet contre la perte du localStorage)
-- Ajouter une option pour les prélevements annuels / trimestriels, ajout d'un
-  champ pour la fréquence
-- Ajouter d'une ligne dans la page de modification qui indique qu'une règles n'est
-  pas activé pour le mois en cours 
 
 ## V2
 
