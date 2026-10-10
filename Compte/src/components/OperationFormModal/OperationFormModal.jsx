@@ -139,7 +139,7 @@ function OperationFormModal({ onSubmit, onClose }) {
           onClick={handleValidate}
           disabled={status !== "idle"}
         >
-          {status === "idle" && "Ajouter l'operation"}
+          {status === "idle" && "Ajouter l'opération"}
           {status === "loading" && <span className={style.spinner} />}
           {status === "success" && <span className={style.checkmark}>✓</span>}
         </button>
