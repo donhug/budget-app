@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { NavLink } from "react-router";
 import style from "./Sidebar.module.css";
-import LOGO from "../../assets/LOGO.png";
+import LOGO from "../../assets/LOGO.webp";
 import { NAV_LINKS } from "../../constants/navLinks";
 
 function Sidebar() {

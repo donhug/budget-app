@@ -1,6 +1,6 @@
 import style from "./NotFound.module.css";
 import { Link } from "react-router";
-import img_404 from "../../assets/404.png";
+import img_404 from "../../assets/404.webp";
 
 function NotFound() {
   return (

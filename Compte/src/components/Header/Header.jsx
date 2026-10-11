@@ -1,5 +1,5 @@
 import style from "./Header.module.css";
-import LOGO from "../../assets/LOGO.png";
+import LOGO from "../../assets/LOGO.webp";
 import { FaBars } from "react-icons/fa6";
 function Header({ onMenuClick }) {
   return (

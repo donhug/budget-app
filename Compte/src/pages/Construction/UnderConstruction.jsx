@@ -1,5 +1,5 @@
 import style from "./UnderConstruction.module.css";
-import WORK from "../../assets/inProgress.png";
+import WORK from "../../assets/inProgress.webp";
 
 function UnderConstruction(props) {
   return (
