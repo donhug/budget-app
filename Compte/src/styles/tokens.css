@@ -2,11 +2,12 @@
   /* Marque */
   --color-brand: #7c3aed;
   --color-brand-hover: #6d28d9;
+  --color-brand-soft: rgba(124, 58, 237, 0.12);
+  --color-surface-accend: #f3f0fb;
 
   /* Neutres */
   --color-bg: #ffffff;
   --color-surface: #f7f7f8;
-  --color-surface-accend: #f3f0fb;
   --color-text: #1a1a1a;
   --color-text-muted: #6b6b6b;
   --color-border: #e5e5e5;
@@ -26,21 +27,21 @@
   /* Autres */
   --radius-md: 12px;
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --color-brand-soft: rgba(124,58,237,0.12);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Marque */
     --color-brand: #a78bfa;
     --color-brand-hover: #c4b5fd;
-    --color-brand-soft: rgba(124,58,237,0.15);
+    --color-surface-accend: #2a2438;
+    --color-brand-soft: rgba(124, 58, 237, 0.15);
+
     --color-bg: #121212;
     --color-surface: #1e1e1e;
-    --color-surface-accend: #2a2438;
     --color-text: #f0f0f0;
     --color-text-muted: #a0a0a0;
     --color-border: #333333;
-
     --color-expense: #e57373;
     --color-expense-bg: #3a2020;
     --color-income: #66bb6a;
