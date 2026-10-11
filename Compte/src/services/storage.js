@@ -82,7 +82,7 @@ export function getOperations(month) {
 }
 
 /***
- * Supprime l'opérations du mois séléctionée, depuis le localStorage.
+ * Supprime l'opération du mois séléctionée, depuis le localStorage.
  * @param {string} month - identifiant du mois au format "YYYY-MM" pour récupérer la liste
  * @param {string} operationId - identification unique de l'operation a supprimer
  */

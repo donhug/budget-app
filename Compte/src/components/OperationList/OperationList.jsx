@@ -1,5 +1,6 @@
 import style from "./OperationList.module.css";
-
+import { formatBalance } from "../../utils/format";
+import { FaTrashCan } from "react-icons/fa6";
 function OperationList({ title, operations, total, onDelete }) {
   return (
     <div className={style.list}>
@@ -19,7 +20,7 @@ function OperationList({ title, operations, total, onDelete }) {
               }`}
             >
               {op.type === "income" ? "+" : ""}
-              {op.value}€{" "}
+              {formatBalance(op.value)}
             </p>
           </div>
 
@@ -27,13 +28,13 @@ function OperationList({ title, operations, total, onDelete }) {
             type="button"
             onClick={() => onDelete(op)}
             className={style.deleteBtn}
+            aria-label="Supprimmer l'opération"
           >
-            {" "}
-            supprimer l'operation
+            <FaTrashCan/>
           </button>
         </div>
       ))}
-      <h3 className={style.total}>total:{total}€</h3>
+      <h3 className={style.total}>Total :{formatBalance(total)}</h3>
     </div>
   );
 }

@@ -1,20 +1,22 @@
 import styles from "./App.module.css";
 import { generateMonths } from "./services/budget";
 import { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MobileNav from "./components/MobileNav/MobileNav";
 import CurrentMonth from "./pages/CurrentMonth/CurrentMonth";
 import ChangesRules from "./pages/ChangesRules/ChangesRules";
-import UnderConstruction from "./pages/Construction/ UnderConstruction";
+import UnderConstruction from "./pages/Construction/UnderConstruction";
 import NotFound from "./pages/NotFound/NotFound";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
   useEffect(() => {
     generateMonths();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- signale la fin de la génération des mois
     setIsReady(true);
   }, []);
 
@@ -24,7 +26,7 @@ function App() {
       <div className={styles.mainColumn}>
         <Header onMenuClick={() => setIsNavOpen(true)} />
         {isNavOpen && <MobileNav onClose={() => setIsNavOpen(false)} />}
-        <main>
+        <main className={styles.main}>
           {isReady ? (
             <section className={styles.appShell}>
               <Routes>
@@ -49,6 +51,7 @@ function App() {
             <p>chargement</p>
           )}
         </main>
+        <Footer />
       </div>
     </div>
   );

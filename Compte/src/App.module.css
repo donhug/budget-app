@@ -1,4 +1,5 @@
 .appShell {
+  width: 100%;
   max-width: 480px;
   margin: 0 auto;
   padding: var(--space-3);
@@ -7,10 +8,14 @@
   display: flex;
   min-height: 100vh;
 }
+.main{
+  flex: 1;
+}
 .mainColumn {
   flex: 1;
-  flex-direction: column;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 @media (min-width: 768px) {
   .appShell {

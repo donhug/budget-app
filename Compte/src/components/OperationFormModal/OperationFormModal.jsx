@@ -2,6 +2,8 @@ import { useState } from "react";
 import style from "./OperationFormModal.module.css";
 import { getCurrentMonth, getNextMonth } from "../../utils/dates";
 import MonthPicker from "../MonthPicker/MonthPicker";
+import { FaXmark } from "react-icons/fa6";
+
 function OperationFormModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
@@ -27,9 +29,11 @@ function OperationFormModal({ onSubmit, onClose }) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
-    if (hasEndDate === true && endMonth < startMonth) {
-      setError("le mois de fin est antérieur au mois de départ");
-      return;
+    if (isRecurrent) {
+      if (hasEndDate === true && endMonth < startMonth) {
+        setError("le mois de fin est antérieur au mois de départ");
+        return;
+      }
     }
 
     setStatus("loading");
@@ -51,7 +55,7 @@ function OperationFormModal({ onSubmit, onClose }) {
     <div className={style.overlay}>
       <div className={style.modal}>
         <button className={style.closeBtn} type="button" onClick={onClose}>
-          X
+          <FaXmark />
         </button>
         <h2 className={style.heading}>Ajouter une opération</h2>
         <div className={style.field}>
@@ -83,7 +87,9 @@ function OperationFormModal({ onSubmit, onClose }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Dépense</span>
+            <span className={`${style.radioChip} ${style.chipExpense}`}>
+              Dépense
+            </span>
           </label>
 
           <label className={style.radioLabel}>
@@ -95,7 +101,9 @@ function OperationFormModal({ onSubmit, onClose }) {
               className={style.radioInput}
               onChange={(e) => setType(e.target.value)}
             />
-            <span className={style.radioChip}>Entrée</span>
+            <span className={`${style.radioChip} ${style.chipIncome}`}>
+              Entrée
+            </span>
           </label>
         </div>
 
@@ -137,7 +145,7 @@ function OperationFormModal({ onSubmit, onClose }) {
           onClick={handleValidate}
           disabled={status !== "idle"}
         >
-          {status === "idle" && "Ajouter l'operation"}
+          {status === "idle" && "Ajouter l'opération"}
           {status === "loading" && <span className={style.spinner} />}
           {status === "success" && <span className={style.checkmark}>✓</span>}
         </button>

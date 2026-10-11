@@ -1,7 +1,9 @@
 import style from "./RuleList.module.css";
 import { formatMonth } from "../../utils/dates";
+import { formatBalance } from "../../utils/format";
+import {FaPenToSquare, FaTrashCan} from "react-icons/fa6"
 
-function RuleList({ title, rules, onEdit }) {
+function RuleList({ title, rules, onEdit, onDelete }) {
   return (
     <div className={style.list}>
       {title && <h4 className={style.title}>{title}</h4>}
@@ -20,7 +22,7 @@ function RuleList({ title, rules, onEdit }) {
                 className={`${style.amount} ${rule.type === "expense" ? style.expense : style.income}`}
               >
                 {rule.type === "income" ? "+" : ""}
-                {rule.value}€{" "}
+                {formatBalance(rule.value)}
               </p>
             </div>
             <div className={style.datesRow}>
@@ -31,13 +33,24 @@ function RuleList({ title, rules, onEdit }) {
               </span>
             </div>
             {onEdit && (
-              <button
-                type="button"
-                onClick={() => onEdit(rule)}
-                className={style.editBtn}
-              >
-                Modifier
-              </button>
+              <div className={style.actions}>
+                <button
+                  type="button"
+                  onClick={() => onEdit(rule)}
+                  className={style.editBtn}
+                >
+                  <FaPenToSquare/>Modifier
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onDelete(rule)}
+                  className={style.deleteBtn}
+                  aria-label="Supprimer la règle"
+                >
+                  <FaTrashCan/>
+                </button>
+              </div>
             )}
           </div>
         ))

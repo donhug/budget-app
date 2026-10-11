@@ -1,6 +1,6 @@
 import { MONTHS } from "../constants/months";
 /***
- * récupère le mois suivant, a partie de la date donnée, ajoute 1 au mois ou a l'année
+ * récupère le mois suivant, a partir de la date donnée, ajoute 1 au mois ou a l'année
  * @param {string}  dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois suivant au même format "YYYY-MM"
  */

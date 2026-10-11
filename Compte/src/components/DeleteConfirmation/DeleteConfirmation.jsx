@@ -10,13 +10,16 @@ function DeleteConfirmation({
       <div className={style.modal}>
         <p className={style.message}>supprimer : "{label}"?</p>
         <div className={style.actions}>
-          <button
-            className={style.optionBtn}
-            type="button"
-            onClick={onDeleteOperation}
-          >
-            Juste ce mois-ci
-          </button>
+          {onDeleteOperation && (
+            <button
+              className={style.optionBtn}
+              type="button"
+              onClick={onDeleteOperation}
+            >
+              Juste ce mois-ci
+            </button>
+          )}
+
           <button
             className={style.dangerBtn}
             type="button"

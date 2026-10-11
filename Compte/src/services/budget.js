@@ -32,7 +32,7 @@ export function getMonthTotal(listOperations) {
  * calcule le solde d'un mois donné, report inclus,
  * Fonction récursive :remonte de mois en mois jusqu'au mois racine
  * (firstMonth), en additionnant le total de chaque mois au solde initial.
- * ajout d'un arrêt, si le l'app vient d'être intialisée.
+ * ajout d'un arrêt, si l'app vient d'être intialisée.
  * evite donc a la fonction d'aller avant le premier mois
  * @param {string} month - le mois a calculer, au format "YYYY-MM"
  * @returns {number} le solde du mois (+ ou -)
@@ -56,7 +56,7 @@ export function getBalance(month) {
 /***
  * vérifie dans la liste des règles de l'utilisateur et les ajoute si,
  * elle passe la condition pour le mois donné
- * @param {string} month - mois a metérialiser au format "YYYY-MM"
+ * @param {string} month - mois a matérialiser au format "YYYY-MM"
  * @param {Array}  rule - tableau des règles
  * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
