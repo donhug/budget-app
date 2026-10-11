@@ -21,7 +21,7 @@
 .select:focus {
   outline: none;
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(120, 58, b237, 0.15);
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
 }
 .chevron {
   position: absolute;

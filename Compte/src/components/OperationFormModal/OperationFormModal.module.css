@@ -41,7 +41,7 @@
 .field input:focus {
   outline: none;
   border-color: var(--color-brand);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
 }
 .closeBtn {
   position: absolute;
