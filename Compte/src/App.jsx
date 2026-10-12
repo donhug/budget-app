@@ -1,3 +1,4 @@
+import {Analytics} from "@vercel/analytics/react"
 import styles from "./App.module.css";
 import { generateMonths } from "./services/budget";
 import { useEffect, useState } from "react";
@@ -38,7 +39,7 @@ function App() {
                 />
                 <Route
                   path="/savings"
-                  element={<UnderConstruction title="Epargne" />}
+                  element={<UnderConstruction title="Épargne" />}
                 />
                 <Route
                   path="/account"
@@ -53,6 +54,7 @@ function App() {
         </main>
         <Footer />
       </div>
+      <Analytics/>
     </div>
   );
 }
