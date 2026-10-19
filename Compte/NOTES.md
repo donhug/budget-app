@@ -93,6 +93,24 @@ Application de gestion de budget mois par mois
 
 ## V1.1
 
+### structure import/export
+
+{
+  "meta": {
+    "app": "HF-Budget",
+    "schemaVersion": 1,
+    "exportedAt": "2026-10-19T22:58:00.000Z"
+  },
+  "rules": [ { id, label, value, type, start, end }, ... ],
+  "initialBalance": 0,
+  "firstMonth": "2026-09",
+  "lastMonth": "2026-10",
+  "months": {
+    "2026-09": [ { id, ruleId, label, value, type, origin }, ... ],
+    "2026-10": [ ... ]
+  }
+}
+
 ### Priorité
 
 - Export / import JSON des données (filet contre la perte du localStorage), import validé avant toute écriture
