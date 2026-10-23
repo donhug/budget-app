@@ -1,7 +1,8 @@
 import { MONTHS } from "../constants/months";
-/***
+/**
  * récupère le mois suivant, a partir de la date donnée, ajoute 1 au mois ou a l'année
- * @param {string}  dateString - mois de départ au format "YYYY-MM"
+ *
+ * @param {string} dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois suivant au même format "YYYY-MM"
  */
 export function getNextMonth(dateString) {
@@ -21,9 +22,10 @@ export function getNextMonth(dateString) {
   return toMonthKey(nextYear, nextMonth);
 }
 
-/***
+/**
  * récupère le mois precedent, a partie de la date donnée, retire 1 au mois ou a l'année
- * @param {string}  dateString - mois de départ au format "YYYY-MM"
+ *
+ * @param {string} dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois precedent au même format "YYYY-MM"
  */
 export function getPreviousMonth(dateString) {
@@ -42,8 +44,9 @@ export function getPreviousMonth(dateString) {
 
   return toMonthKey(prevYear, prevMonth);
 }
-/***
+/**
  * récupère le mois actuel
+ *
  * @returns {string} le mois actuelle au format "YYYY-MM"
  */
 export function getCurrentMonth() {
@@ -55,6 +58,7 @@ export function getCurrentMonth() {
 /**
  * Génère la liste des années proposées dans les sélecteurs de date,
  * de l'année en cours jusqu'à dix ans plus tard.
+ *
  * @returns {number[]} les années, par ordre croissant (ex : [2026, ..., 2036])
  */
 export function getYearsOption() {
@@ -69,6 +73,7 @@ export function getYearsOption() {
 
 /**
  * Transforme une clé de mois en libellé lisible pour l'affichage.
+ *
  * @param {string} dateString - la clé de mois au format "YYYY-MM"
  * @returns {string} le libellé (ex : "septembre 2026")
  */
@@ -81,6 +86,7 @@ export function formatMonth(dateString) {
 /**
  * Assemble une année et un mois en clé de mois au format "YYYY-MM".
  * Ajoute le zéro devant les mois à un chiffre.
+ *
  * @param {number|string} year - l'année (ex : 2026)
  * @param {number|string} month - le mois, de 1 à 12
  * @returns {string} la clé de mois (ex : "2026-03")
@@ -93,6 +99,7 @@ export function toMonthKey(year, month) {
 /**
  * Découpe une clé de mois "YYYY-MM" en année et mois numériques.
  * Opération inverse de toMonthKey.
+ *
  * @param {string} monthKey - la clé de mois (ex : "2026-03")
  * @returns {{ year: number, month: number }} l'année et le mois (ex : { year: 2026, month: 3 })
  */

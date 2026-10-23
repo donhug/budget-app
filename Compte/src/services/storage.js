@@ -1,5 +1,6 @@
 /**
  * Enregistre la liste des règles, dans le localStorage, sous forme de chaîne JSON.
+ *
  * @param {Array} rulesParm - le tableau des règles à stocker
  */
 export function setRules(rulesParm) {
@@ -9,6 +10,7 @@ export function setRules(rulesParm) {
 
 /**
  * Récupère la liste des règles depuis le localStorage.
+ *
  * @returns {Array} - le tableau des règles, ou un tableau vide si rien n'est stocké
  */
 export function getRules() {
@@ -23,6 +25,7 @@ export function getRules() {
 
 /**
  * supprime une règle sélectionnée de la liste.
+ *
  * @param {string} ruleId - identification unique de la règle a supprimer.
  */
 export function deleteRule(ruleId) {
@@ -33,6 +36,7 @@ export function deleteRule(ruleId) {
 
 /**
  * Définit le solde initial du compte
+ *
  * @param {number} balance - solde initial du compte
  */
 export function setInitialBalance(balance) {
@@ -40,8 +44,9 @@ export function setInitialBalance(balance) {
   localStorage.setItem("initialBalance", balanceString);
 }
 
-/***
+/**
  * Récupère le solde initial du compte, depuis le localStorage.
+ *
  * @returns {number} solde initial du compte
  */
 export function getInitialBalance() {
@@ -54,8 +59,9 @@ export function getInitialBalance() {
   }
 }
 
-/***
+/**
  * Enregistre les opérations du mois, dans le localStorage, sous forme de chaîne JSON.
+ *
  * @param {string} month - identifiant du mois au format "YYYY-MM" pour la liste des opérations
  * @param {Array} operations - liste les opération du mois
  */
@@ -65,8 +71,9 @@ export function setOperations(month, operations) {
   localStorage.setItem(key, operationsString);
 }
 
-/***
+/**
  * Récupère les opérations du mois, depuis le localStorage.
+ *
  * @param {string} month - identifiant du mois au format "YYYY-MM" pour récupérer la liste
  * @returns {Array} - le tableau des opérations, ou un tableau vide si rien n'est stocké
  */
@@ -81,8 +88,9 @@ export function getOperations(month) {
   }
 }
 
-/***
+/**
  * Supprime l'opération du mois séléctionée, depuis le localStorage.
+ *
  * @param {string} month - identifiant du mois au format "YYYY-MM" pour récupérer la liste
  * @param {string} operationId - identification unique de l'operation a supprimer
  */
@@ -96,6 +104,7 @@ export function deleteOperation(month, operationId) {
 
 /**
  * Définit le mois initial de l'App
+ *
  * @param {string} month - mois initial du compte, au format "2026-04"
  */
 export function setFirstMonth(month) {
@@ -104,7 +113,8 @@ export function setFirstMonth(month) {
 }
 
 /**
- *  Récupère le mois initial de l'App
+ * Récupère le mois initial de l'App
+ *
  * @returns {string|null} mois initial du compte, au format "2026-04", ou null si non défini
  */
 export function getFirstMonth() {
@@ -119,6 +129,7 @@ export function getFirstMonth() {
 
 /**
  * Définit le dernier mois généré de l'App
+ *
  * @param {string} month - dernier mois du compte, au format "2026-04"
  */
 
@@ -128,7 +139,8 @@ export function setLastMonth(month) {
 }
 
 /**
- *  Récupère le dernier mois de l'App
+ * Récupère le dernier mois de l'App
+ *
  * @returns {string|null} dernier mois du compte, au format "2026-04", ou null si aucun
  */
 

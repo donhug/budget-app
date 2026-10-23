@@ -15,9 +15,10 @@ import {
   getCurrentMonth,
 } from "../utils/dates.js";
 const MAX_MONTHS_TO_GENERATE = 120;
-/***
+/**
  * Calcul le total des opérations pour un mois donné.
- * @param {Array}  listOperations - liste des opérations du mois
+ *
+ * @param {Array} listOperations - liste des opérations du mois
  * @returns {number} le total des opérations du mois
  */
 export function getMonthTotal(listOperations) {
@@ -34,6 +35,7 @@ export function getMonthTotal(listOperations) {
  * (firstMonth), en additionnant le total de chaque mois au solde initial.
  * ajout d'un arrêt, si l'app vient d'être intialisée.
  * evite donc a la fonction d'aller avant le premier mois
+ *
  * @param {string} month - le mois a calculer, au format "YYYY-MM"
  * @returns {number} le solde du mois (+ ou -)
  */
@@ -53,11 +55,12 @@ export function getBalance(month) {
   );
 }
 
-/***
+/**
  * vérifie dans la liste des règles de l'utilisateur et les ajoute si,
  * elle passe la condition pour le mois donné
+ *
  * @param {string} month - mois a matérialiser au format "YYYY-MM"
- * @param {Array}  rule - tableau des règles
+ * @param {Array} rule - tableau des règles
  * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
 export function materializeRules(month, rules) {
@@ -81,6 +84,7 @@ export function materializeRules(month, rules) {
  * génère les mois manquants (format "YYYY-MM"), qui n'ont pas été créés, depuis le dernier
  * mois généré. Pour chaque mois créé, elle matérialise les règles et stocke les opérations.
  * Mise à jour du premier mois (si premier lancement) et dernier mois généré avec le setLastMonth
+ *
  * @returns {void}
  */
 
@@ -125,9 +129,10 @@ export function generateMonths() {
   setLastMonth(currentMonth);
 }
 
-/***
+/**
  * Regroupe les règles par mois de début.
- * @param {Array}  rules - tableau des règles
+ *
+ * @param {Array} rules - tableau des règles
  * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
  *    et chaque valeur la liste des règles qui commencent ce mois-là
  *    ( ex : {"2026-11":[règleA règleC], "2026-12":[règleB] })
