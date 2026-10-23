@@ -1,4 +1,4 @@
-import {Analytics} from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 import styles from "./App.module.css";
 import { generateMonths } from "./services/budget";
 import { useEffect, useState } from "react";
@@ -54,7 +54,7 @@ function App() {
         </main>
         <Footer />
       </div>
-      <Analytics/>
+      <Analytics />
     </div>
   );
 }

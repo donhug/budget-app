@@ -128,7 +128,7 @@ export function generateMonths() {
 /***
  * Regroupe les règles par mois de début.
  * @param {Array}  rules - tableau des règles
- * @returns {object<string, Array} Un objet dont chaque clé est un mois "YYYY-MM"
+ * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
  *    et chaque valeur la liste des règles qui commencent ce mois-là
  *    ( ex : {"2026-11":[règleA règleC], "2026-12":[règleB] })
  */

@@ -68,7 +68,7 @@ export function setOperations(month, operations) {
 /***
  * Récupère les opérations du mois, depuis le localStorage.
  * @param {string} month - identifiant du mois au format "YYYY-MM" pour récupérer la liste
- * @returns{Array} - le tableau des opérations, ou un tableau vide si rien n'est stocké
+ * @returns {Array} - le tableau des opérations, ou un tableau vide si rien n'est stocké
  */
 export function getOperations(month) {
   const key = `operations-${month}`;
