@@ -96,19 +96,19 @@ Application de gestion de budget mois par mois
 ### structure import/export
 
 {
-  "meta": {
-    "app": "HF-Budget",
-    "schemaVersion": 1,
-    "exportedAt": "2026-10-19T22:58:00.000Z"
-  },
-  "rules": [ { id, label, value, type, start, end }, ... ],
-  "initialBalance": 0,
-  "firstMonth": "2026-09",
-  "lastMonth": "2026-10",
-  "months": {
-    "2026-09": [ { id, ruleId, label, value, type, origin }, ... ],
-    "2026-10": [ ... ]
-  }
+"meta": {
+"app": "HF-Budget",
+"schemaVersion": 1,
+"exportedAt": "2026-10-19T22:58:00.000Z"
+},
+"rules": [ { id, label, value, type, start, end }, ... ],
+"initialBalance": 0,
+"firstMonth": "2026-09",
+"lastMonth": "2026-10",
+"months": {
+"2026-09": [ { id, ruleId, label, value, type, origin }, ... ],
+"2026-10": [ ... ]
+}
 }
 
 ### Priorité
@@ -161,6 +161,8 @@ Application de gestion de budget mois par mois
 - Noms à harmoniser : updatedRules (contient une seule règle), accend → accent dans tokens.css
 - Variante de suppression : supprimer la règle mais garder l'opération du mois en cours (selon les retours utilisateurs)
 - Image d'aperçu Open Graph 1200 × 630 (og:image actuel à corriger ou à retirer)
+- fusion de fichier JSON, avec detection des conflits, demander a l'utilisateur quelle operation garder. ( ex: dans l'app une operation salaire a 1500, et dans le JSON, une operation salaire a 1700. demander si on garde celle a 1500 ou 1700 ).
+- Export CSV des opérations ( une ligne pas opération + colonne mois ), pour l'analyse dans un tableaur, et pas une sauvegarde.
 
 ---
 
