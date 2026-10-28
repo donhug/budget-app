@@ -163,6 +163,9 @@ Application de gestion de budget mois par mois
 - Image d'aperçu Open Graph 1200 × 630 (og:image actuel à corriger ou à retirer)
 - fusion de fichier JSON, avec detection des conflits, demander a l'utilisateur quelle operation garder. ( ex: dans l'app une operation salaire a 1500, et dans le JSON, une operation salaire a 1700. demander si on garde celle a 1500 ou 1700 ).
 - Export CSV des opérations ( une ligne pas opération + colonne mois ), pour l'analyse dans un tableaur, et pas une sauvegarde.
+- Page avec les mois de l'année, les mois déjà généré sont cliquable, et ceux a venir sont grisé.
+  Il est possible de revoir un mois déjà passé(A savoir s'il sera en lecture seul ou modifiable, si modifiable cela
+  chnagera le reste et donc le solde du mois en cours)
 
 ---
 
