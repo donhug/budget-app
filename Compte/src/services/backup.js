@@ -87,3 +87,6 @@ export function buildObjectExport() {
   };
   return objectExport;
 }
+export function validateObjectImport(data) {
+
+}
