@@ -6,6 +6,7 @@ import {
   getRules,
 } from "./storage.js";
 import { getNextMonth } from "../utils/dates";
+import { isPlainObject } from "../utils/checks.js";
 import { META_APP, META_SCHEMA_VERSION } from "../constants/meta.js";
 const MAX_MONTHS = 120;
 
@@ -88,5 +89,17 @@ export function buildObjectExport() {
   return objectExport;
 }
 export function validateObjectImport(data) {
-
+  if (!isPlainObject(data)) {
+    return "Cette sauvegarde n'est pas pour cette application.";
+  }
+  if (!isPlainObject(data.meta)) {
+    return "Cette sauvegarde n'est pas pour cette application.";
+  }
+  if (data.meta.app !== META_APP) {
+    return "Cette sauvegarde n'est pas pour cette application.";
+  }
+  if (data.meta.schemaVersion !== META_SCHEMA_VERSION) {
+    return "Cette sauvegarde provient d'une version différente de l'application.";
+  }
+  return null;
 }
