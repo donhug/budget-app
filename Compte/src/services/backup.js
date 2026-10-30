@@ -5,9 +5,14 @@ import {
   getOperations,
   getRules,
 } from "./storage.js";
-import { getNextMonth } from "../utils/dates";
+import { getNextMonth, isMonthKey } from "../utils/dates";
 import { isPlainObject } from "../utils/checks.js";
 import { META_APP, META_SCHEMA_VERSION } from "../constants/meta.js";
+import {
+  ERROR_DAMAGED,
+  ERROR_WRONG_APP,
+  ERROR_VERSION,
+} from "../constants/errorMessage.js";
 const MAX_MONTHS = 120;
 
 /**
@@ -90,16 +95,32 @@ export function buildObjectExport() {
 }
 export function validateObjectImport(data) {
   if (!isPlainObject(data)) {
-    return "Cette sauvegarde n'est pas pour cette application.";
+    return ERROR_WRONG_APP;
   }
   if (!isPlainObject(data.meta)) {
-    return "Cette sauvegarde n'est pas pour cette application.";
+    return ERROR_WRONG_APP;
   }
   if (data.meta.app !== META_APP) {
-    return "Cette sauvegarde n'est pas pour cette application.";
+    return ERROR_WRONG_APP;
   }
   if (data.meta.schemaVersion !== META_SCHEMA_VERSION) {
-    return "Cette sauvegarde provient d'une version différente de l'application.";
+    return ERROR_VERSION;
+  }
+
+  if (!Array.isArray(data.rules)) {
+    return ERROR_DAMAGED;
+  }
+  if (!isPlainObject(data.months)) {
+    return ERROR_DAMAGED;
+  }
+  if (typeof data.initialBalance !== "number") {
+    return ERROR_DAMAGED;
+  }
+  if (!isMonthKey(data.firstMonth) || !isMonthKey(data.lastMonth)) {
+    return ERROR_DAMAGED;
+  }
+  if (data.firstMonth > data.lastMonth) {
+    return ERROR_DAMAGED;
   }
   return null;
 }
