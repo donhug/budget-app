@@ -122,5 +122,20 @@ export function validateObjectImport(data) {
   if (data.firstMonth > data.lastMonth) {
     return ERROR_DAMAGED;
   }
+
+  for (const [monthKey, listOperation] of Object.entries(data.months)) {
+    if (!isMonthKey(monthKey)) {
+      return ERROR_DAMAGED;
+    }
+    if (!Array.isArray(listOperation)) {
+      return ERROR_DAMAGED;
+    }
+    for (const operation of listOperation) {
+      if (!isPlainObject(operation) || typeof operation.value !== "number") {
+        return ERROR_DAMAGED;
+      }
+    }
+  }
+
   return null;
 }
