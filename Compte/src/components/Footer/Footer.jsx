@@ -9,6 +9,14 @@ function Footer() {
     const nameFileExport = `hf-budget-${date}.json`;
     downloadObject(objectForExport, nameFileExport);
   }
+  async function handleImport(event) {
+    const fileToRead = event.target.files[0];
+    if (!fileToRead) {
+      return;
+    }
+    const fileToImport = await fileToRead.text();
+    console.log(fileToImport);
+  }
   return (
     <footer className={style.footer}>
       <p className={style.text}>HF — Hugo Finances · v1.0 · © 2026</p>
@@ -21,6 +29,12 @@ function Footer() {
       <button type="button" onClick={handleExport}>
         Télécharger vos données
       </button>
+      <input
+        type="file"
+        accept=".json"
+        aria-label="ajouter un fichier de sauvegarde"
+        onChange={handleImport}
+      />
       <a
         href="https://github.com/donhug"
         target="_blank"
