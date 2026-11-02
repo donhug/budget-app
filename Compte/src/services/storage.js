@@ -153,3 +153,30 @@ export function getLastMonth() {
     return JSON.parse(lastMonth);
   }
 }
+/**
+ * Efface les données existantes, puis remplace firstMonth / lastMonth / initialBalance par les données
+ * du fichier de sauvegarde ainsi que les opérations.
+ * fait confiance a data, qui doit ( et sera ) verifier avant avec validateObjectImport(data)
+ * @param {Array} - data fichier JSON avec les informations sauvegarder.
+ * @returns {void}
+ *
+ */
+export function replaceAllData(data) {
+  const keysName = [];
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith("operations-")) {
+      keysName.push(key);
+    }
+  }
+  for (const keyToDelete of keysName) {
+    localStorage.removeItem(keyToDelete);
+  }
+  setFirstMonth(data.firstMonth);
+  setInitialBalance(data.initialBalance);
+  setRules(data.rules);
+  setLastMonth(data.lastMonth);
+
+  for (const [monthKey, listOperation] of Object.entries(data.months)) {
+    setOperations(monthKey, listOperation);
+  }
+}
