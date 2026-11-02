@@ -1,7 +1,8 @@
 import style from "./Footer.module.css";
 import { FaGithub, FaCircleInfo } from "react-icons/fa6";
-import { buildObjectExport } from "../../services/backup";
+import { buildObjectExport, validateObjectImport } from "../../services/backup";
 import { downloadObject } from "../../utils/downloadObject";
+import { replaceAllData } from "../../services/storage";
 function Footer() {
   function handleExport() {
     const objectForExport = buildObjectExport();
@@ -10,12 +11,43 @@ function Footer() {
     downloadObject(objectForExport, nameFileExport);
   }
   async function handleImport(event) {
-    const fileToRead = event.target.files[0];
-    if (!fileToRead) {
+    const file = event.target.files[0];
+    event.target.value = "";
+    if (!file) {
       return;
     }
-    const fileToImport = await fileToRead.text();
-    console.log(fileToImport);
+    const fileText = await file.text();
+
+    let data;
+    try {
+      data = JSON.parse(fileText);
+    } catch {
+      alert("Le format du fichier n'est pas le bon.");
+      return;
+    }
+    const fileToValidate = validateObjectImport(data);
+    if (fileToValidate) {
+      alert(fileToValidate);
+      return;
+    }
+
+    const downloadOldData = window.confirm(
+      "Voulez-vous télécharger vos données actuelles avant ? ",
+    );
+    if (downloadOldData) {
+      handleExport();
+    }
+    const fileDate = new Date(data.meta.exportedAt);
+    const date = fileDate.toLocaleDateString("fr-FR");
+    const erase = window.confirm(
+      `Toutes vos données actuelles seront remplacées par la sauvegarde du ${date}. Continuer ?`,
+    );
+    if (!erase) {
+      return;
+    }
+
+    replaceAllData(data);
+    window.location.reload();
   }
   return (
     <footer className={style.footer}>
