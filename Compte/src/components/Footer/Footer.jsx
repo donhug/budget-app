@@ -25,9 +25,9 @@ function Footer() {
       alert("Le format du fichier n'est pas le bon.");
       return;
     }
-    const fileToValidate = validateObjectImport(data);
-    if (fileToValidate) {
-      alert(fileToValidate);
+    const validationError = validateObjectImport(data);
+    if (validationError) {
+      alert(validationError);
       return;
     }
 
