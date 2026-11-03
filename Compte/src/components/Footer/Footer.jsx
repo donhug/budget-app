@@ -11,21 +11,15 @@ import {
   setLastBackup,
   getLastBackup,
 } from "../../services/storage";
-import { getSaveLabel } from "../../utils/dates";
-import { useEffect, useMemo, useState } from "react";
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
+import { getDaysSince, getSaveLabel } from "../../utils/dates";
+import { useClock } from "../../hooks/useClock";
+import { useMemo, useState } from "react";
+
 function Footer() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const currentDate = useClock();
   const monthCount = useMemo(() => Object.keys(getObjectMonths()).length, []);
   const [lastSave, setLastSave] = useState(() => getLastBackup());
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 1000);
-    return () => {
-      clearInterval(id);
-    };
-  }, []);
+
   function handleExport() {
     const objectForExport = buildObjectExport();
     const date = new Date().toISOString().slice(0, 10);
@@ -74,22 +68,7 @@ function Footer() {
     setLastBackup(data.meta.exportedAt);
     window.location.reload();
   }
-  function getSaveLabel(days) {
-    if (days === null) {
-      return " jamais ";
-    }
-    if (days === 0) {
-      return "aujourd'hui";
-    }
-    if (days === 1) {
-      return "hier";
-    }
-    return `il y a ${days} jours`;
-  }
-  const dateSinceSave =
-    lastSave === null
-      ? null
-      : Math.floor((currentDate - new Date(lastSave)) / MS_PER_DAY);
+  const daysSinceSave = getDaysSince(lastSave, currentDate);
   return (
     <footer className={style.footer} id="footer">
       <div className={style.grid}>
@@ -113,7 +92,7 @@ function Footer() {
               : `Mois au compteur : ${monthCount}`}
           </p>
           <p className={style.item}>
-            Dernière sauvegarde : {getSaveLabel(dateSinceSave)}
+            Dernière sauvegarde : {getSaveLabel(daysSinceSave)}
           </p>
         </section>
         <section className={style.block}>

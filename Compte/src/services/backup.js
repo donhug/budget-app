@@ -93,6 +93,18 @@ export function buildObjectExport() {
   };
   return objectExport;
 }
+/**
+ * Vérifie qu'un objet importé est une sauvegarde valide de l'application,
+ * avant de remplacer les données du localStorage.
+ * Contrôle, dans l'ordre : l'origine (meta.app), la version du format
+ * (meta.schemaVersion), puis la structure des données (règles, solde initial,
+ * premier et dernier mois, et opérations de chaque mois).
+ *
+ * @param {*} data - l'objet obtenu après JSON.parse du fichier importé
+ * @returns {string|null} le message d'erreur à afficher
+ *    (ERROR_WRONG_APP, ERROR_VERSION ou ERROR_DAMAGED),
+ *    ou null si la sauvegarde est valide
+ */
 export function validateObjectImport(data) {
   if (!isPlainObject(data)) {
     return ERROR_WRONG_APP;
