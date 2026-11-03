@@ -180,3 +180,18 @@ export function replaceAllData(data) {
     setOperations(monthKey, listOperation);
   }
 }
+
+export function setLastBackup(date) {
+  const lastSave = JSON.stringify(date);
+  localStorage.setItem("lastSave", lastSave);
+}
+
+export function getLastBackup() {
+  const lastSave = localStorage.getItem("lastSave");
+
+  if (lastSave === null) {
+    return null;
+  } else {
+    return JSON.parse(lastSave);
+  }
+}

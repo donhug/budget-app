@@ -8,8 +8,12 @@
   display: flex;
   min-height: 100vh;
 }
-.main{
+.main {
   flex: 1;
+  min-height: 100dvh;
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-bg);
 }
 .mainColumn {
   flex: 1;
