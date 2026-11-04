@@ -121,7 +121,9 @@
 
 @media (min-width: 768px) {
   .grid {
+    max-width: none;
     grid-template-columns: repeat(3, 1fr);
+    justify-content: space-between;
   }
 }
 @media (min-width: 1024px) {

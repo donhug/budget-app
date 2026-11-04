@@ -14,14 +14,15 @@ import {
 import { getDaysSince, getSaveLabel, formatMonth } from "../../utils/dates";
 import { getSquirrelMood, getBiggestExpense } from "../../services/budget";
 import { useClock } from "../../hooks/useClock";
-import { useEffect, useMemo, useState } from "react";
+import { useBudgetVersion } from "../../hooks/useBudgetVersion";
+import { useMemo, useState } from "react";
 import { formatBalance } from "../../utils/format";
 import { PROVERBS } from "../../constants/proverbs";
 function Footer() {
   const currentDate = useClock();
   const monthCount = useMemo(() => Object.keys(getObjectMonths()).length, []);
   const [lastSave, setLastSave] = useState(() => getLastBackup());
-  const [dataVersion, setDataVersion] = useState(0);
+  const dataVersion = useBudgetVersion();
   // dataVersion sert de déclencheur : recalcule quand les données changent
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const squirrelMood = useMemo(() => getSquirrelMood(), [dataVersion]);
@@ -30,15 +31,6 @@ function Footer() {
   const [proverb] = useState(
     () => PROVERBS[Math.floor(Math.random() * PROVERBS.length)],
   );
-  useEffect(() => {
-    function handleUpdate() {
-      setDataVersion((v) => v + 1);
-    }
-    window.addEventListener("budget-updated", handleUpdate);
-    return () => {
-      window.removeEventListener("budget-updated", handleUpdate);
-    };
-  }, []);
   function handleExport() {
     const objectForExport = buildObjectExport();
     const date = new Date().toISOString().slice(0, 10);
@@ -108,7 +100,7 @@ function Footer() {
           </div>
           <p className={style.item}>
             {monthCount === 0
-              ? "l'aventure commence"
+              ? "L'aventure commence"
               : `Mois au compteur : ${monthCount}`}
           </p>
           <p className={style.item}>
@@ -116,12 +108,12 @@ function Footer() {
           </p>
         </section>
         <section className={style.block}>
-          <h2 className={style.blockTitle}> Le coin de l'écureuil</h2>
+          <h2 className={style.blockTitle}>Le coin de l'écureuil</h2>
           <p className={style.item}>L'écureuil est : {squirrelMood}</p>
           <p className={style.item}>
             {highestExpense === null
-              ? "pas encore de dépense 🫪"
-              : `dépense la plus élevée : ${highestExpense.label} ${formatBalance(Math.abs(highestExpense.value))}, en ${formatMonth(highestExpense.month)}`}
+              ? "Pas encore de dépense 🫪"
+              : `Dépense la plus élevée : ${highestExpense.label} ${formatBalance(Math.abs(highestExpense.value))}, en ${formatMonth(highestExpense.month)}`}
           </p>
           <p className={style.proverb}>{proverb}</p>
         </section>

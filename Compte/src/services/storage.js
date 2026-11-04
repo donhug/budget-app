@@ -1,3 +1,4 @@
+import { BUDGET_UPDATED_EVENT } from "../constants/events.js";
 /**
  * Enregistre la liste des règles, dans le localStorage, sous forme de chaîne JSON.
  *
@@ -197,7 +198,11 @@ export function getLastBackup() {
   }
 }
 
+/**
+ * Prévient l'application que les données budgétaires ont changé,
+ * en diffusant l'événement BUDGET_UPDATED_EVENT sur window.
+ */
 export function notifyBudgetUpdated() {
-  const update = new Event("budget-updated");
+  const update = new Event(BUDGET_UPDATED_EVENT);
   window.dispatchEvent(update);
 }
