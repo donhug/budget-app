@@ -1,0 +1,53 @@
+.bubble {
+  position: sticky;
+  margin-left: auto;
+  margin-right: var(--space-3);
+  margin-top: auto;
+  margin-bottom: var(--space-4);
+  bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-brand);
+  color: #ffffff;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.bubble:hover {
+  background-color: var(--color-brand-hover);
+  transform: translateY(-2px);
+}
+
+.label {
+  display: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.sentinel{
+    height: 1px;
+}
+
+@media (min-width: 1024px) {
+  .bubble {
+    width: auto;
+    height: auto;
+    padding: var(--space-2) var(--space-4);
+    border-radius: 999px;
+  }
+
+  .label {
+    display: inline;
+  }
+}

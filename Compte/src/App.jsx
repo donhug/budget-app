@@ -11,7 +11,7 @@ import ChangesRules from "./pages/ChangesRules/ChangesRules";
 import UnderConstruction from "./pages/Construction/UnderConstruction";
 import NotFound from "./pages/NotFound/NotFound";
 import Footer from "./components/Footer/Footer";
-
+import ScrollBubble from "./components/ScrollBubble/ScrollBubble";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -51,6 +51,7 @@ function App() {
           ) : (
             <p>chargement</p>
           )}
+          <ScrollBubble />
         </main>
         <Footer />
       </div>
