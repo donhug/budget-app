@@ -14,6 +14,7 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
+import { getObjectMonths } from "./backup.js";
 const MAX_MONTHS_TO_GENERATE = 120;
 /**
  * Calcul le total des opérations pour un mois donné.
@@ -147,4 +148,50 @@ export function groupRulesByStartMonth(rules) {
     rulesByMonth[rule.start].push(rule);
   }
   return rulesByMonth;
+}
+/**
+ * Récupère le solde du mois, pour une phrase personaliser, selon le montant.
+ *
+ * @returns {string} Phrase, selon le solde.
+ */
+export function getSquirrelMood() {
+  const currentMonth = getCurrentMonth();
+  const currentBalance = getBalance(currentMonth);
+  const lengthOp = getOperations(currentMonth).length;
+  if (currentBalance === 0 && lengthOp === 0) {
+    return "Sans emploi, il attend chez France Travail";
+  }
+  if (currentBalance < 0) {
+    return "Caché sous un tas de factures 🫠";
+  }
+  if (currentBalance >= 0 && currentBalance <= 200) {
+    return "Stressé 😰";
+  }
+  if (currentBalance > 200) {
+    return "Détendu, sur un tas de pièces 😌";
+  }
+}
+
+/**
+ * Cherche la plus grosse dépense ponctuelle (origin "manual") parmi tous les mois.
+ * Les dépenses récurrentes (règles) sont ignorées.
+ * Les dépenses étant négatives, la plus grosse est celle dont la valeur est la plus petite.
+ *
+ * @returns {object|null} une copie de l'opération, avec en plus le mois où elle a été trouvée
+ *    (ex : { label: "Console", value: -349, ..., month: "2026-09" }),
+ *    ou null s'il n'y a aucune dépense ponctuelle
+ */
+export function getBiggestExpense() {
+  const listExpense = getObjectMonths();
+  let biggest = null;
+  for (const [month, listOperation] of Object.entries(listExpense)) {
+    for (const operation of listOperation) {
+      if (operation.type === "expense" && operation.origin === "manual") {
+        if (biggest === null || biggest.value > operation.value) {
+          biggest = { ...operation, month };
+        }
+      }
+    }
+  }
+  return biggest;
 }

@@ -69,6 +69,7 @@ export function setOperations(month, operations) {
   const key = `operations-${month}`;
   const operationsString = JSON.stringify(operations);
   localStorage.setItem(key, operationsString);
+  notifyBudgetUpdated();
 }
 
 /**
@@ -194,4 +195,9 @@ export function getLastBackup() {
   } else {
     return JSON.parse(lastSave);
   }
+}
+
+export function notifyBudgetUpdated() {
+  const update = new Event("budget-updated");
+  window.dispatchEvent(update);
 }
