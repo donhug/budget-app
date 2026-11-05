@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { formatBalance } from "../../utils/format";
 import { PROVERBS } from "../../constants/proverbs";
 function Footer() {
+  const dataVersion = useBudgetVersion();
   const currentDate = useClock();
   const monthCount = useMemo(
     () => Object.keys(getObjectMonths()).length,
@@ -26,7 +27,6 @@ function Footer() {
     [dataVersion],
   );
   const [lastSave, setLastSave] = useState(() => getLastBackup());
-  const dataVersion = useBudgetVersion();
   // dataVersion sert de déclencheur : recalcule quand les données changent
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const squirrelMood = useMemo(() => getSquirrelMood(), [dataVersion]);
