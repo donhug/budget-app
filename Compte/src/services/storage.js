@@ -160,12 +160,13 @@ export function getLastMonth() {
   }
 }
 /**
- * Efface les données existantes, puis remplace firstMonth / lastMonth / initialBalance par les données
- * du fichier de sauvegarde ainsi que les opérations.
- * fait confiance a data, qui doit ( et sera ) verifier avant avec validateObjectImport(data)
- * @param {Array} - data fichier JSON avec les informations sauvegarder.
- * @returns {void}
+ * Remplace toutes les données budgétaires par celles d'une sauvegarde :
+ * supprime toutes les clés "operations-*", puis écrit les règles, le solde initial,
+ * le premier et le dernier mois, et les opérations de chaque mois.
+ * Ne vérifie rien : data doit avoir été validé au préalable avec validateObjectImport.
  *
+ * @param {Object} data - l'objet de sauvegarde (meta, rules, initialBalance, firstMonth, lastMonth, months)
+ * @returns {void}
  */
 export function replaceAllData(data) {
   const keysName = [];
@@ -187,11 +188,23 @@ export function replaceAllData(data) {
   }
 }
 
+/**
+ * Enregistre la date de la dernière sauvegarde (export ou import) dans le localStorage,
+ * sous la clé "lastSave".
+ *
+ * @param {string} date - la date de la sauvegarde, au format ISO (ex : "2026-11-05T20:23:00.000Z")
+ * @returns {void}
+ */
 export function setLastBackup(date) {
   const lastSave = JSON.stringify(date);
   localStorage.setItem("lastSave", lastSave);
 }
 
+/**
+ * Récupère la date de la dernière sauvegarde depuis le localStorage (clé "lastSave").
+ *
+ * @returns {string|null} la date au format ISO, ou null si aucune sauvegarde n'a été faite
+ */
 export function getLastBackup() {
   const lastSave = localStorage.getItem("lastSave");
 
