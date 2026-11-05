@@ -118,7 +118,10 @@
 .link:hover {
   color: var(--color-brand);
 }
+.actionBtn:has(.fileInput:focus-visible) {
+  outline: 2px solid ;
 
+}
 @media (min-width: 768px) {
   .grid {
     max-width: none;

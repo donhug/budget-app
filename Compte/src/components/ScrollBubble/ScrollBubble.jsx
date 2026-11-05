@@ -2,6 +2,8 @@ import style from "./ScrollBubble.module.css";
 import { FaFloppyDisk, FaArrowUp } from "react-icons/fa6";
 import { useEffect, useRef, useState } from "react";
 function ScrollBubble() {
+  const save = "Vers la sauvegarde";
+  const top = "Haut de page";
   const sentinelRef = useRef(null);
   const [isAtBottom, setIsAtBottom] = useState(false);
   function handleClick() {
@@ -25,16 +27,12 @@ function ScrollBubble() {
       <button
         type="button"
         className={style.bubble}
-        aria-label={
-          !isAtBottom ? "Aller a la sauvegarde" : "Aller en haut de la page"
-        }
+        aria-label={!isAtBottom ? save : top}
         onClick={handleClick}
       >
         {!isAtBottom ? <FaFloppyDisk /> : <FaArrowUp />}
 
-        <span className={style.label}>
-          {!isAtBottom ? "Sauvegarder" : "Haut de page"}
-        </span>
+        <span className={style.label}>{!isAtBottom ? save : top}</span>
       </button>
       <div ref={sentinelRef} className={style.sentinel}></div>
     </>
