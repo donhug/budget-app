@@ -35,6 +35,7 @@ export function getMonthTotal(listOperations) {
  * Fonction récursive :remonte de mois en mois jusqu'au mois racine
  * (firstMonth), en additionnant le total de chaque mois au solde initial.
  * ajout d'un arrêt, si l'app vient d'être intialisée.
+ * retourne 0 si l'app n'a pas de premier mois.
  * evite donc a la fonction d'aller avant le premier mois
  *
  * @param {string} month - le mois a calculer, au format "YYYY-MM"
@@ -42,7 +43,9 @@ export function getMonthTotal(listOperations) {
  */
 export function getBalance(month) {
   const firstMonth = getFirstMonth();
-
+  if (firstMonth === null) {
+    return 0;
+  }
   if (month < firstMonth) {
     return 0;
   }

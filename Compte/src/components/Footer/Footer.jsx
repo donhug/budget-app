@@ -125,7 +125,7 @@ function Footer() {
               className={style.actionBtn}
               onClick={handleExport}
             >
-              <FaDownload /> Exporter
+              <FaDownload /> Sauvegarder
             </button>
             <label className={style.actionBtn}>
               <FaUpload /> Importer
@@ -141,7 +141,7 @@ function Footer() {
       </div>
 
       <div className={style.bottomBar}>
-        <p className={style.text}>HF — Hugo Finances · v1.0 · © 2026</p>
+        <p className={style.text}>HF — Hugo Finances · v1.1 · © 2026</p>
         <p className={style.warning}>
           <FaCircleInfo />
           Vos données sont enregistrées uniquement dans ce navigateur. Effacer

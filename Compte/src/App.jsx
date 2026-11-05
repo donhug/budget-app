@@ -49,11 +49,11 @@ function App() {
               </Routes>
             </section>
           ) : (
-            <p>chargement</p>
+            <p>Chargement</p>
           )}
           <ScrollBubble />
         </main>
-        <Footer />
+        {isReady && <Footer />}
       </div>
       <Analytics />
     </div>
