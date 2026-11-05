@@ -57,15 +57,15 @@ export function getCurrentMonth() {
 
 /**
  * Génère la liste des années proposées dans les sélecteurs de date,
- * de l'année en cours jusqu'à dix ans plus tard.
- *
+ * de l’année de départ reçue jusqu’à dix ans après l’année en cours.
+ * @param {number} startYear - année de départ de la liste.
  * @returns {number[]} les années, par ordre croissant (ex : [2026, ..., 2036])
  */
-export function getYearsOption() {
+export function getYearsOption(startYear) {
   const years = [];
-  const startYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
-  for (let year = startYear; year <= startYear + 10; year++) {
+  for (let year = startYear; year <= currentYear + 10; year++) {
     years.push(year);
   }
   return years;

@@ -116,10 +116,6 @@ Application de gestion de budget mois par mois
 - Export / import JSON des données (filet contre la perte du localStorage), import validé avant toute écriture
 - Puis mettre à jour le message du footer (mentionner l'export)
 
-### ⚠️ Avant le 1er janvier 2027
-
-- MonthPicker : les années proposées commencent à l'année en cours. En 2027, une règle sans fin commencée en 2026 aura une date de fin de réserve en 2026, absente de la liste (valeur et affichage divergent).
-
 ### Robustesse
 
 - getBalance : renvoyer 0 si firstMonth est absent (sinon récursion infinie)

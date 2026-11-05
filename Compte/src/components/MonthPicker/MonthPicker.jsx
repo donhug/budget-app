@@ -5,7 +5,9 @@ import { FaChevronDown } from "react-icons/fa6";
 
 function MonthPicker({ value, onChange }) {
   const { year, month } = parseMonthKey(value);
-  const yearList = getYearsOption();
+  const currentYear = new Date().getFullYear();
+  const firstYear = Math.min(year, currentYear);
+  const yearList = getYearsOption(firstYear);
 
   return (
     <div className={style.picker}>
