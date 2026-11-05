@@ -18,6 +18,7 @@ import { useBudgetVersion } from "../../hooks/useBudgetVersion";
 import { useMemo, useState } from "react";
 import { formatBalance } from "../../utils/format";
 import { PROVERBS } from "../../constants/proverbs";
+import { VERSION_APP } from "../../constants/versionApp";
 function Footer() {
   const dataVersion = useBudgetVersion();
   const currentDate = useClock();
@@ -145,12 +146,15 @@ function Footer() {
       </div>
 
       <div className={style.bottomBar}>
-        <p className={style.text}>HF — Hugo Finances · v1.1 · © 2026</p>
+        <p className={style.text}>
+          HF — Hugo Finances · {VERSION_APP} · © 2026
+        </p>
         <p className={style.warning}>
           <FaCircleInfo />
           Vos données sont enregistrées uniquement dans ce navigateur. Effacer
           les données de navigation / des sites ou changer d'appareil les
-          supprimera.
+          supprimera. Pensez à "Sauvegarder", de temps en temps, avec le bouton
+          un peu plus haut. Conseil d'ami 🤠
         </p>
         <a
           href="https://github.com/donhug"
