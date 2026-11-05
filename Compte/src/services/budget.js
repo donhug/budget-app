@@ -14,6 +14,7 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
+import { SQUIRREL_MOODS } from "../constants/squirrelMoods.js";
 const MAX_MONTHS_TO_GENERATE = 120;
 /**
  * Calcul le total des opérations pour un mois donné.
@@ -191,19 +192,20 @@ export function getAllOperationsByMonth() {
 export function getSquirrelMood() {
   const currentMonth = getCurrentMonth();
   const currentBalance = getBalance(currentMonth);
-  const lengthOp = getOperations(currentMonth).length;
-  if (currentBalance === 0 && lengthOp === 0) {
-    return "Sans emploi, il attend chez France Travail";
+  const numberOp = getOperations(currentMonth).length;
+  if (currentBalance === 0 && numberOp === 0) {
+    return SQUIRREL_MOODS.noJob;
   }
   if (currentBalance < 0) {
-    return "Caché sous un tas de factures 🫠";
+    return SQUIRREL_MOODS.broke;
   }
-  if (currentBalance >= 0 && currentBalance <= 200) {
-    return "Stressé 😰";
+  if (currentBalance <= 200) {
+    return SQUIRREL_MOODS.stressed;
   }
   if (currentBalance > 200) {
-    return "Détendu, sur un tas de pièces 😌";
+    return SQUIRREL_MOODS.relaxed;
   }
+  return SQUIRREL_MOODS.lost;
 }
 
 /**
