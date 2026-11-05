@@ -7,6 +7,7 @@ import { BUDGET_UPDATED_EVENT } from "../constants/events.js";
 export function setRules(rulesParm) {
   const rulesString = JSON.stringify(rulesParm);
   localStorage.setItem("rules", rulesString);
+  notifyBudgetUpdated();
 }
 
 /**
@@ -43,6 +44,7 @@ export function deleteRule(ruleId) {
 export function setInitialBalance(balance) {
   const balanceString = JSON.stringify(balance);
   localStorage.setItem("initialBalance", balanceString);
+  notifyBudgetUpdated();
 }
 
 /**
@@ -112,6 +114,7 @@ export function deleteOperation(month, operationId) {
 export function setFirstMonth(month) {
   const firstMonth = JSON.stringify(month);
   localStorage.setItem("firstMonth", firstMonth);
+  notifyBudgetUpdated();
 }
 
 /**
@@ -138,6 +141,7 @@ export function getFirstMonth() {
 export function setLastMonth(month) {
   const lastMonth = JSON.stringify(month);
   localStorage.setItem("lastMonth", lastMonth);
+  notifyBudgetUpdated();
 }
 
 /**
