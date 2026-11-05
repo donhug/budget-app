@@ -14,7 +14,6 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
-import { getObjectMonths } from "./backup.js";
 const MAX_MONTHS_TO_GENERATE = 120;
 /**
  * Calcul le total des opérations pour un mois donné.
@@ -152,6 +151,38 @@ export function groupRulesByStartMonth(rules) {
   }
   return rulesByMonth;
 }
+
+/**
+ * Regroupe les opérations mois par mois et les rassemble dans un objet,
+ *
+ * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
+ *    et chaque valeur la liste des opérations du mois
+ *    ( ex : {"2026-11":[opA opB], "2026-12":[opA opB] }).
+ *    Ou un Objet Vide si il n'y a rien dans le localStorage.
+ */
+export function getAllOperationsByMonth() {
+  const firstMonth = getFirstMonth();
+  const lastMonth = getLastMonth();
+  const monthObject = {};
+  let monthsRead = 0;
+
+  if (firstMonth === null) {
+    return monthObject;
+  }
+
+  let traveledMonth = firstMonth;
+
+  while (traveledMonth <= lastMonth && monthsRead < MAX_MONTHS_TO_GENERATE) {
+    monthsRead++;
+    monthObject[traveledMonth] = getOperations(traveledMonth);
+    traveledMonth = getNextMonth(traveledMonth);
+  }
+
+  if (monthsRead === MAX_MONTHS_TO_GENERATE) {
+    console.warn("limite de 120 mois atteinte");
+  }
+  return monthObject;
+}
 /**
  * Récupère le solde du mois, pour une phrase personaliser, selon le montant.
  *
@@ -185,7 +216,7 @@ export function getSquirrelMood() {
  *    ou null s'il n'y a aucune dépense ponctuelle
  */
 export function getBiggestExpense() {
-  const listExpense = getObjectMonths();
+  const listExpense = getAllOperationsByMonth();
   let biggest = null;
   for (const [month, listOperation] of Object.entries(listExpense)) {
     for (const operation of listOperation) {

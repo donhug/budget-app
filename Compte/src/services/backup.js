@@ -2,10 +2,9 @@ import {
   getFirstMonth,
   getInitialBalance,
   getLastMonth,
-  getOperations,
   getRules,
 } from "./storage.js";
-import { getNextMonth, isMonthKey } from "../utils/dates";
+import { isMonthKey } from "../utils/dates";
 import { isPlainObject } from "../utils/checks.js";
 import { META_APP, META_SCHEMA_VERSION } from "../constants/meta.js";
 import {
@@ -13,40 +12,7 @@ import {
   ERROR_WRONG_APP,
   ERROR_VERSION,
 } from "../constants/errorMessage.js";
-const MAX_MONTHS = 120;
-
-/**
- * Regroupe les opérations mois par mois et les rassemble dans un objet,
- *
- * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
- *    et chaque valeur la liste des opérations du mois
- *    ( ex : {"2026-11":[opA opB], "2026-12":[opA opB] }).
- *    Ou un Objet Vide si il n'y a rien dans le localStorage.
- */
-export function getObjectMonths() {
-  const firstMonth = getFirstMonth();
-  const lastMonth = getLastMonth();
-  const monthObject = {};
-  let monthsRead = 0;
-
-  if (firstMonth === null) {
-    return monthObject;
-  }
-
-  let traveledMonth = firstMonth;
-
-  while (traveledMonth <= lastMonth && monthsRead < MAX_MONTHS) {
-    monthsRead++;
-    monthObject[traveledMonth] = getOperations(traveledMonth);
-    traveledMonth = getNextMonth(traveledMonth);
-  }
-
-  if (monthsRead === MAX_MONTHS) {
-    console.warn("limite de 120 mois atteinte");
-  }
-  return monthObject;
-}
-
+import { getAllOperationsByMonth } from "./budget.js";
 /**
  * Renvoie l'objet, qui regroupe toutes les informations de l'App, avec la date de
  * l'export, le nom de l'App, la version du format des données.
@@ -73,7 +39,7 @@ export function getObjectMonths() {
  */
 export function buildObjectExport() {
   const exportedAt = new Date().toISOString();
-  const monthOperations = getObjectMonths();
+  const monthOperations = getAllOperationsByMonth();
   const firstMonth = getFirstMonth();
   const lastMonth = getLastMonth();
   const rules = getRules();

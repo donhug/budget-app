@@ -1,10 +1,6 @@
 import style from "./Footer.module.css";
 import { FaGithub, FaCircleInfo, FaDownload, FaUpload } from "react-icons/fa6";
-import {
-  buildObjectExport,
-  validateObjectImport,
-  getObjectMonths,
-} from "../../services/backup";
+import { buildObjectExport, validateObjectImport } from "../../services/backup";
 import { downloadObject } from "../../utils/downloadObject";
 import {
   replaceAllData,
@@ -12,7 +8,11 @@ import {
   getLastBackup,
 } from "../../services/storage";
 import { getDaysSince, getSaveLabel, formatMonth } from "../../utils/dates";
-import { getSquirrelMood, getBiggestExpense } from "../../services/budget";
+import {
+  getSquirrelMood,
+  getBiggestExpense,
+  getAllOperationsByMonth,
+} from "../../services/budget";
 import { useClock } from "../../hooks/useClock";
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
 import { useMemo, useState } from "react";
@@ -23,7 +23,7 @@ function Footer() {
   const dataVersion = useBudgetVersion();
   const currentDate = useClock();
   const monthCount = useMemo(
-    () => Object.keys(getObjectMonths()).length,
+    () => Object.keys(getAllOperationsByMonth()).length,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [dataVersion],
   );
