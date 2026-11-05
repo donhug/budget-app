@@ -20,7 +20,11 @@ import { formatBalance } from "../../utils/format";
 import { PROVERBS } from "../../constants/proverbs";
 function Footer() {
   const currentDate = useClock();
-  const monthCount = useMemo(() => Object.keys(getObjectMonths()).length, []);
+  const monthCount = useMemo(
+    () => Object.keys(getObjectMonths()).length,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dataVersion],
+  );
   const [lastSave, setLastSave] = useState(() => getLastBackup());
   const dataVersion = useBudgetVersion();
   // dataVersion sert de déclencheur : recalcule quand les données changent
