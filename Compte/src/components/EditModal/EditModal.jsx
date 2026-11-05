@@ -10,13 +10,14 @@ function EditModal({ rule, onClose, onSubmit }) {
   const [value, setValue] = useState(Math.abs(rule.value));
   const [type, setType] = useState(rule.type);
   const [startMonth, setStartMonth] = useState(rule.start);
+  const currentMonth = getCurrentMonth();
+  const laterMonth = startMonth > currentMonth ? startMonth : currentMonth;
   const [endMonth, setEndMonth] = useState(
-    rule.end ? rule.end : getNextMonth(rule.start),
+    rule.end ? rule.end : getNextMonth(laterMonth),
   );
   const [hasEndDate, setHasEndDate] = useState(rule.end !== null);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
-  const currentMonth = getCurrentMonth();
   const hasStarted = currentMonth >= rule.start;
   const [includeCurrentMonth, setIncludeCurrentMonth] = useState(false);
 
@@ -146,7 +147,7 @@ function EditModal({ rule, onClose, onSubmit }) {
               onChange={(e) => {
                 setHasEndDate(e.target.checked);
                 if (e.target.checked) {
-                  setEndMonth(getNextMonth(startMonth));
+                  setEndMonth(getNextMonth(laterMonth));
                 }
               }}
             />
