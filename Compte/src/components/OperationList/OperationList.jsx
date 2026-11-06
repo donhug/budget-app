@@ -28,9 +28,9 @@ function OperationList({ title, operations, total, onDelete }) {
             type="button"
             onClick={() => onDelete(op)}
             className={style.deleteBtn}
-            aria-label="Supprimmer l'opération"
+            aria-label="Supprimer l'opération"
           >
-            <FaTrashCan/>
+            <FaTrashCan />
           </button>
         </div>
       ))}

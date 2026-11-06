@@ -6,13 +6,13 @@ import {
   getOperations,
   getRules,
   setOperations,
+  setRules,
 } from "../../services/storage";
 import { formatMonth, getCurrentMonth } from "../../utils/dates";
 import {
   groupRulesByStartMonth,
   materializeRules,
 } from "../../services/budget";
-import { setRules } from "../../services/storage";
 import RuleList from "../../components/RuleList/RuleList";
 import EditModal from "../../components/EditModal/EditModal";
 import DeleteConfirmation from "../../components/DeleteConfirmation/DeleteConfirmation";

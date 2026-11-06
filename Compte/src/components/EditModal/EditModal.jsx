@@ -1,8 +1,7 @@
 import style from "./EditModal.module.css";
 import { useState } from "react";
 import MonthPicker from "../MonthPicker/MonthPicker";
-import { getNextMonth } from "../../utils/dates";
-import { getCurrentMonth } from "../../utils/dates";
+import { getCurrentMonth, getNextMonth } from "../../utils/dates";
 import { FaXmark } from "react-icons/fa6";
 
 function EditModal({ rule, onClose, onSubmit }) {
