@@ -14,10 +14,12 @@ import {
   getNextMonth,
   getCurrentMonth,
 } from "../utils/dates.js";
+import { SQUIRREL_MOODS } from "../constants/squirrelMoods.js";
 const MAX_MONTHS_TO_GENERATE = 120;
-/***
+/**
  * Calcul le total des opérations pour un mois donné.
- * @param {Array}  listOperations - liste des opérations du mois
+ *
+ * @param {Array} listOperations - liste des opérations du mois
  * @returns {number} le total des opérations du mois
  */
 export function getMonthTotal(listOperations) {
@@ -33,13 +35,17 @@ export function getMonthTotal(listOperations) {
  * Fonction récursive :remonte de mois en mois jusqu'au mois racine
  * (firstMonth), en additionnant le total de chaque mois au solde initial.
  * ajout d'un arrêt, si l'app vient d'être intialisée.
+ * retourne 0 si l'app n'a pas de premier mois.
  * evite donc a la fonction d'aller avant le premier mois
+ *
  * @param {string} month - le mois a calculer, au format "YYYY-MM"
  * @returns {number} le solde du mois (+ ou -)
  */
 export function getBalance(month) {
   const firstMonth = getFirstMonth();
-
+  if (firstMonth === null) {
+    return 0;
+  }
   if (month < firstMonth) {
     return 0;
   }
@@ -53,11 +59,12 @@ export function getBalance(month) {
   );
 }
 
-/***
+/**
  * vérifie dans la liste des règles de l'utilisateur et les ajoute si,
  * elle passe la condition pour le mois donné
+ *
  * @param {string} month - mois a matérialiser au format "YYYY-MM"
- * @param {Array}  rule - tableau des règles
+ * @param {Array} rule - tableau des règles
  * @returns {Array} tableau des opérations du mois (chacune avec origin: "rules")
  */
 export function materializeRules(month, rules) {
@@ -81,6 +88,7 @@ export function materializeRules(month, rules) {
  * génère les mois manquants (format "YYYY-MM"), qui n'ont pas été créés, depuis le dernier
  * mois généré. Pour chaque mois créé, elle matérialise les règles et stocke les opérations.
  * Mise à jour du premier mois (si premier lancement) et dernier mois généré avec le setLastMonth
+ *
  * @returns {void}
  */
 
@@ -125,10 +133,11 @@ export function generateMonths() {
   setLastMonth(currentMonth);
 }
 
-/***
+/**
  * Regroupe les règles par mois de début.
- * @param {Array}  rules - tableau des règles
- * @returns {object<string, Array} Un objet dont chaque clé est un mois "YYYY-MM"
+ *
+ * @param {Array} rules - tableau des règles
+ * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
  *    et chaque valeur la liste des règles qui commencent ce mois-là
  *    ( ex : {"2026-11":[règleA règleC], "2026-12":[règleB] })
  */
@@ -142,4 +151,83 @@ export function groupRulesByStartMonth(rules) {
     rulesByMonth[rule.start].push(rule);
   }
   return rulesByMonth;
+}
+
+/**
+ * Regroupe les opérations mois par mois et les rassemble dans un objet,
+ *
+ * @returns {object<string, Array>} Un objet dont chaque clé est un mois "YYYY-MM"
+ *    et chaque valeur la liste des opérations du mois
+ *    ( ex : {"2026-11":[opA opB], "2026-12":[opA opB] }).
+ *    Ou un Objet Vide si il n'y a rien dans le localStorage.
+ */
+export function getAllOperationsByMonth() {
+  const firstMonth = getFirstMonth();
+  const lastMonth = getLastMonth();
+  const monthObject = {};
+  let monthsRead = 0;
+
+  if (firstMonth === null) {
+    return monthObject;
+  }
+
+  let traveledMonth = firstMonth;
+
+  while (traveledMonth <= lastMonth && monthsRead < MAX_MONTHS_TO_GENERATE) {
+    monthsRead++;
+    monthObject[traveledMonth] = getOperations(traveledMonth);
+    traveledMonth = getNextMonth(traveledMonth);
+  }
+
+  if (monthsRead === MAX_MONTHS_TO_GENERATE) {
+    console.warn("limite de 120 mois atteinte");
+  }
+  return monthObject;
+}
+/**
+ * Récupère le solde du mois, pour une phrase personaliser, selon le montant.
+ *
+ * @returns {string} Phrase, selon le solde.
+ */
+export function getSquirrelMood() {
+  const currentMonth = getCurrentMonth();
+  const currentBalance = getBalance(currentMonth);
+  const numberOp = getOperations(currentMonth).length;
+  if (currentBalance === 0 && numberOp === 0) {
+    return SQUIRREL_MOODS.noJob;
+  }
+  if (currentBalance < 0) {
+    return SQUIRREL_MOODS.broke;
+  }
+  if (currentBalance <= 200) {
+    return SQUIRREL_MOODS.stressed;
+  }
+  if (currentBalance > 200) {
+    return SQUIRREL_MOODS.relaxed;
+  }
+  return SQUIRREL_MOODS.lost;
+}
+
+/**
+ * Cherche la plus grosse dépense ponctuelle (origin "manual") parmi tous les mois.
+ * Les dépenses récurrentes (règles) sont ignorées.
+ * Les dépenses étant négatives, la plus grosse est celle dont la valeur est la plus petite.
+ *
+ * @returns {object|null} une copie de l'opération, avec en plus le mois où elle a été trouvée
+ *    (ex : { label: "Console", value: -349, ..., month: "2026-09" }),
+ *    ou null s'il n'y a aucune dépense ponctuelle
+ */
+export function getBiggestExpense() {
+  const listExpense = getAllOperationsByMonth();
+  let biggest = null;
+  for (const [month, listOperation] of Object.entries(listExpense)) {
+    for (const operation of listOperation) {
+      if (operation.type === "expense" && operation.origin === "manual") {
+        if (biggest === null || biggest.value > operation.value) {
+          biggest = { ...operation, month };
+        }
+      }
+    }
+  }
+  return biggest;
 }

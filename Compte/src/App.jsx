@@ -1,4 +1,4 @@
-import {Analytics} from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 import styles from "./App.module.css";
 import { generateMonths } from "./services/budget";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import ChangesRules from "./pages/ChangesRules/ChangesRules";
 import UnderConstruction from "./pages/Construction/UnderConstruction";
 import NotFound from "./pages/NotFound/NotFound";
 import Footer from "./components/Footer/Footer";
-
+import ScrollBubble from "./components/ScrollBubble/ScrollBubble";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -49,12 +49,13 @@ function App() {
               </Routes>
             </section>
           ) : (
-            <p>chargement</p>
+            <p>Chargement</p>
           )}
+          <ScrollBubble />
         </main>
-        <Footer />
+        {isReady && <Footer />}
       </div>
-      <Analytics/>
+      <Analytics />
     </div>
   );
 }

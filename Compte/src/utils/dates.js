@@ -1,7 +1,8 @@
 import { MONTHS } from "../constants/months";
-/***
+/**
  * récupère le mois suivant, a partir de la date donnée, ajoute 1 au mois ou a l'année
- * @param {string}  dateString - mois de départ au format "YYYY-MM"
+ *
+ * @param {string} dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois suivant au même format "YYYY-MM"
  */
 export function getNextMonth(dateString) {
@@ -21,9 +22,10 @@ export function getNextMonth(dateString) {
   return toMonthKey(nextYear, nextMonth);
 }
 
-/***
+/**
  * récupère le mois precedent, a partie de la date donnée, retire 1 au mois ou a l'année
- * @param {string}  dateString - mois de départ au format "YYYY-MM"
+ *
+ * @param {string} dateString - mois de départ au format "YYYY-MM"
  * @returns {string} le mois precedent au même format "YYYY-MM"
  */
 export function getPreviousMonth(dateString) {
@@ -42,8 +44,9 @@ export function getPreviousMonth(dateString) {
 
   return toMonthKey(prevYear, prevMonth);
 }
-/***
+/**
  * récupère le mois actuel
+ *
  * @returns {string} le mois actuelle au format "YYYY-MM"
  */
 export function getCurrentMonth() {
@@ -54,14 +57,15 @@ export function getCurrentMonth() {
 
 /**
  * Génère la liste des années proposées dans les sélecteurs de date,
- * de l'année en cours jusqu'à dix ans plus tard.
+ * de l’année de départ reçue jusqu’à dix ans après l’année en cours.
+ * @param {number} startYear - année de départ de la liste.
  * @returns {number[]} les années, par ordre croissant (ex : [2026, ..., 2036])
  */
-export function getYearsOption() {
+export function getYearsOption(startYear) {
   const years = [];
-  const startYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
-  for (let year = startYear; year <= startYear + 10; year++) {
+  for (let year = startYear; year <= currentYear + 10; year++) {
     years.push(year);
   }
   return years;
@@ -69,6 +73,7 @@ export function getYearsOption() {
 
 /**
  * Transforme une clé de mois en libellé lisible pour l'affichage.
+ *
  * @param {string} dateString - la clé de mois au format "YYYY-MM"
  * @returns {string} le libellé (ex : "septembre 2026")
  */
@@ -81,6 +86,7 @@ export function formatMonth(dateString) {
 /**
  * Assemble une année et un mois en clé de mois au format "YYYY-MM".
  * Ajoute le zéro devant les mois à un chiffre.
+ *
  * @param {number|string} year - l'année (ex : 2026)
  * @param {number|string} month - le mois, de 1 à 12
  * @returns {string} la clé de mois (ex : "2026-03")
@@ -93,6 +99,7 @@ export function toMonthKey(year, month) {
 /**
  * Découpe une clé de mois "YYYY-MM" en année et mois numériques.
  * Opération inverse de toMonthKey.
+ *
  * @param {string} monthKey - la clé de mois (ex : "2026-03")
  * @returns {{ year: number, month: number }} l'année et le mois (ex : { year: 2026, month: 3 })
  */
@@ -102,4 +109,68 @@ export function parseMonthKey(monthKey) {
   const month = Number(dateSplit[1]);
 
   return { year, month };
+}
+/**
+ * verifie que la date soit bien une chaine, et, au bon format "YYYY-MM"
+ *
+ * @param {*} value - donnée a tester
+ * @returns {boolean} true ou false
+ */
+export function isMonthKey(value) {
+  const monthKeyPattern = /^\d{4}-\d{2}$/;
+  if (typeof value === "string" && monthKeyPattern.test(value)) {
+    return true;
+  }
+  return false;
+}
+/**
+ * Retourne une date à minuit (00:00:00)
+ *
+ * @param {date|string} - l'instant de référence, date a convertir
+ * @returns {date} retourne la date, remise à minuit.
+ */
+export function startOfDay(date) {
+  const madeDate = new Date(date);
+  const year = madeDate.getFullYear();
+  const month = madeDate.getMonth();
+  const day = madeDate.getDate();
+  const midnight = new Date(year, month, day);
+  return midnight;
+}
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+/**
+ * Calcule le nombre de jours du calendrier écoulés depuis une date.
+ *
+ * @param {string|null} isoDate - la date de départ au format ISO, ou null
+ * @param {Date} [now=new Date()] - l'instant de référence
+ * @returns {number|null} le nombre de jours (arrondi au plus proche), ou null si aucune date
+ */
+export function getDaysSince(isoDate, now = new Date()) {
+  if (isoDate === null) {
+    return null;
+  }
+  const today = startOfDay(now);
+  const saveDay = startOfDay(isoDate);
+
+  return Math.round((today - saveDay) / MS_PER_DAY);
+}
+
+/**
+ * Transforme un nombre de jours depuis la dernière sauvegarde en libellé lisible.
+ *
+ * @param {number|null} days - nombre de jours écoulés, ou null si jamais sauvegardé
+ * @returns {string} le libellé (ex : "jamais", "aujourd'hui", "hier", "il y a 3 jours")
+ */
+export function getSaveLabel(days) {
+  if (days === null) {
+    return "jamais";
+  }
+  if (days === 0) {
+    return "aujourd'hui";
+  }
+  if (days === 1) {
+    return "hier";
+  }
+  return `il y a ${days} jours`;
 }
