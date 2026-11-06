@@ -13,7 +13,7 @@ function MobileNav({ onClose }) {
           onClick={onClose}
           aria-label="Fermer le menu"
         >
-          <FaXmark/>
+          <FaXmark />
         </button>
         {NAV_LINKS.map((link) => (
           <NavLink

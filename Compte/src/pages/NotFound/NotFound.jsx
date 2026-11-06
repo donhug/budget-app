@@ -11,9 +11,7 @@ function NotFound() {
         alt="Écureuil cowboy stressé, les poches vides"
       />
       <h2 className={style.title}>404</h2>
-      <p className={style.text}>
-        La page que tu cherches n'existe pas ou plus 
-      </p>
+      <p className={style.text}>La page que tu cherches n'existe pas ou plus</p>
       <Link to="/" className={style.link}>
         Retour à l'accueil
       </Link>
