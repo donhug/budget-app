@@ -123,21 +123,37 @@ export function isMonthKey(value) {
   }
   return false;
 }
+/**
+ * Retourne une date à minuit (00:00:00)
+ *
+ * @param {date|string} - l'instant de référence, date a convertir
+ * @returns {date} retourne la date, remise à minuit.
+ */
+export function startOfDay(date) {
+  const madeDate = new Date(date);
+  const year = madeDate.getFullYear();
+  const month = madeDate.getMonth();
+  const day = madeDate.getDate();
+  const midnight = new Date(year, month, day);
+  return midnight;
+}
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
 /**
- * Calcule le nombre de jours entiers écoulés depuis une date.
+ * Calcule le nombre de jours du calendrier écoulés depuis une date.
  *
  * @param {string|null} isoDate - la date de départ au format ISO, ou null
  * @param {Date} [now=new Date()] - l'instant de référence
- * @returns {number|null} le nombre de jours (arrondi vers le bas), ou null si aucune date
+ * @returns {number|null} le nombre de jours (arrondi au plus proche), ou null si aucune date
  */
 export function getDaysSince(isoDate, now = new Date()) {
   if (isoDate === null) {
     return null;
   }
-  return Math.floor((now - new Date(isoDate)) / MS_PER_DAY);
+  const today = startOfDay(now);
+  const saveDay = startOfDay(isoDate);
+
+  return Math.round((today - saveDay) / MS_PER_DAY);
 }
 
 /**
