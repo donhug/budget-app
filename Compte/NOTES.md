@@ -185,7 +185,8 @@ Application de gestion de budget mois par mois
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL…)
 - Opérations et règles avec un accountId optionnel : négatif = versement vers le compte, positif = retrait depuis le compte
 - Solde d'un compte CALCULÉ : tous ses mouvements, sur tous les mois de la racine au mois courant
-- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 2. L'import doit accepter les sauvegardes version 1 et les MIGRER (version 1 = aucun compte, accounts: []), sinon les anciennes sauvegardes deviennent inutilisables.
+- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 3 (la version 2 est prise par les dates, voir « Modèle de données v2 »). Migration v2 → v3 : aucun compte (accounts: []), accountId: null partout.
+- Virement interne (LDD, Livret A, PEA…) = une opération avec un accountId. Pas de type "transfer" séparé.
 
 ### Raffinements / idées
 
@@ -235,13 +236,65 @@ Application de gestion de budget mois par mois
 ### Phase 2 — modification
 
 - Nouvelle modale ponctuelle, deux modes (props) :
-  - ajout : libellé / montant / type, SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
+  - ajout : libellé / montant / type (+ date, une fois le modèle v2 en place), SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
   - modification : champs pré-remplis, seul le montant est modifiable (le signe vient toujours du type)
 - Avertissement : « cette modification change les soldes des mois suivants et le solde en cours »
 
 ---
 
-## V2
+## Modèle de données v2 (format de sauvegarde version 2)
+
+### Pourquoi
+
+Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, sans erreur de saisie. Causes :
+
+- pas d'opération « solde de départ » (−663,49 €) → à saisir tout de suite, sans code ;
+- règles de novembre comptées alors qu'elles n'étaient pas encore passées à la banque (+443,46 €) → l'app raisonne au MOIS, la banque au JOUR ;
+- frais hors zone euro non suivis (+1,58 €) → réglé : règle CLAUDE passée à −23,18 €.
+- deux opérations rangées dans le mauvais mois, faute de date.
+
+### Décisions
+
+- **Date sur les opérations :** `date: "YYYY-MM-DD"`. **Jour sur les règles :** `day` (1–31). Matérialisation : si le jour n'existe pas dans le mois (31 en février), on prend le dernier jour du mois.
+- **Statut prévu / passé : CALCULÉ, jamais stocké** (date <= aujourd'hui → passé). Permet :
+  - un solde « à ce jour » (proche de la banque, jamais garanti identique : délais de passage) ;
+  - le prochain prélèvement ;
+  - un solde de fin de mois prévisionnel (option).
+  - Week-end : pas de décalage au jour ouvré pour commencer (un prélèvement du samedi apparaît « passé » avant la banque). À revoir si gênant.
+- **Trois champs séparés, chacun une seule information :**
+
+| Champ     | Question                                      | Valeurs                          |
+| --------- | --------------------------------------------- | -------------------------------- |
+| type      | Dans quel sens va l'argent ? (donne le signe) | "expense" / "income" (inchangé)  |
+| origin    | D'où vient l'opération ?                      | "rule" / "manual" / "adjustment" |
+| accountId | Mouvement vers l'épargne ?                    | null, ou id d'un compte (V3)     |
+
+- **origin "adjustment" :** solde de départ et corrections de rapprochement. Exclus des statistiques de dépenses / revenus (sinon ils gonflent les revenus). Les mouvements avec accountId sont aussi exclus des stats, mais comptent dans le solde du compte courant.
+- **Centimes en entiers (optionnel) :** si on le fait, le faire DANS cette même migration (une seule migration au lieu de deux). Formatage (÷ 100) uniquement à l'affichage. Les erreurs des flottants restent invisibles à l'affichage aujourd'hui : pas urgent.
+- **Migration :** fonctions par étapes (migrateV1toV2, puis plus tard migrateV2toV3), enchaînées à l'import et au démarrage. Une sauvegarde v1 passe par toutes les étapes. Opérations v1 sans date : date par défaut à décider (1er du mois ?). META_SCHEMA_VERSION → 2.
+- La validation de l'import accepte les versions <= version actuelle (puis migre), et refuse les versions supérieures (sauvegarde d'une app plus récente).
+
+### Plus tard
+
+- Case « pointé » sur les opérations (seul moyen d'une égalité stricte avec la banque)
+- Import du CSV bancaire avec rapprochement automatique (même montant à quelques centimes près, date à ±5 jours)
+
+---
+
+## Feuille de route — novembre 2026 (environ 3 semaines)
+
+1. **V1.2 phase 1 :** grille des années, routes, affichage des mois passés (dépend peu du modèle) — environ 1 semaine
+2. **Modèle de données v2 :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), migration v1 → v2 — le chantier le plus délicat
+3. **V1.2 phase 2 :** modifier / ajouter des opérations ponctuelles dans un mois passé (modale avec date)
+4. **Épargne :** comptes + accountId, format version 3, migration v2 → v3
+5. **Plus tard :** pointage, import CSV bancaire, ajustement bancaire proposé en début de mois
+
+Si ça déborde des 3 semaines : mieux vaut un modèle v2 solide qu'une épargne bâclée.
+Sans code, tout de suite : ajouter l'opération « solde de départ » dans le premier mois.
+
+---
+
+## Option BDD
 
 - Base de données : Supabase (données + authentification), front sur Vercel, réécriture de storage.js uniquement
 - Profil utilisateur via Context, données serveur via TanStack Query
