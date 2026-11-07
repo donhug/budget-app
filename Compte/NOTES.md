@@ -185,6 +185,7 @@ Application de gestion de budget mois par mois
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL…)
 - Opérations et règles avec un accountId optionnel : négatif = versement vers le compte, positif = retrait depuis le compte
 - Solde d'un compte CALCULÉ : tous ses mouvements, sur tous les mois de la racine au mois courant
+- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 2. L'import doit accepter les sauvegardes version 1 et les MIGRER (version 1 = aucun compte, accounts: []), sinon les anciennes sauvegardes deviennent inutilisables.
 
 ### Raffinements / idées
 
@@ -196,8 +197,7 @@ Application de gestion de budget mois par mois
 - Image d'aperçu Open Graph 1200 × 630 (og:image actuel à corriger ou à retirer)
 - Fusion de fichiers JSON, avec détection des conflits : demander à l'utilisateur quelle opération garder (ex : salaire à 1500 dans l'app, à 1700 dans le JSON).
 - Export CSV des opérations (une ligne par opération + colonne mois), pour l'analyse dans un tableur, pas pour la sauvegarde.
-- Page avec les mois de l'année : mois déjà générés cliquables (route /month/:monthKey + useParams), mois à venir grisés.
-  À décider : mois passé en lecture seule ou modifiable (si modifiable, cela change les reports et donc le solde du mois en cours).
+- Ajustement bancaire : au début d'un mois (ou à la première ouverture du mois), PROPOSER de saisir le solde réel de la banque, afficher l'écart et créer une opération d'ajustement si l'utilisateur accepte. Jamais automatique (un ajustement cache la cause de l'écart : abonnement oublié, règle fausse…). Opération identifiable (libellé « Ajustement », éventuellement origin "adjustment" → nouvelle version du format de sauvegarde).
 
 ### Refactor prévu (avant la V1.5)
 
@@ -208,6 +208,36 @@ Application de gestion de budget mois par mois
 - Renommer MAX_MONTHS_TO_GENERATE (sert aussi à la lecture)
 - outline-offset sur la règle :focus-visible globale
 - Mettre à jour ESLint pour la vulnérabilité modérée de minimatch (sans npm audit fix --force)
+
+---
+
+## V1.2 — Mois passés et grille des années (prochaine branche)
+
+### Décisions
+
+- **Navigation dans les années :** de l'année de firstMonth jusqu'à l'année en cours. Les années avant firstMonth n'existent pas ; les années futures sont grisées et non navigables. Bouton « année précédente » désactivé sur l'année de firstMonth.
+- **États d'un mois dans la grille :**
+  - avant firstMonth : n'existe pas (gris foncé), non cliquable
+  - entre firstMonth et le mois en cours : passé (blanc), cliquable
+  - mois en cours : vert, cliquable, avec un indice textuel (« en cours » / aria-current), pas seulement la couleur
+  - après le mois en cours : à venir (gris clair), non cliquable (vraiment désactivé, pas seulement grisé)
+- **Routes :** le mois en cours reçoit sa propre route (ex : /month ou /current), car le dashboard deviendra la page d'accueil "/". Mois passé : /month/:monthKey (useParams). La grille renvoie vers ces routes.
+- **Deux pages distinctes :** mois en cours et mois passé (réutilisation de MonthSummary, OperationList). Si trop de logique est recopiée, extraire une fonction commune.
+- **Modification du passé — EXCEPTION VOLONTAIRE à « le passé ne bouge jamais » :** cette règle concerne les RÈGLES. Dans un mois passé, on peut corriger les opérations PONCTUELLES (origin "manual") uniquement. Les opérations issues de règles restent intouchables.
+- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : l'afficher clairement à l'utilisateur (avertissement).
+
+### Phase 1 — affichage seul
+
+- Route propre pour le mois en cours
+- Grille de l'année avec les quatre états, navigation entre les années
+- Page d'un mois passé en lecture (solde, report, opérations), comme la page Modifications
+
+### Phase 2 — modification
+
+- Nouvelle modale ponctuelle, deux modes (props) :
+  - ajout : libellé / montant / type, SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
+  - modification : champs pré-remplis, seul le montant est modifiable (le signe vient toujours du type)
+- Avertissement : « cette modification change les soldes des mois suivants et le solde en cours »
 
 ---
 
