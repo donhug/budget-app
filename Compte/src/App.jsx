@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import styles from "./App.module.css";
 import { generateMonths } from "./services/budget";
 import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import MobileNav from "./components/MobileNav/MobileNav";
@@ -31,7 +31,8 @@ function App() {
           {isReady ? (
             <section className={styles.appShell}>
               <Routes>
-                <Route path="/" element={<CurrentMonth />} />
+                <Route path="/" element={<Navigate to="/month" replace />} />
+                <Route path="/month" element={<CurrentMonth />} />
                 <Route path="/rules-changes" element={<ChangesRules />} />
                 <Route
                   path="/dashboard"
