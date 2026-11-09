@@ -12,6 +12,7 @@ import UnderConstruction from "./pages/Construction/UnderConstruction";
 import NotFound from "./pages/NotFound/NotFound";
 import Footer from "./components/Footer/Footer";
 import ScrollBubble from "./components/ScrollBubble/ScrollBubble";
+import Years from "./pages/Years/Years";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/month" replace />} />
                 <Route path="/month" element={<CurrentMonth />} />
                 <Route path="/rules-changes" element={<ChangesRules />} />
+                <Route path="/calendar" element={<Years />} />
                 <Route
                   path="/dashboard"
                   element={<UnderConstruction title="Dashboard" />}
