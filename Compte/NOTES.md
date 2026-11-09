@@ -185,7 +185,7 @@ Application de gestion de budget mois par mois
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL…)
 - Opérations et règles avec un accountId optionnel : négatif = versement vers le compte, positif = retrait depuis le compte
 - Solde d'un compte CALCULÉ : tous ses mouvements, sur tous les mois de la racine au mois courant
-- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 3 (la version 2 est prise par les dates, voir « Modèle de données v2 »). Migration v2 → v3 : aucun compte (accounts: []), accountId: null partout.
+- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 2. Migration v1 → v2 (migrateV1toV2) : aucun compte (accounts: []), accountId: null partout.
 - Virement interne (LDD, Livret A, PEA…) = une opération avec un accountId. Pas de type "transfer" séparé.
 
 ### Raffinements / idées
@@ -236,13 +236,13 @@ Application de gestion de budget mois par mois
 ### Phase 2 — modification
 
 - Nouvelle modale ponctuelle, deux modes (props) :
-  - ajout : libellé / montant / type (+ date, une fois le modèle v2 en place), SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
+  - ajout : libellé / montant / type (la date sera ajoutée plus tard, avec le modèle à dates), SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
   - modification : champs pré-remplis, seul le montant est modifiable (le signe vient toujours du type)
 - Avertissement : « cette modification change les soldes des mois suivants et le solde en cours »
 
 ---
 
-## Modèle de données v2 (format de sauvegarde version 2)
+## Modèle de données à dates (format de sauvegarde version 3)
 
 ### Pourquoi
 
@@ -271,7 +271,7 @@ Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, s
 
 - **origin "adjustment" :** solde de départ et corrections de rapprochement. Exclus des statistiques de dépenses / revenus (sinon ils gonflent les revenus). Les mouvements avec accountId sont aussi exclus des stats, mais comptent dans le solde du compte courant.
 - **Centimes en entiers (optionnel) :** si on le fait, le faire DANS cette même migration (une seule migration au lieu de deux). Formatage (÷ 100) uniquement à l'affichage. Les erreurs des flottants restent invisibles à l'affichage aujourd'hui : pas urgent.
-- **Migration :** fonctions par étapes (migrateV1toV2, puis plus tard migrateV2toV3), enchaînées à l'import et au démarrage. Une sauvegarde v1 passe par toutes les étapes. Opérations v1 sans date : date par défaut à décider (1er du mois ?). META_SCHEMA_VERSION → 2.
+- **Migration :** fonctions par étapes (migrateV1toV2 pour l'épargne, puis migrateV2toV3 pour les dates), enchaînées à l'import et au démarrage. Une sauvegarde v1 passe par toutes les étapes. Opérations sans date : date par défaut à décider (1er du mois ?). META_SCHEMA_VERSION → 3.
 - La validation de l'import accepte les versions <= version actuelle (puis migre), et refuse les versions supérieures (sauvegarde d'une app plus récente).
 
 ### Plus tard
@@ -281,15 +281,15 @@ Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, s
 
 ---
 
-## Feuille de route — novembre 2026 (environ 3 semaines)
+## Feuille de route — novembre 2026 (réordonnée le 09/11)
 
-1. **V1.2 phase 1 :** grille des années, routes, affichage des mois passés (dépend peu du modèle) — environ 1 semaine
-2. **Modèle de données v2 :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), migration v1 → v2 — le chantier le plus délicat
-3. **V1.2 phase 2 :** modifier / ajouter des opérations ponctuelles dans un mois passé (modale avec date)
-4. **Épargne :** comptes + accountId, format version 3, migration v2 → v3
+1. **V1.2 historique, phase 1 :** grille des années, routes, page d'un mois passé en lecture — presque fini (reste : afficher le résumé et les opérations du mois passé)
+2. **V1.2 historique, phase 2 :** modifier le montant / ajouter des opérations ponctuelles dans un mois passé (modale sans date pour l'instant)
+3. **Épargne :** comptes + accountId, page /savings, format de sauvegarde version 2, migrateV1toV2 — objectif : fini ou presque vers le 23/11
+4. **Modèle à dates :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), format version 3, migrateV2toV3 ; ajouter le champ date à la modale des mois passés
 5. **Plus tard :** pointage, import CSV bancaire, ajustement bancaire proposé en début de mois
 
-Si ça déborde des 3 semaines : mieux vaut un modèle v2 solide qu'une épargne bâclée.
+Une étape mergée avant de commencer la suivante. Si ça déborde : mieux vaut une étape solide qu'une étape bâclée.
 Sans code, tout de suite : ajouter l'opération « solde de départ » dans le premier mois.
 
 ---
