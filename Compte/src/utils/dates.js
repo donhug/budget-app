@@ -1,4 +1,5 @@
 import { MONTHS } from "../constants/months";
+import { MONTHS_STATE } from "../constants/stateMonths";
 /**
  * récupère le mois suivant, a partir de la date donnée, ajoute 1 au mois ou a l'année
  *
@@ -173,4 +174,32 @@ export function getSaveLabel(days) {
     return "hier";
   }
   return `il y a ${days} jours`;
+}
+
+/**
+ *  Retourne l'état du mois, en fonction de sa position.
+ *
+ * @param {string} classifyMonth - clé du mois a classée
+ * @param {string|null} firstMonth - clé du premier mois de l'app
+ * @param {string} currentMonth - clé du mois en cours
+ * @returns {string} - état du mois :
+ *  "avant"
+ *  "passer"
+ *  "actuel"
+ *  "futur"
+ */
+export function getMonthState(monthKey, firstMonth, currentMonth) {
+  if (firstMonth === null) {
+    return MONTHS_STATE.before;
+  }
+  if (monthKey < firstMonth) {
+    return MONTHS_STATE.before;
+  }
+  if (monthKey === currentMonth) {
+    return MONTHS_STATE.current;
+  }
+  if (monthKey < currentMonth) {
+    return MONTHS_STATE.past;
+  }
+  return MONTHS_STATE.future;
 }
