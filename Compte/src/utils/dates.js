@@ -112,13 +112,14 @@ export function parseMonthKey(monthKey) {
   return { year, month };
 }
 /**
- * verifie que la date soit bien une chaine, et, au bon format "YYYY-MM"
+ * verifie que la date soit bien une chaine, et, au bon format "YYYY-MM".
+ * précise un mois de 01 à 12
  *
  * @param {*} value - donnée a tester
  * @returns {boolean} true ou false
  */
 export function isMonthKey(value) {
-  const monthKeyPattern = /^\d{4}-\d{2}$/;
+  const monthKeyPattern = /^\d{4}-(0[1-9]|1[0-2])$/;
   if (typeof value === "string" && monthKeyPattern.test(value)) {
     return true;
   }
