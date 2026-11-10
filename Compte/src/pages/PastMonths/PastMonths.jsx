@@ -1,18 +1,22 @@
 import style from "./PastMonths.module.css";
 import { useParams, Navigate } from "react-router";
 import {
-  formatMonth,
   getCurrentMonth,
   getMonthState,
   isMonthKey,
+  getPreviousMonth,
 } from "../../utils/dates";
 import NotFound from "../NotFound/NotFound";
-import { getFirstMonth } from "../../services/storage";
+import { getFirstMonth, getOperations } from "../../services/storage";
 import { MONTHS_STATE } from "../../constants/stateMonths";
+import { getBalance, getMonthTotal } from "../../services/budget";
+import OperationList from "../../components/OperationList/OperationList";
+import MonthSummary from "../../components/MonthSummary/MonthSummary";
 function PastMonths() {
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const { monthKey } = useParams();
+  const lastMonth = getPreviousMonth(monthKey);
   if (!isMonthKey(monthKey)) {
     return <NotFound />;
   }
@@ -23,10 +27,42 @@ function PastMonths() {
   if (monthState !== MONTHS_STATE.past) {
     return <NotFound />;
   }
-  const monthLabel = formatMonth(monthKey);
+
+  const pastOperations = getOperations(monthKey);
+  const pastMonthlyOps = pastOperations.filter((op) => op.origin === "rule");
+  const pastManualOps = pastOperations.filter((op) => op.origin === "manual");
+  const pastBalance = getBalance(monthKey);
+  const pastMonthOpTotal = getMonthTotal(pastManualOps);
+  const pastMonthRlTotal = getMonthTotal(pastMonthlyOps);
+  const lastCarryOver = getBalance(lastMonth);
+  const isFirstMonth = firstMonth === monthKey;
   return (
     <>
-      <h2>{monthLabel}</h2>
+      <div>
+        <div>
+          <MonthSummary
+            currentMonth={monthKey}
+            balance={pastBalance}
+            previousMonth={lastMonth}
+            carryOver={lastCarryOver}
+            isFirstMonth={isFirstMonth}
+          />
+        </div>
+        <div>
+          <OperationList
+            title="Opérations mensuelles : "
+            operations={pastMonthlyOps}
+            total={pastMonthRlTotal}
+          />
+        </div>
+        <div>
+          <OperationList
+            title="Opérations ponctuelles : "
+            operations={pastManualOps}
+            total={pastMonthOpTotal}
+          />
+        </div>
+      </div>
     </>
   );
 }
