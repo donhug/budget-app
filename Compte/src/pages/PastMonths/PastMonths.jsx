@@ -10,6 +10,7 @@ import {
 } from "../../utils/dates";
 import NotFound from "../NotFound/NotFound";
 import {
+  deleteOperation,
   getFirstMonth,
   getOperations,
   setOperations,
@@ -19,8 +20,10 @@ import { getBalance, getMonthTotal } from "../../services/budget";
 import OperationList from "../../components/OperationList/OperationList";
 import MonthSummary from "../../components/MonthSummary/MonthSummary";
 import PastManualModal from "../../components/PastManualModal/PastManualModal";
+import DeletePastConfirmation from "../../components/DeletePastConfirmation/DeletePastConfirmation";
 function PastMonths() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [operationToDelete, setOperationToDelete] = useState(null);
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const { monthKey } = useParams();
@@ -49,6 +52,10 @@ function PastMonths() {
     setOperations(monthKey, updatedManualOperations);
     setIsModalOpen(false);
   }
+  function handleDeleteOperation() {
+    deleteOperation(monthKey, operationToDelete.id);
+    setOperationToDelete(null);
+  }
   const pastOperations = getOperations(monthKey);
   const pastMonthlyOps = pastOperations.filter((op) => op.origin === "rule");
   const pastManualOps = pastOperations.filter((op) => op.origin === "manual");
@@ -72,14 +79,8 @@ function PastMonths() {
             className={styles.addBtn}
             onClick={() => setIsModalOpen(true)}
           >
-            <FaPlus /> AJOUTER (opération ponctuelle uniquement) 
+            <FaPlus /> AJOUTER (opération ponctuelle uniquement)
           </button>
-          {isModalOpen && (
-            <PastManualModal
-              onSubmit={handleAdd}
-              onClose={() => setIsModalOpen(false)}
-            />
-          )}
         </div>
         <div>
           <OperationList
@@ -93,8 +94,24 @@ function PastMonths() {
             title="Opérations ponctuelles : "
             operations={pastManualOps}
             total={pastMonthOpTotal}
+            onDelete={(rule) => setOperationToDelete(rule)}
           />
         </div>
+        {isModalOpen && (
+          <PastManualModal
+            onSubmit={handleAdd}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+        {operationToDelete && (
+          <DeletePastConfirmation
+            label={operationToDelete.label}
+            onDeleteOperation={handleDeleteOperation}
+            onCancel={() => {
+              setOperationToDelete(null);
+            }}
+          />
+        )}
       </div>
     </>
   );
