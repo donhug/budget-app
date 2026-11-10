@@ -1,4 +1,6 @@
-import style from "./PastMonths.module.css";
+import styles from "./PastMonths.module.css";
+import { useState } from "react";
+import { FaPlus } from "react-icons/fa6";
 import { useParams, Navigate } from "react-router";
 import {
   getCurrentMonth,
@@ -12,7 +14,9 @@ import { MONTHS_STATE } from "../../constants/stateMonths";
 import { getBalance, getMonthTotal } from "../../services/budget";
 import OperationList from "../../components/OperationList/OperationList";
 import MonthSummary from "../../components/MonthSummary/MonthSummary";
+import PastManualModal from "../../components/PastManualModal/PastManualModal";
 function PastMonths() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const { monthKey } = useParams();
@@ -27,7 +31,6 @@ function PastMonths() {
   if (monthState !== MONTHS_STATE.past) {
     return <NotFound />;
   }
-
   const pastOperations = getOperations(monthKey);
   const pastMonthlyOps = pastOperations.filter((op) => op.origin === "rule");
   const pastManualOps = pastOperations.filter((op) => op.origin === "manual");
@@ -47,6 +50,18 @@ function PastMonths() {
             carryOver={lastCarryOver}
             isFirstMonth={isFirstMonth}
           />
+          <button
+            className={styles.addBtn}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <FaPlus /> AJOUTER
+          </button>
+          {isModalOpen && (
+          <PastManualModal
+            onSubmit={() => setIsModalOpen(false)}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
         </div>
         <div>
           <OperationList
