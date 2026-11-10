@@ -1,6 +1,13 @@
 import style from "./Years.module.css";
 import { MONTHS } from "../../constants/months";
-import { toMonthKey, getMonthState, getCurrentMonth } from "../../utils/dates";
+import {
+  toMonthKey,
+  isYearKey,
+  getMonthState,
+  getCurrentMonth,
+  parseMonthKey,
+} from "../../utils/dates";
+import NotFound from "../NotFound/NotFound";
 import { getFirstMonth } from "../../services/storage";
 import { Link, useParams } from "react-router";
 import { MONTHS_STATE } from "../../constants/stateMonths";
@@ -8,7 +15,16 @@ function Years() {
   const { year } = useParams();
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
-  const displayedYear = year ? Number(year) : new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
+  const displayedYear = year ? Number(year) : currentYear;
+  const firsthYear =
+    firstMonth === null ? currentYear : parseMonthKey(firstMonth).year;
+  if (year && !isYearKey(year)) {
+    return <NotFound />;
+  }
+  if (displayedYear < firsthYear || displayedYear > currentYear) {
+    return <NotFound />;
+  }
   return (
     <>
       <div>

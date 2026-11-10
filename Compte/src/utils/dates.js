@@ -126,6 +126,19 @@ export function isMonthKey(value) {
   return false;
 }
 /**
+ * verifie que l'année, soit bien un nombre
+ *
+ * @param {*} value - donnée a tester
+ * @returns {boolean} true ou false
+ */
+export function isYearKey(value) {
+  const yearKeyPattern = /^\d{4}$/;
+  if (typeof value === "string" && yearKeyPattern.test(value)) {
+    return true;
+  }
+  return false;
+}
+/**
  * Retourne une date à minuit (00:00:00)
  *
  * @param {date|string} - l'instant de référence, date a convertir
