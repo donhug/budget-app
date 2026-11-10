@@ -212,33 +212,44 @@ Application de gestion de budget mois par mois
 
 ---
 
-## V1.2 — Mois passés et grille des années (prochaine branche)
+## V1.2 — Mois passés et grille des années (branche feat/month-history)
 
 ### Décisions
 
 - **Navigation dans les années :** de l'année de firstMonth jusqu'à l'année en cours. Les années avant firstMonth n'existent pas ; les années futures sont grisées et non navigables. Bouton « année précédente » désactivé sur l'année de firstMonth.
-- **États d'un mois dans la grille :**
-  - avant firstMonth : n'existe pas (gris foncé), non cliquable
-  - entre firstMonth et le mois en cours : passé (blanc), cliquable
-  - mois en cours : vert, cliquable, avec un indice textuel (« en cours » / aria-current), pas seulement la couleur
-  - après le mois en cours : à venir (gris clair), non cliquable (vraiment désactivé, pas seulement grisé)
-- **Routes :** le mois en cours reçoit sa propre route (ex : /month ou /current), car le dashboard deviendra la page d'accueil "/". Mois passé : /month/:monthKey (useParams). La grille renvoie vers ces routes.
-- **Deux pages distinctes :** mois en cours et mois passé (réutilisation de MonthSummary, OperationList). Si trop de logique est recopiée, extraire une fonction commune.
-- **Modification du passé — EXCEPTION VOLONTAIRE à « le passé ne bouge jamais » :** cette règle concerne les RÈGLES. Dans un mois passé, on peut corriger les opérations PONCTUELLES (origin "manual") uniquement. Les opérations issues de règles restent intouchables.
-- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : l'afficher clairement à l'utilisateur (avertissement).
+- **États d'un mois dans la grille** (getMonthState dans utils/dates.js, valeurs dans MONTHS_STATE) :
+  - "before" : avant firstMonth, n'existe pas (gris foncé), non cliquable
+  - "past" : entre firstMonth et le mois en cours, cliquable
+  - "current" : mois en cours (vert), cliquable, aria-current="date" + indice textuel, pas seulement la couleur
+  - "future" : après le mois en cours (gris clair), non cliquable (pas de lien du tout)
+- **Routes :** "/" redirige vers "/month" (Navigate replace) en attendant le dashboard ; "/month" = mois en cours ; "/month/:monthKey" = mois passé ; "/calendar" = grille de l'année (noms à revoir en fin de branche : Years / /calendar / « Années »).
+- **Page d'un mois passé protégée :** format invalide (isMonthKey, mois 01 à 12) → 404 ; mois en cours → redirection vers /month ; tout ce qui n'est pas "past" → 404. Ne jamais faire confiance à l'URL.
+- **Deux pages distinctes :** CurrentMonth et PastMonths (réutilisation de MonthSummary, OperationList). Les opérations d'un mois passé sont LUES dans le stockage (jamais recalculées avec materializeRules : le passé est figé).
+- **Affichage d'un mois passé :** solde cumulé + report (comme le mois en cours) ; le total du mois est sous chaque liste.
+- **Modification du passé — EXCEPTION VOLONTAIRE à « le passé ne bouge jamais » :** cette règle concerne les RÈGLES. Dans un mois passé, on peut AJOUTER et SUPPRIMER des opérations PONCTUELLES (origin "manual").
+- **Opérations issues de règles d'un mois passé : intouchables.** Pour corriger un montant (facture qui varie, prélèvement différent), ajouter une opération ponctuelle de compensation (principe de l'écriture de correction en comptabilité). Question ouverte : autoriser la suppression d'une opération de règle (prélèvement non passé, abonnement suspendu).
+- **Pas de modification d'une opération ponctuelle pour l'instant :** supprimer puis ajouter de nouveau couvre le besoin. À reconsidérer avec le modèle à dates (modifier montant ET date aurait alors du sens).
+- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : avertissement affiché dans la modale.
 
 ### Phase 1 — affichage seul
 
-- Route propre pour le mois en cours
-- Grille de l'année avec les quatre états, navigation entre les années
-- Page d'un mois passé en lecture (solde, report, opérations), comme la page Modifications
+- [x] Route propre pour le mois en cours (/month)
+- [x] Grille de l'année en cours avec les quatre états et les liens
+- [ ] Navigation entre les années
+- [x] Page d'un mois passé en lecture (résumé, report, opérations) ; OperationList : bouton de suppression optionnel (onDelete &&)
 
-### Phase 2 — modification
+### Phase 2 — ajout / suppression
 
-- Nouvelle modale ponctuelle, deux modes (props) :
-  - ajout : libellé / montant / type (la date sera ajoutée plus tard, avec le modèle à dates), SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés)
-  - modification : champs pré-remplis, seul le montant est modifiable (le signe vient toujours du type)
-- Avertissement : « cette modification change les soldes des mois suivants et le solde en cours »
+- [x] PastManualModal : libellé / montant / type, SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés) ; la date viendra avec le modèle à dates
+- [x] Avertissement en haut de la modale : changement du solde du mois, des mois suivants et du mois en cours
+- [x] Suppression d'une opération ponctuelle avec confirmation (DeletePastConfirmation)
+- [ ] CSS (grille, page du mois passé, modale, confirmation)
+
+### À reprendre au refactor
+
+- Factoriser les modales (OperationFormModal, EditModal, PastManualModal) et les confirmations (DeleteConfirmation, DeletePastConfirmation)
+- PastMonths : rafraîchissement via useBudgetVersion plutôt que par un state voisin (fermeture de modale / confirmation)
+- MonthSummary : la prop currentMonth désigne en fait le mois affiché (renommer)
 
 ---
 
