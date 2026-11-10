@@ -9,7 +9,11 @@ import {
   getPreviousMonth,
 } from "../../utils/dates";
 import NotFound from "../NotFound/NotFound";
-import { getFirstMonth, getOperations } from "../../services/storage";
+import {
+  getFirstMonth,
+  getOperations,
+  setOperations,
+} from "../../services/storage";
 import { MONTHS_STATE } from "../../constants/stateMonths";
 import { getBalance, getMonthTotal } from "../../services/budget";
 import OperationList from "../../components/OperationList/OperationList";
@@ -30,6 +34,20 @@ function PastMonths() {
   }
   if (monthState !== MONTHS_STATE.past) {
     return <NotFound />;
+  }
+  function handleAdd({ label, amount, type }) {
+    const newPastOperation = {
+      id: crypto.randomUUID(),
+      ruleId: null,
+      label,
+      value: amount,
+      type,
+      origin: "manual",
+    };
+    const currentOperations = getOperations(monthKey);
+    const updatedManualOperations = [...currentOperations, newPastOperation];
+    setOperations(monthKey, updatedManualOperations);
+    setIsModalOpen(false);
   }
   const pastOperations = getOperations(monthKey);
   const pastMonthlyOps = pastOperations.filter((op) => op.origin === "rule");
@@ -54,14 +72,14 @@ function PastMonths() {
             className={styles.addBtn}
             onClick={() => setIsModalOpen(true)}
           >
-            <FaPlus /> AJOUTER
+            <FaPlus /> AJOUTER (opération ponctuelle uniquement) 
           </button>
           {isModalOpen && (
-          <PastManualModal
-            onSubmit={() => setIsModalOpen(false)}
-            onClose={() => setIsModalOpen(false)}
-          />
-        )}
+            <PastManualModal
+              onSubmit={handleAdd}
+              onClose={() => setIsModalOpen(false)}
+            />
+          )}
         </div>
         <div>
           <OperationList
