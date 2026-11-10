@@ -23,15 +23,16 @@ function OperationList({ title, operations, total, onDelete }) {
               {formatBalance(op.value)}
             </p>
           </div>
-
-          <button
-            type="button"
-            onClick={() => onDelete(op)}
-            className={style.deleteBtn}
-            aria-label="Supprimer l'opération"
-          >
-            <FaTrashCan />
-          </button>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(op)}
+              className={style.deleteBtn}
+              aria-label="Supprimer l'opération"
+            >
+              <FaTrashCan />
+            </button>
+          )}
         </div>
       ))}
       <h3 className={style.total}>Total :{formatBalance(total)}</h3>
