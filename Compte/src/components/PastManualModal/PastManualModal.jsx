@@ -1,5 +1,5 @@
 import style from "./PastManualModal.module.css";
-import { FaXmark } from "react-icons/fa6";
+import { FaXmark, FaCircleInfo } from "react-icons/fa6";
 import { useState } from "react";
 
 function PastManualModale({ onSubmit, onClose }) {
@@ -43,6 +43,13 @@ function PastManualModale({ onSubmit, onClose }) {
           <FaXmark />
         </button>
         <h2 className={style.heading}>Ajouter une opération</h2>
+        <div>
+          <p>
+            <FaCircleInfo />
+            Ajouter ou modifier une opération dans un mois passé change le solde
+            de ce mois, des mois suivants et du mois en cours.
+          </p>
+        </div>
         <div className={style.field}>
           <label htmlFor="label">Libellé</label>
           <input
