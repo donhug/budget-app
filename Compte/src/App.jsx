@@ -36,7 +36,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/month" replace />} />
                 <Route path="/month" element={<CurrentMonth />} />
                 <Route path="/rules-changes" element={<ChangesRules />} />
-                <Route path="/calendar" element={<Years />} />
+                <Route path="/calendar/:year?" element={<Years />} />
                 <Route path="/month/:monthKey" element={<PastMonths />} />
                 <Route
                   path="/dashboard"
