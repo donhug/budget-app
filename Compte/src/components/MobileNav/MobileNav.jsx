@@ -19,6 +19,7 @@ function MobileNav({ onClose }) {
           <NavLink
             key={link.label}
             to={link.to}
+            end={link.end}
             className={({ isActive }) =>
               `${style.link} ${isActive ? style.active : ""}`
             }

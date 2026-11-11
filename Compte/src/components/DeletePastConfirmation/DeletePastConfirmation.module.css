@@ -46,14 +46,18 @@
   flex-direction: column;
   gap: var(--space-2);
 }
-.optionBtn {
+.dangerBtn {
   padding: var(--space-3);
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-expense);
+  color: #fff;
+  border: none;
   border-radius: var(--radius-md);
+  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
+}
+.dangerBtn:hover {
+  filter: brightness(0.92);
 }
 .cancelBtn {
   padding: var(--space-3);

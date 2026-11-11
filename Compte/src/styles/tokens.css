@@ -27,6 +27,10 @@
   /* Autres */
   --radius-md: 12px;
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* warning */
+  --color-warning: #b45309;
+  --color-warning-bg: #fef3c7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,5 +52,8 @@
     --color-income-bg: #1e3320;
 
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+    /*warning*/
+    --color-warning: #fbbf24;
+    --color-warning-bg: #3a2e12;
   }
 }

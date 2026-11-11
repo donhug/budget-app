@@ -79,24 +79,27 @@ function PastMonths() {
             className={styles.addBtn}
             onClick={() => setIsModalOpen(true)}
           >
-            <FaPlus /> AJOUTER (opération ponctuelle uniquement)
+            <FaPlus /> AJOUTER
           </button>
         </div>
-        <div>
-          <OperationList
-            title="Opérations mensuelles : "
-            operations={pastMonthlyOps}
-            total={pastMonthRlTotal}
-          />
+        <div className={styles.listsGrid}>
+          <div>
+            <OperationList
+              title="Opérations mensuelles : "
+              operations={pastMonthlyOps}
+              total={pastMonthRlTotal}
+            />
+          </div>
+          <div>
+            <OperationList
+              title="Opérations ponctuelles : "
+              operations={pastManualOps}
+              total={pastMonthOpTotal}
+              onDelete={(rule) => setOperationToDelete(rule)}
+            />
+          </div>
         </div>
-        <div>
-          <OperationList
-            title="Opérations ponctuelles : "
-            operations={pastManualOps}
-            total={pastMonthOpTotal}
-            onDelete={(rule) => setOperationToDelete(rule)}
-          />
-        </div>
+
         {isModalOpen && (
           <PastManualModal
             onSubmit={handleAdd}

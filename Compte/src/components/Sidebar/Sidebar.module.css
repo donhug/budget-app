@@ -75,3 +75,9 @@
 .link:hover {
   color: var(--color-brand);
 }
+.subLabel{
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}

@@ -1,0 +1,114 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.title {
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--color-brand);
+}
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.grid li > a,
+.grid li > span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-1);
+  height: 100%;
+  min-height: 4.5rem;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.monthName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.amount {
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.positive {
+  color: var(--color-income);
+}
+.negative {
+  color: var(--color-expense);
+}
+/* 4 states des mois */
+.grid .past > a {
+  background-color: var(--color-surface);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.grid .past > a:hover {
+  border-color: var(--color-brand);
+  transform: translateY(-2px);
+}
+.grid .current > a {
+  background-color: var(--color-brand-soft);
+  border: 2px solid var(--color-brand);
+}
+.grid .future > span {
+  border-style: dashed;
+  color: var(--color-text-muted);
+}
+.grid .before > span {
+  opacity: 0.35;
+}
+.grid .grid a:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.yearsNav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.yearsNav a {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.yearsNav a:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+.yearsNav a[aria-current="page"] {
+  background-color: var(--color-brand-soft);
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  font-weight: 600;
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .monthName,
+  .amount {
+    font-size: 0.95rem;
+  }
+}

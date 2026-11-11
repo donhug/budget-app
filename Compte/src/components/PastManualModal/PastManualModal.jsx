@@ -39,13 +39,18 @@ function PastManualModale({ onSubmit, onClose }) {
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
-        <button className={style.closeBtn} type="button" onClick={onClose}>
+        <button
+          className={style.closeBtn}
+          type="button"
+          onClick={onClose}
+          aria-label="Fermer"
+        >
           <FaXmark />
         </button>
-        <h2 className={style.heading}>Ajouter une opération</h2>
-        <div>
+        <h2 className={style.heading}>Ajouter une opération ponctuelle</h2>
+        <div className={style.warning}>
+          <FaCircleInfo />
           <p>
-            <FaCircleInfo />
             Ajouter ou modifier une opération dans un mois passé change le solde
             de ce mois, des mois suivants et du mois en cours.
           </p>

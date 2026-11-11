@@ -4,10 +4,10 @@ function DeletePastConfirmation({ label, onCancel, onDeleteOperation }) {
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
-        <p className={style.message}>supprimer : "{label}"?</p>
+        <p className={style.message}>Supprimer « {label} » ?</p>
         <div className={style.actions}>
           <button
-            className={style.optionBtn}
+            className={style.dangerBtn}
             type="button"
             onClick={onDeleteOperation}
           >

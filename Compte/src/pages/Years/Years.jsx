@@ -12,6 +12,8 @@ import NotFound from "../NotFound/NotFound";
 import { getFirstMonth } from "../../services/storage";
 import { Link, useParams, Navigate } from "react-router";
 import { MONTHS_STATE } from "../../constants/stateMonths";
+import { formatBalance } from "../../utils/format";
+import { getBalance } from "../../services/budget";
 function Years() {
   const { year } = useParams();
   const firstMonth = getFirstMonth();
@@ -32,8 +34,9 @@ function Years() {
   const yearsList = getListYears(firstYear, currentYear);
   return (
     <>
-      <div>
-        <nav aria-label="Années">
+      <div className={style.page}>
+        <h2 className={style.title}>Historique</h2>
+        <nav aria-label="Années" className={style.yearsNav}>
           {yearsList.map((yearOption) => {
             return (
               <Link
@@ -47,8 +50,7 @@ function Years() {
           })}
         </nav>
 
-        <h2>{displayedYear}</h2>
-        <ul>
+        <ul className={style.grid}>
           {MONTHS.map((month, index) => {
             const monthKey = toMonthKey(displayedYear, index + 1);
             const state = getMonthState(monthKey, firstMonth, currentMonth);
@@ -56,6 +58,7 @@ function Years() {
               state === MONTHS_STATE.past || state === MONTHS_STATE.current;
             const linkDestination =
               state === MONTHS_STATE.current ? "/month" : `/month/${monthKey}`;
+            const monthBalance = isClickable ? getBalance(monthKey) : undefined;
             return (
               <li key={monthKey} className={style[state]}>
                 {isClickable ? (
@@ -65,10 +68,17 @@ function Years() {
                       state === MONTHS_STATE.current ? "date" : undefined
                     }
                   >
-                    {month}
+                    <span className={style.monthName}>{month}</span>
+                    <span
+                      className={`${style.amount} ${
+                        monthBalance < 0 ? style.negative : style.positive
+                      }`}
+                    >
+                      {formatBalance(monthBalance)}
+                    </span>
                   </Link>
                 ) : (
-                  <span>{month}</span>
+                  <span className={style.monthName}>{month}</span>
                 )}
               </li>
             );
