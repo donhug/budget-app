@@ -212,7 +212,7 @@ Application de gestion de budget mois par mois
 
 ---
 
-## V1.2 — Mois passés et grille des années (branche feat/month-history)
+## V1.2 — Mois passés et grille des années (branche feat/month-history — technique et CSS terminés, PR à faire)
 
 ### Décisions
 
@@ -222,7 +222,7 @@ Application de gestion de budget mois par mois
   - "past" : entre firstMonth et le mois en cours, cliquable
   - "current" : mois en cours (vert), cliquable, aria-current="date" + indice textuel, pas seulement la couleur
   - "future" : après le mois en cours (gris clair), non cliquable (pas de lien du tout)
-- **Routes :** "/" redirige vers "/month" (Navigate replace) en attendant le dashboard ; "/month" = mois en cours ; "/month/:monthKey" = mois passé ; "/calendar" = grille de l'année (noms à revoir en fin de branche : Years / /calendar / « Années »).
+- **Routes :** "/" redirige vers "/month" (Navigate replace) en attendant le dashboard ; "/month" = mois en cours ; "/month/:monthKey" = mois passé ; "/calendar/:year?" = grille d'une année ("/calendar" sans année redirige vers l'année en cours ; année invalide ou hors bornes → 404). Libellé du menu : « Historique » ; composant : Years (nom à harmoniser au refactor).
 - **Page d'un mois passé protégée :** format invalide (isMonthKey, mois 01 à 12) → 404 ; mois en cours → redirection vers /month ; tout ce qui n'est pas "past" → 404. Ne jamais faire confiance à l'URL.
 - **Deux pages distinctes :** CurrentMonth et PastMonths (réutilisation de MonthSummary, OperationList). Les opérations d'un mois passé sont LUES dans le stockage (jamais recalculées avec materializeRules : le passé est figé).
 - **Affichage d'un mois passé :** solde cumulé + report (comme le mois en cours) ; le total du mois est sous chaque liste.
@@ -235,7 +235,7 @@ Application de gestion de budget mois par mois
 
 - [x] Route propre pour le mois en cours (/month)
 - [x] Grille de l'année en cours avec les quatre états et les liens
-- [ ] Navigation entre les années
+- [x] Navigation entre les années : bandeau (nav aria-label « Années ») de l'année de firstMonth à l'année en cours, une case apparaît chaque nouvelle année ; getListYears dans utils/dates.js ; isYearKey pour l'URL
 - [x] Page d'un mois passé en lecture (résumé, report, opérations) ; OperationList : bouton de suppression optionnel (onDelete &&)
 
 ### Phase 2 — ajout / suppression
@@ -243,13 +243,16 @@ Application de gestion de budget mois par mois
 - [x] PastManualModal : libellé / montant / type, SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés) ; la date viendra avec le modèle à dates
 - [x] Avertissement en haut de la modale : changement du solde du mois, des mois suivants et du mois en cours
 - [x] Suppression d'une opération ponctuelle avec confirmation (DeletePastConfirmation)
-- [ ] CSS (grille, page du mois passé, modale, confirmation)
+- [x] CSS (grille avec le solde de chaque mois, bandeau des années, page du mois passé, modale, confirmation)
+- [x] Sidebar : « Historique » surligné sur un vrai mois passé (format + état "past"), avec le mois en sous-titre
 
 ### À reprendre au refactor
 
 - Factoriser les modales (OperationFormModal, EditModal, PastManualModal) et les confirmations (DeleteConfirmation, DeletePastConfirmation)
 - PastMonths : rafraîchissement via useBudgetVersion plutôt que par un state voisin (fermeture de modale / confirmation)
 - MonthSummary : la prop currentMonth désigne en fait le mois affiché (renommer)
+- Harmoniser les noms : composant Years / route /calendar / libellé « Historique »
+- MobileNav : vérifier le même surlignage « Historique » que la Sidebar sur un mois passé
 
 ---
 
