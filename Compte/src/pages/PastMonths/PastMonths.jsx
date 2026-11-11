@@ -27,7 +27,7 @@ function PastMonths() {
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const { monthKey } = useParams();
-  const lastMonth = getPreviousMonth(monthKey);
+  const previousMonth = getPreviousMonth(monthKey);
   if (!isMonthKey(monthKey)) {
     return <NotFound />;
   }
@@ -48,8 +48,8 @@ function PastMonths() {
       origin: "manual",
     };
     const currentOperations = getOperations(monthKey);
-    const updatedManualOperations = [...currentOperations, newPastOperation];
-    setOperations(monthKey, updatedManualOperations);
+    const updatedOperations = [...currentOperations, newPastOperation];
+    setOperations(monthKey, updatedOperations);
     setIsModalOpen(false);
   }
   function handleDeleteOperation() {
@@ -62,61 +62,56 @@ function PastMonths() {
   const pastBalance = getBalance(monthKey);
   const pastMonthOpTotal = getMonthTotal(pastManualOps);
   const pastMonthRlTotal = getMonthTotal(pastMonthlyOps);
-  const lastCarryOver = getBalance(lastMonth);
+  const carryOver = getBalance(previousMonth);
   const isFirstMonth = firstMonth === monthKey;
   return (
-    <>
+    <div>
       <div>
-        <div>
-          <MonthSummary
-            currentMonth={monthKey}
-            balance={pastBalance}
-            previousMonth={lastMonth}
-            carryOver={lastCarryOver}
-            isFirstMonth={isFirstMonth}
-          />
-          <button
-            className={styles.addBtn}
-            onClick={() => setIsModalOpen(true)}
-          >
-            <FaPlus /> AJOUTER
-          </button>
-        </div>
-        <div className={styles.listsGrid}>
-          <div>
-            <OperationList
-              title="Opérations mensuelles : "
-              operations={pastMonthlyOps}
-              total={pastMonthRlTotal}
-            />
-          </div>
-          <div>
-            <OperationList
-              title="Opérations ponctuelles : "
-              operations={pastManualOps}
-              total={pastMonthOpTotal}
-              onDelete={(rule) => setOperationToDelete(rule)}
-            />
-          </div>
-        </div>
-
-        {isModalOpen && (
-          <PastManualModal
-            onSubmit={handleAdd}
-            onClose={() => setIsModalOpen(false)}
-          />
-        )}
-        {operationToDelete && (
-          <DeletePastConfirmation
-            label={operationToDelete.label}
-            onDeleteOperation={handleDeleteOperation}
-            onCancel={() => {
-              setOperationToDelete(null);
-            }}
-          />
-        )}
+        <MonthSummary
+          currentMonth={monthKey}
+          balance={pastBalance}
+          previousMonth={previousMonth}
+          carryOver={carryOver}
+          isFirstMonth={isFirstMonth}
+        />
+        <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>
+          <FaPlus /> AJOUTER
+        </button>
       </div>
-    </>
+      <div className={styles.listsGrid}>
+        <div>
+          <OperationList
+            title="Opérations mensuelles : "
+            operations={pastMonthlyOps}
+            total={pastMonthRlTotal}
+          />
+        </div>
+        <div>
+          <OperationList
+            title="Opérations ponctuelles : "
+            operations={pastManualOps}
+            total={pastMonthOpTotal}
+            onDelete={(operation) => setOperationToDelete(operation)}
+          />
+        </div>
+      </div>
+
+      {isModalOpen && (
+        <PastManualModal
+          onSubmit={handleAdd}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+      {operationToDelete && (
+        <DeletePastConfirmation
+          label={operationToDelete.label}
+          onDeleteOperation={handleDeleteOperation}
+          onCancel={() => {
+            setOperationToDelete(null);
+          }}
+        />
+      )}
+    </div>
   );
 }
 export default PastMonths;

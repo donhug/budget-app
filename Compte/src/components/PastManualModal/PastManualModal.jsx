@@ -2,7 +2,7 @@ import style from "./PastManualModal.module.css";
 import { FaXmark, FaCircleInfo } from "react-icons/fa6";
 import { useState } from "react";
 
-function PastManualModale({ onSubmit, onClose }) {
+function PastManualModal({ onSubmit, onClose }) {
   const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [type, setType] = useState("");
@@ -51,8 +51,8 @@ function PastManualModale({ onSubmit, onClose }) {
         <div className={style.warning}>
           <FaCircleInfo />
           <p>
-            Ajouter ou modifier une opération dans un mois passé change le solde
-            de ce mois, des mois suivants et du mois en cours.
+            Ajouter une opération dans un mois passé change le solde de ce mois,
+            des mois suivants et du mois en cours.
           </p>
         </div>
         <div className={style.field}>
@@ -118,4 +118,4 @@ function PastManualModale({ onSubmit, onClose }) {
     </div>
   );
 }
-export default PastManualModale;
+export default PastManualModal;

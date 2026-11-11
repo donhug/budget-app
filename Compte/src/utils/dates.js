@@ -126,10 +126,11 @@ export function isMonthKey(value) {
   return false;
 }
 /**
- * verifie que l'année, soit bien un nombre
+ * Vérifie qu'une valeur est une année au format "YYYY" : une chaîne de quatre chiffres
+ * (par exemple le paramètre :year de l'URL).
  *
- * @param {*} value - donnée a tester
- * @returns {boolean} true ou false
+ * @param {*} value - donnée à tester
+ * @returns {boolean} true si c'est une chaîne de quatre chiffres, sinon false
  */
 export function isYearKey(value) {
   const yearKeyPattern = /^\d{4}$/;
@@ -139,10 +140,10 @@ export function isYearKey(value) {
   return false;
 }
 /**
- * Retourne une date à minuit (00:00:00)
+ * Retourne une nouvelle date, au même jour, à minuit (00:00:00, heure locale).
  *
- * @param {date|string} - l'instant de référence, date a convertir
- * @returns {date} retourne la date, remise à minuit.
+ * @param {Date|string} date - la date à convertir (objet Date ou chaîne ISO)
+ * @returns {Date} la date du même jour, remise à minuit
  */
 export function startOfDay(date) {
   const madeDate = new Date(date);
@@ -191,16 +192,16 @@ export function getSaveLabel(days) {
 }
 
 /**
- *  Retourne l'état du mois, en fonction de sa position.
+ * Retourne l'état d'un mois par rapport au premier mois de l'app et au mois en cours.
  *
- * @param {string} classifyMonth - clé du mois a classée
- * @param {string|null} firstMonth - clé du premier mois de l'app
+ * @param {string} monthKey - clé du mois à classer, au format "YYYY-MM"
+ * @param {string|null} firstMonth - clé du premier mois de l'app, ou null
  * @param {string} currentMonth - clé du mois en cours
- * @returns {string} - état du mois :
- *  "avant"
- *  "passer"
- *  "actuel"
- *  "futur"
+ * @returns {string} une valeur de MONTHS_STATE :
+ *  "before" (avant le premier mois, ou aucun premier mois),
+ *  "past" (entre le premier mois et le mois en cours),
+ *  "current" (le mois en cours),
+ *  "future" (après le mois en cours)
  */
 export function getMonthState(monthKey, firstMonth, currentMonth) {
   if (firstMonth === null) {
@@ -218,10 +219,11 @@ export function getMonthState(monthKey, firstMonth, currentMonth) {
   return MONTHS_STATE.future;
 }
 /**
- *  Renvoie la liste des années entre les deux bornes, startYear et endYear
- * @param {number} startYear - année de départ .
- * @param {number} endYear - année en cours.
- * @returns {number[]} les années, par ordre croissant (ex : [2026, 2027, ...])
+ * Renvoie la liste des années entre deux bornes, incluses.
+ *
+ * @param {number} startYear - première année de la liste
+ * @param {number} endYear - dernière année de la liste
+ * @returns {number[]} les années, par ordre croissant (ex : [2025, 2026])
  */
 export function getListYears(startYear, endYear) {
   const years = [];

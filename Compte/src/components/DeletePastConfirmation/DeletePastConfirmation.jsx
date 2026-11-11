@@ -5,6 +5,10 @@ function DeletePastConfirmation({ label, onCancel, onDeleteOperation }) {
     <div className={style.overlay}>
       <div className={style.modal}>
         <p className={style.message}>Supprimer « {label} » ?</p>
+        <p className={style.info}>
+          Les soldes de ce mois, des mois suivants et du mois en cours seront
+          mis à jour.
+        </p>
         <div className={style.actions}>
           <button
             className={style.dangerBtn}
