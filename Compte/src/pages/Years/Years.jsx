@@ -6,28 +6,47 @@ import {
   getMonthState,
   getCurrentMonth,
   parseMonthKey,
+  getListYears,
 } from "../../utils/dates";
 import NotFound from "../NotFound/NotFound";
 import { getFirstMonth } from "../../services/storage";
-import { Link, useParams } from "react-router";
+import { Link, useParams, Navigate } from "react-router";
 import { MONTHS_STATE } from "../../constants/stateMonths";
 function Years() {
   const { year } = useParams();
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const currentYear = new Date().getFullYear();
-  const displayedYear = year ? Number(year) : currentYear;
-  const firsthYear =
+  const firstYear =
     firstMonth === null ? currentYear : parseMonthKey(firstMonth).year;
-  if (year && !isYearKey(year)) {
+  if (!year) {
+    return <Navigate to={`/calendar/${currentYear}`} replace />;
+  }
+  if (!isYearKey(year)) {
     return <NotFound />;
   }
-  if (displayedYear < firsthYear || displayedYear > currentYear) {
+  const displayedYear = Number(year);
+  if (displayedYear < firstYear || displayedYear > currentYear) {
     return <NotFound />;
   }
+  const yearsList = getListYears(firstYear, currentYear);
   return (
     <>
       <div>
+        <nav aria-label="Années">
+          {yearsList.map((yearOption) => {
+            return (
+              <Link
+                to={`/calendar/${yearOption}`}
+                key={yearOption}
+                aria-current={yearOption === displayedYear ? "page" : undefined}
+              >
+                {yearOption}
+              </Link>
+            );
+          })}
+        </nav>
+
         <h2>{displayedYear}</h2>
         <ul>
           {MONTHS.map((month, index) => {

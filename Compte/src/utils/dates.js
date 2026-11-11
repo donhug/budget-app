@@ -217,3 +217,17 @@ export function getMonthState(monthKey, firstMonth, currentMonth) {
   }
   return MONTHS_STATE.future;
 }
+/**
+ *  Renvoie la liste des années entre les deux bornes, startYear et endYear
+ * @param {number} startYear - année de départ .
+ * @param {number} endYear - année en cours.
+ * @returns {number[]} les années, par ordre croissant (ex : [2026, 2027, ...])
+ */
+export function getListYears(startYear, endYear) {
+  const years = [];
+
+  for (let year = startYear; year <= endYear; year++) {
+    years.push(year);
+  }
+  return years;
+}
