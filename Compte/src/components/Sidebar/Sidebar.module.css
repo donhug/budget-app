@@ -75,7 +75,7 @@
 .link:hover {
   color: var(--color-brand);
 }
-.subLabel{
+.subLabel {
   display: block;
   font-size: 0.75rem;
   color: var(--color-text-muted);

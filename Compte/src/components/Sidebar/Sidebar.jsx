@@ -3,8 +3,14 @@ import { NavLink, useLocation } from "react-router";
 import style from "./Sidebar.module.css";
 import LOGO from "../../assets/LOGO.webp";
 import { NAV_LINKS } from "../../constants/navLinks";
-import { formatMonth, isMonthKey } from "../../utils/dates";
-
+import {
+  formatMonth,
+  isMonthKey,
+  getCurrentMonth,
+  getMonthState,
+} from "../../utils/dates";
+import { getFirstMonth } from "../../services/storage";
+import { MONTHS_STATE } from "../../constants/stateMonths";
 function Sidebar() {
   const location = useLocation();
   const [indicator, setIndicator] = useState(null);
@@ -17,10 +23,16 @@ function Sidebar() {
       height: linkRect.height,
     });
   }
-
+  const firstMonth = getFirstMonth();
+  const currentMonth = getCurrentMonth();
   const path = location.pathname;
-  const monthKey = path.split("/month/");
-  const pastMonthKey = isMonthKey(monthKey[1]) ? monthKey[1] : null;
+  const pathParts = path.split("/month/");
+  const pastMonthKey =
+    isMonthKey(pathParts[1]) &&
+    getMonthState(pathParts[1], firstMonth, currentMonth) === MONTHS_STATE.past
+      ? pathParts[1]
+      : null;
+
   return (
     <aside className={style.sidebar}>
       <img src={LOGO} alt="Hugo Finances" className={style.logo} />
