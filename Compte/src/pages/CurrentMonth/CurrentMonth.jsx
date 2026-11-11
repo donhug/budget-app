@@ -106,7 +106,7 @@ function CurrentMonth() {
           isFirstMonth={isFirstMonth}
         />
         <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>
-          <FaPlus /> AJOUTER
+          <FaPlus /> Ajouter
         </button>
         {isModalOpen && (
           <OperationFormModal
@@ -119,7 +119,7 @@ function CurrentMonth() {
       <div className={styles.listsGrid}>
         <div>
           <OperationList
-            title="Opérations mensuelles : "
+            title="Opérations mensuelles"
             operations={monthlyOps}
             total={monthlyTotal}
             onDelete={(op) => setOperationToDelete(op)}
@@ -140,7 +140,7 @@ function CurrentMonth() {
         </div>
         <div>
           <OperationList
-            title="Opérations ponctuelles : "
+            title="Opérations ponctuelles"
             operations={manualOps}
             total={manualTotal}
             onDelete={(op) => handleDeleteOperation(op.id)}

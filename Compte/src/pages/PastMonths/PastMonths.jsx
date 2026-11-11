@@ -75,20 +75,20 @@ function PastMonths() {
           isFirstMonth={isFirstMonth}
         />
         <button className={styles.addBtn} onClick={() => setIsModalOpen(true)}>
-          <FaPlus /> AJOUTER
+          <FaPlus /> Ajouter
         </button>
       </div>
       <div className={styles.listsGrid}>
         <div>
           <OperationList
-            title="Opérations mensuelles : "
+            title="Opérations mensuelles"
             operations={pastMonthlyOps}
             total={pastMonthRlTotal}
           />
         </div>
         <div>
           <OperationList
-            title="Opérations ponctuelles : "
+            title="Opérations ponctuelles"
             operations={pastManualOps}
             total={pastMonthOpTotal}
             onDelete={(operation) => setOperationToDelete(operation)}
