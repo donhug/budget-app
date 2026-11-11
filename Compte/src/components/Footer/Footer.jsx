@@ -66,7 +66,7 @@ function Footer() {
     }
 
     const downloadOldData = window.confirm(
-      "Voulez-vous télécharger vos données actuelles avant ? ",
+      "Voulez-vous télécharger vos données actuelles avant l'import ?",
     );
     if (downloadOldData) {
       handleExport();
@@ -153,7 +153,7 @@ function Footer() {
           <FaCircleInfo />
           Vos données sont enregistrées uniquement dans ce navigateur. Effacer
           les données de navigation / des sites ou changer d'appareil les
-          supprimera. Pensez à "Sauvegarder", de temps en temps, avec le bouton
+          supprimera. Pensez à « Sauvegarder » de temps en temps, avec le bouton
           un peu plus haut. Conseil d'ami 🤠
         </p>
         <a

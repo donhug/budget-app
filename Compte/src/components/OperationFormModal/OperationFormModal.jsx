@@ -31,7 +31,7 @@ function OperationFormModal({ onSubmit, onClose }) {
     }
     if (isRecurrent) {
       if (hasEndDate === true && endMonth < startMonth) {
-        setError("le mois de fin est antérieur au mois de départ");
+        setError("Le mois de fin est antérieur au mois de départ.");
         return;
       }
     }
@@ -117,7 +117,7 @@ function OperationFormModal({ onSubmit, onClose }) {
         </label>
         {isRecurrent && (
           <div className={style.field}>
-            <p>date de début</p>
+            <p>Date de début</p>
             <MonthPicker value={startMonth} onChange={setStartMonth} />
 
             <label className={style.checkboxLabel}>
@@ -131,7 +131,7 @@ function OperationFormModal({ onSubmit, onClose }) {
                   }
                 }}
               />
-              date de fin
+              Date de fin
             </label>
             {hasEndDate && (
               <MonthPicker value={endMonth} onChange={setEndMonth} />

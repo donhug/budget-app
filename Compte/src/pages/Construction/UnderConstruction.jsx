@@ -6,7 +6,7 @@ function UnderConstruction(props) {
     <div className={style.main}>
       <div className={style.shell}>
         <h2 className={style.title}>{props.title} - Bientôt disponible</h2>
-        <img className={style.img} src={WORK} alt="en cours de construction" />
+        <img className={style.img} src={WORK} alt="En cours de construction" />
       </div>
     </div>
   );

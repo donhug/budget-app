@@ -8,7 +8,7 @@ function DeleteConfirmation({
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
-        <p className={style.message}>supprimer : "{label}"?</p>
+        <p className={style.message}>Supprimer « {label} » ?</p>
         <div className={style.actions}>
           {onDeleteOperation && (
             <button

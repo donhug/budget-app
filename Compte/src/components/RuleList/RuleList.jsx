@@ -28,8 +28,7 @@ function RuleList({ title, rules, onEdit, onDelete }) {
             <div className={style.datesRow}>
               <span>Début de la règle : {formatMonth(rule.start)}</span>
               <span>
-                {" "}
-                fin : {rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
+                Fin : {rule.end !== null ? formatMonth(rule.end) : "pas de fin"}
               </span>
             </div>
             {onEdit && (

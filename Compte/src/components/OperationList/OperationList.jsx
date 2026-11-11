@@ -35,7 +35,7 @@ function OperationList({ title, operations, total, onDelete }) {
           )}
         </div>
       ))}
-      <h3 className={style.total}>Total :{formatBalance(total)}</h3>
+      <h3 className={style.total}>Total : {formatBalance(total)}</h3>
     </div>
   );
 }
