@@ -212,15 +212,15 @@ Application de gestion de budget mois par mois
 
 ---
 
-## V1.2 — Mois passés et grille des années (branche feat/month-history — technique et CSS terminés, PR à faire)
+## Fait — V1.2 — Mois passés et historique (branche feat/month-history, terminée le 12/11/2026)
 
 ### Décisions
 
-- **Navigation dans les années :** de l'année de firstMonth jusqu'à l'année en cours. Les années avant firstMonth n'existent pas ; les années futures sont grisées et non navigables. Bouton « année précédente » désactivé sur l'année de firstMonth.
+- **Navigation dans les années :** bandeau des années de firstMonth jusqu'à l'année en cours, et rien d'autre (pas d'années futures affichées : une nouvelle case apparaît au 1er janvier). L'année affichée vient de l'URL.
 - **États d'un mois dans la grille** (getMonthState dans utils/dates.js, valeurs dans MONTHS_STATE) :
   - "before" : avant firstMonth, n'existe pas (gris foncé), non cliquable
   - "past" : entre firstMonth et le mois en cours, cliquable
-  - "current" : mois en cours (vert), cliquable, aria-current="date" + indice textuel, pas seulement la couleur
+  - "current" : mois en cours (vert), cliquable, aria-current="date". CHOIX VOLONTAIRE : la couleur suffit visuellement, pas d'indice textuel « en cours »
   - "future" : après le mois en cours (gris clair), non cliquable (pas de lien du tout)
 - **Routes :** "/" redirige vers "/month" (Navigate replace) en attendant le dashboard ; "/month" = mois en cours ; "/month/:monthKey" = mois passé ; "/calendar/:year?" = grille d'une année ("/calendar" sans année redirige vers l'année en cours ; année invalide ou hors bornes → 404). Libellé du menu : « Historique » ; composant : Years (nom à harmoniser au refactor).
 - **Page d'un mois passé protégée :** format invalide (isMonthKey, mois 01 à 12) → 404 ; mois en cours → redirection vers /month ; tout ce qui n'est pas "past" → 404. Ne jamais faire confiance à l'URL.
@@ -229,7 +229,10 @@ Application de gestion de budget mois par mois
 - **Modification du passé — EXCEPTION VOLONTAIRE à « le passé ne bouge jamais » :** cette règle concerne les RÈGLES. Dans un mois passé, on peut AJOUTER et SUPPRIMER des opérations PONCTUELLES (origin "manual").
 - **Opérations issues de règles d'un mois passé : intouchables.** Pour corriger un montant (facture qui varie, prélèvement différent), ajouter une opération ponctuelle de compensation (principe de l'écriture de correction en comptabilité). Question ouverte : autoriser la suppression d'une opération de règle (prélèvement non passé, abonnement suspendu).
 - **Pas de modification d'une opération ponctuelle pour l'instant :** supprimer puis ajouter de nouveau couvre le besoin. À reconsidérer avec le modèle à dates (modifier montant ET date aurait alors du sens).
-- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : avertissement affiché dans la modale.
+- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : avertissement affiché dans la modale d'ajout ET dans la confirmation de suppression.
+- **Menu mobile :** pas de surlignage « Historique » sur un mois passé (CHOIX VOLONTAIRE : le menu mobile est fermé pendant la navigation).
+- **Sidebar :** le mois passé est reconnu avec useMatch("/month/:monthKey"), puis vérifié (isMonthKey + état "past") ; le mois est affiché en sous-titre d'« Historique ».
+- **Ton de l'app :** alternance volontaire du « tu » et du « vous » (cordial et amical).
 
 ### Phase 1 — affichage seul
 
@@ -244,7 +247,14 @@ Application de gestion de budget mois par mois
 - [x] Avertissement en haut de la modale : changement du solde du mois, des mois suivants et du mois en cours
 - [x] Suppression d'une opération ponctuelle avec confirmation (DeletePastConfirmation)
 - [x] CSS (grille avec le solde de chaque mois, bandeau des années, page du mois passé, modale, confirmation)
-- [x] Sidebar : « Historique » surligné sur un vrai mois passé (format + état "past"), avec le mois en sous-titre
+- [x] Sidebar : « Historique » surligné sur un vrai mois passé (useMatch + format + état "past"), avec le mois en sous-titre
+
+### Revue de la branche (Claude + ChatGPT, 11-12/11)
+
+- [x] JSDoc de dates.js à jour (isYearKey, getMonthState, getListYears, startOfDay) ; noms corrigés (previousMonth, carryOver, PastManualModal…) ; fragments inutiles retirés
+- [x] Textes : orthographe, typographie (« … », espaces avant : ? !), majuscules des libellés, titres de listes sans deux-points, bouton « Ajouter » en majuscules via CSS (text-transform)
+- [x] role="alert" sur les erreurs des trois modales
+- [x] PastMonths : mois précédent calculé après la validation de l'URL
 
 ### À reprendre au refactor
 
@@ -252,7 +262,15 @@ Application de gestion de budget mois par mois
 - PastMonths : rafraîchissement via useBudgetVersion plutôt que par un state voisin (fermeture de modale / confirmation)
 - MonthSummary : la prop currentMonth désigne en fait le mois affiché (renommer)
 - Harmoniser les noms : composant Years / route /calendar / libellé « Historique »
-- MobileNav : vérifier le même surlignage « Historique » que la Sidebar sur un mois passé
+- Modales (toutes) : annuler les temporisations si la modale est fermée pendant l'animation (sinon l'ajout se fait quand même) ; role="dialog", focus placé / confiné / restauré, fermeture par Échap ; focus visible sur les radios Dépense / Entrée
+- Sidebar : aria-current sur « Historique » quand un mois passé est affiché (aujourd'hui, surbrillance seulement visuelle)
+- Grille de l'année : getBalance appelé pour chaque mois cliquable (remonte jusqu'au premier mois à chaque fois) : à optimiser si l'historique devient long
+- CSS : classes heading / error absentes du module de PastManualModal, styles de case à cocher inutilisés, règle .grid .grid a (Years) qui ne correspond à rien ; classe info de DeletePastConfirmation à styliser
+
+### Finitions de texte (en toute fin)
+
+- « Reste de octobre » → élision devant une voyelle (« d'octobre », « d'avril », « d'août ») dans MonthSummary
+- Humeurs de l'écureuil : minuscule après « L'écureuil est : »
 
 ---
 
@@ -297,8 +315,8 @@ Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, s
 
 ## Feuille de route — novembre 2026 (réordonnée le 09/11)
 
-1. **V1.2 historique, phase 1 :** grille des années, routes, page d'un mois passé en lecture — presque fini (reste : afficher le résumé et les opérations du mois passé)
-2. **V1.2 historique, phase 2 :** modifier le montant / ajouter des opérations ponctuelles dans un mois passé (modale sans date pour l'instant)
+1. ~~**V1.2 historique, phase 1 :** grille des années, routes, page d'un mois passé en lecture~~ — FAIT
+2. ~~**V1.2 historique, phase 2 :** ajouter / supprimer des opérations ponctuelles dans un mois passé~~ — FAIT (V1.2 terminée le 12/11, en 4 jours au lieu de ~2 semaines prévues)
 3. **Épargne :** comptes + accountId, page /savings, format de sauvegarde version 2, migrateV1toV2 — objectif : fini ou presque vers le 23/11
 4. **Modèle à dates :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), format version 3, migrateV2toV3 ; ajouter le champ date à la modale des mois passés
 5. **Plus tard :** pointage, import CSV bancaire, ajustement bancaire proposé en début de mois
