@@ -103,7 +103,11 @@ function PastManualModal({ onSubmit, onClose }) {
             </span>
           </label>
         </div>
-        {error && <p className={style.error}>{error}</p>}
+        {error && (
+          <p className={style.error} role="alert">
+            {error}
+          </p>
+        )}
         <button
           type="button"
           className={style.submitBtn}

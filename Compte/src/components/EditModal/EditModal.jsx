@@ -158,7 +158,11 @@ function EditModal({ rule, onClose, onSubmit }) {
             <p>Pas de date de fin fixe</p>
           )}
         </div>
-        {error && <p className={style.error}>{error}</p>}
+        {error && (
+          <p className={style.error} role="alert">
+            {error}
+          </p>
+        )}
         <button
           type="button"
           className={style.submitBtn}
