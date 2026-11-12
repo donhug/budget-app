@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { NavLink, useLocation } from "react-router";
+import { NavLink, useMatch } from "react-router";
 import style from "./Sidebar.module.css";
 import LOGO from "../../assets/LOGO.webp";
 import { NAV_LINKS } from "../../constants/navLinks";
@@ -12,7 +12,6 @@ import {
 import { getFirstMonth } from "../../services/storage";
 import { MONTHS_STATE } from "../../constants/stateMonths";
 function Sidebar() {
-  const location = useLocation();
   const [indicator, setIndicator] = useState(null);
   const navRef = useRef(null);
   function handleEnter(e) {
@@ -23,14 +22,15 @@ function Sidebar() {
       height: linkRect.height,
     });
   }
+  const match = useMatch("/month/:monthKey");
+  const matchedMonthKey = match ? match.params.monthKey : undefined;
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
-  const path = location.pathname;
-  const pathParts = path.split("/month/");
   const pastMonthKey =
-    isMonthKey(pathParts[1]) &&
-    getMonthState(pathParts[1], firstMonth, currentMonth) === MONTHS_STATE.past
-      ? pathParts[1]
+    isMonthKey(matchedMonthKey) &&
+    getMonthState(matchedMonthKey, firstMonth, currentMonth) ===
+      MONTHS_STATE.past
+      ? matchedMonthKey
       : null;
 
   return (
