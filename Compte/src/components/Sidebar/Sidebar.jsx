@@ -1,13 +1,19 @@
 import { useState, useRef } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useMatch } from "react-router";
 import style from "./Sidebar.module.css";
 import LOGO from "../../assets/LOGO.webp";
 import { NAV_LINKS } from "../../constants/navLinks";
-
+import {
+  formatMonth,
+  isMonthKey,
+  getCurrentMonth,
+  getMonthState,
+} from "../../utils/dates";
+import { getFirstMonth } from "../../services/storage";
+import { MONTHS_STATE } from "../../constants/stateMonths";
 function Sidebar() {
   const [indicator, setIndicator] = useState(null);
   const navRef = useRef(null);
-
   function handleEnter(e) {
     const navTop = navRef.current.getBoundingClientRect().top;
     const linkRect = e.currentTarget.getBoundingClientRect();
@@ -16,11 +22,20 @@ function Sidebar() {
       height: linkRect.height,
     });
   }
+  const match = useMatch("/month/:monthKey");
+  const matchedMonthKey = match ? match.params.monthKey : undefined;
+  const firstMonth = getFirstMonth();
+  const currentMonth = getCurrentMonth();
+  const pastMonthKey =
+    isMonthKey(matchedMonthKey) &&
+    getMonthState(matchedMonthKey, firstMonth, currentMonth) ===
+      MONTHS_STATE.past
+      ? matchedMonthKey
+      : null;
 
   return (
     <aside className={style.sidebar}>
       <img src={LOGO} alt="Hugo Finances" className={style.logo} />
-
       <nav
         className={style.nav}
         ref={navRef}
@@ -36,12 +51,18 @@ function Sidebar() {
           <NavLink
             key={link.label}
             to={link.to}
+            end={link.end}
             className={({ isActive }) =>
-              `${style.link} ${isActive ? style.active : ""}`
+              `${style.link} ${isActive || (pastMonthKey && link.isHistory) ? style.active : ""}`
             }
             onMouseEnter={handleEnter}
           >
             {link.label}
+            {link.isHistory && pastMonthKey && (
+              <span className={style.subLabel}>
+                {formatMonth(pastMonthKey)}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>

@@ -1,4 +1,5 @@
 import { MONTHS } from "../constants/months";
+import { MONTHS_STATE } from "../constants/stateMonths";
 /**
  * récupère le mois suivant, a partir de la date donnée, ajoute 1 au mois ou a l'année
  *
@@ -111,23 +112,38 @@ export function parseMonthKey(monthKey) {
   return { year, month };
 }
 /**
- * verifie que la date soit bien une chaine, et, au bon format "YYYY-MM"
+ * verifie que la date soit bien une chaine, et, au bon format "YYYY-MM".
+ * précise un mois de 01 à 12
  *
  * @param {*} value - donnée a tester
  * @returns {boolean} true ou false
  */
 export function isMonthKey(value) {
-  const monthKeyPattern = /^\d{4}-\d{2}$/;
+  const monthKeyPattern = /^\d{4}-(0[1-9]|1[0-2])$/;
   if (typeof value === "string" && monthKeyPattern.test(value)) {
     return true;
   }
   return false;
 }
 /**
- * Retourne une date à minuit (00:00:00)
+ * Vérifie qu'une valeur est une année au format "YYYY" : une chaîne de quatre chiffres
+ * (par exemple le paramètre :year de l'URL).
  *
- * @param {date|string} - l'instant de référence, date a convertir
- * @returns {date} retourne la date, remise à minuit.
+ * @param {*} value - donnée à tester
+ * @returns {boolean} true si c'est une chaîne de quatre chiffres, sinon false
+ */
+export function isYearKey(value) {
+  const yearKeyPattern = /^\d{4}$/;
+  if (typeof value === "string" && yearKeyPattern.test(value)) {
+    return true;
+  }
+  return false;
+}
+/**
+ * Retourne une nouvelle date, au même jour, à minuit (00:00:00, heure locale).
+ *
+ * @param {Date|string} date - la date à convertir (objet Date ou chaîne ISO)
+ * @returns {Date} la date du même jour, remise à minuit
  */
 export function startOfDay(date) {
   const madeDate = new Date(date);
@@ -173,4 +189,47 @@ export function getSaveLabel(days) {
     return "hier";
   }
   return `il y a ${days} jours`;
+}
+
+/**
+ * Retourne l'état d'un mois par rapport au premier mois de l'app et au mois en cours.
+ *
+ * @param {string} monthKey - clé du mois à classer, au format "YYYY-MM"
+ * @param {string|null} firstMonth - clé du premier mois de l'app, ou null
+ * @param {string} currentMonth - clé du mois en cours
+ * @returns {string} une valeur de MONTHS_STATE :
+ *  "before" (avant le premier mois, ou aucun premier mois),
+ *  "past" (entre le premier mois et le mois en cours),
+ *  "current" (le mois en cours),
+ *  "future" (après le mois en cours)
+ */
+export function getMonthState(monthKey, firstMonth, currentMonth) {
+  if (firstMonth === null) {
+    return MONTHS_STATE.before;
+  }
+  if (monthKey < firstMonth) {
+    return MONTHS_STATE.before;
+  }
+  if (monthKey === currentMonth) {
+    return MONTHS_STATE.current;
+  }
+  if (monthKey < currentMonth) {
+    return MONTHS_STATE.past;
+  }
+  return MONTHS_STATE.future;
+}
+/**
+ * Renvoie la liste des années entre deux bornes, incluses.
+ *
+ * @param {number} startYear - première année de la liste
+ * @param {number} endYear - dernière année de la liste
+ * @returns {number[]} les années, par ordre croissant (ex : [2025, 2026])
+ */
+export function getListYears(startYear, endYear) {
+  const years = [];
+
+  for (let year = startYear; year <= endYear; year++) {
+    years.push(year);
+  }
+  return years;
 }

@@ -35,11 +35,11 @@ function EditModal({ rule, onClose, onSubmit }) {
       return;
     }
     if (hasEndDate === true && endMonth < startMonth) {
-      setError("le mois de fin est antérieur au mois de départ");
+      setError("Le mois de fin est antérieur au mois de départ.");
       return;
     }
     if (hasStarted && hasEndDate && endMonth < currentMonth) {
-      setError("la date de fin ne peut pas être antérieure au mois en cours");
+      setError("La date de fin ne peut pas être antérieure au mois en cours.");
       return;
     }
 
@@ -134,7 +134,7 @@ function EditModal({ rule, onClose, onSubmit }) {
         <div className={style.field}>
           {!hasStarted && (
             <div>
-              <p>date de début</p>
+              <p>Date de début</p>
               <MonthPicker value={startMonth} onChange={setStartMonth} />
             </div>
           )}
@@ -150,15 +150,19 @@ function EditModal({ rule, onClose, onSubmit }) {
                 }
               }}
             />
-            date de fin
+            Date de fin
           </label>
           {hasEndDate ? (
             <MonthPicker value={endMonth} onChange={setEndMonth} />
           ) : (
-            <p>pas de date de fin fixe</p>
+            <p>Pas de date de fin fixe</p>
           )}
         </div>
-        {error && <p className={style.error}>{error}</p>}
+        {error && (
+          <p className={style.error} role="alert">
+            {error}
+          </p>
+        )}
         <button
           type="button"
           className={style.submitBtn}

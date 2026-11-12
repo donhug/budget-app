@@ -185,6 +185,8 @@ Application de gestion de budget mois par mois
 - Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL…)
 - Opérations et règles avec un accountId optionnel : négatif = versement vers le compte, positif = retrait depuis le compte
 - Solde d'un compte CALCULÉ : tous ses mouvements, sur tous les mois de la racine au mois courant
+- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 2. Migration v1 → v2 (migrateV1toV2) : aucun compte (accounts: []), accountId: null partout.
+- Virement interne (LDD, Livret A, PEA…) = une opération avec un accountId. Pas de type "transfer" séparé.
 
 ### Raffinements / idées
 
@@ -196,8 +198,7 @@ Application de gestion de budget mois par mois
 - Image d'aperçu Open Graph 1200 × 630 (og:image actuel à corriger ou à retirer)
 - Fusion de fichiers JSON, avec détection des conflits : demander à l'utilisateur quelle opération garder (ex : salaire à 1500 dans l'app, à 1700 dans le JSON).
 - Export CSV des opérations (une ligne par opération + colonne mois), pour l'analyse dans un tableur, pas pour la sauvegarde.
-- Page avec les mois de l'année : mois déjà générés cliquables (route /month/:monthKey + useParams), mois à venir grisés.
-  À décider : mois passé en lecture seule ou modifiable (si modifiable, cela change les reports et donc le solde du mois en cours).
+- Ajustement bancaire : au début d'un mois (ou à la première ouverture du mois), PROPOSER de saisir le solde réel de la banque, afficher l'écart et créer une opération d'ajustement si l'utilisateur accepte. Jamais automatique (un ajustement cache la cause de l'écart : abonnement oublié, règle fausse…). Opération identifiable (libellé « Ajustement », éventuellement origin "adjustment" → nouvelle version du format de sauvegarde).
 
 ### Refactor prévu (avant la V1.5)
 
@@ -211,7 +212,121 @@ Application de gestion de budget mois par mois
 
 ---
 
-## V2
+## Fait — V1.2 — Mois passés et historique (branche feat/month-history, terminée le 12/11/2026)
+
+### Décisions
+
+- **Navigation dans les années :** bandeau des années de firstMonth jusqu'à l'année en cours, et rien d'autre (pas d'années futures affichées : une nouvelle case apparaît au 1er janvier). L'année affichée vient de l'URL.
+- **États d'un mois dans la grille** (getMonthState dans utils/dates.js, valeurs dans MONTHS_STATE) :
+  - "before" : avant firstMonth, n'existe pas (gris foncé), non cliquable
+  - "past" : entre firstMonth et le mois en cours, cliquable
+  - "current" : mois en cours (vert), cliquable, aria-current="date". CHOIX VOLONTAIRE : la couleur suffit visuellement, pas d'indice textuel « en cours »
+  - "future" : après le mois en cours (gris clair), non cliquable (pas de lien du tout)
+- **Routes :** "/" redirige vers "/month" (Navigate replace) en attendant le dashboard ; "/month" = mois en cours ; "/month/:monthKey" = mois passé ; "/calendar/:year?" = grille d'une année ("/calendar" sans année redirige vers l'année en cours ; année invalide ou hors bornes → 404). Libellé du menu : « Historique » ; composant : Years (nom à harmoniser au refactor).
+- **Page d'un mois passé protégée :** format invalide (isMonthKey, mois 01 à 12) → 404 ; mois en cours → redirection vers /month ; tout ce qui n'est pas "past" → 404. Ne jamais faire confiance à l'URL.
+- **Deux pages distinctes :** CurrentMonth et PastMonths (réutilisation de MonthSummary, OperationList). Les opérations d'un mois passé sont LUES dans le stockage (jamais recalculées avec materializeRules : le passé est figé).
+- **Affichage d'un mois passé :** solde cumulé + report (comme le mois en cours) ; le total du mois est sous chaque liste.
+- **Modification du passé — EXCEPTION VOLONTAIRE à « le passé ne bouge jamais » :** cette règle concerne les RÈGLES. Dans un mois passé, on peut AJOUTER et SUPPRIMER des opérations PONCTUELLES (origin "manual").
+- **Opérations issues de règles d'un mois passé : intouchables.** Pour corriger un montant (facture qui varie, prélèvement différent), ajouter une opération ponctuelle de compensation (principe de l'écriture de correction en comptabilité). Question ouverte : autoriser la suppression d'une opération de règle (prélèvement non passé, abonnement suspendu).
+- **Pas de modification d'une opération ponctuelle pour l'instant :** supprimer puis ajouter de nouveau couvre le besoin. À reconsidérer avec le modèle à dates (modifier montant ET date aurait alors du sens).
+- Les reports et soldes étant CALCULÉS, corriger un mois passé met à jour automatiquement les mois suivants et le solde en cours : avertissement affiché dans la modale d'ajout ET dans la confirmation de suppression.
+- **Menu mobile :** pas de surlignage « Historique » sur un mois passé (CHOIX VOLONTAIRE : le menu mobile est fermé pendant la navigation).
+- **Sidebar :** le mois passé est reconnu avec useMatch("/month/:monthKey"), puis vérifié (isMonthKey + état "past") ; le mois est affiché en sous-titre d'« Historique ».
+- **Ton de l'app :** alternance volontaire du « tu » et du « vous » (cordial et amical).
+
+### Phase 1 — affichage seul
+
+- [x] Route propre pour le mois en cours (/month)
+- [x] Grille de l'année en cours avec les quatre états et les liens
+- [x] Navigation entre les années : bandeau (nav aria-label « Années ») de l'année de firstMonth à l'année en cours, une case apparaît chaque nouvelle année ; getListYears dans utils/dates.js ; isYearKey pour l'URL
+- [x] Page d'un mois passé en lecture (résumé, report, opérations) ; OperationList : bouton de suppression optionnel (onDelete &&)
+
+### Phase 2 — ajout / suppression
+
+- [x] PastManualModal : libellé / montant / type, SANS la case « récurrente » (une règle créée depuis un mois passé ne se matérialiserait pas dans les mois déjà générés) ; la date viendra avec le modèle à dates
+- [x] Avertissement en haut de la modale : changement du solde du mois, des mois suivants et du mois en cours
+- [x] Suppression d'une opération ponctuelle avec confirmation (DeletePastConfirmation)
+- [x] CSS (grille avec le solde de chaque mois, bandeau des années, page du mois passé, modale, confirmation)
+- [x] Sidebar : « Historique » surligné sur un vrai mois passé (useMatch + format + état "past"), avec le mois en sous-titre
+
+### Revue de la branche (Claude + ChatGPT, 11-12/11)
+
+- [x] JSDoc de dates.js à jour (isYearKey, getMonthState, getListYears, startOfDay) ; noms corrigés (previousMonth, carryOver, PastManualModal…) ; fragments inutiles retirés
+- [x] Textes : orthographe, typographie (« … », espaces avant : ? !), majuscules des libellés, titres de listes sans deux-points, bouton « Ajouter » en majuscules via CSS (text-transform)
+- [x] role="alert" sur les erreurs des trois modales
+- [x] PastMonths : mois précédent calculé après la validation de l'URL
+
+### À reprendre au refactor
+
+- Factoriser les modales (OperationFormModal, EditModal, PastManualModal) et les confirmations (DeleteConfirmation, DeletePastConfirmation)
+- PastMonths : rafraîchissement via useBudgetVersion plutôt que par un state voisin (fermeture de modale / confirmation)
+- MonthSummary : la prop currentMonth désigne en fait le mois affiché (renommer)
+- Harmoniser les noms : composant Years / route /calendar / libellé « Historique »
+- Modales (toutes) : annuler les temporisations si la modale est fermée pendant l'animation (sinon l'ajout se fait quand même) ; role="dialog", focus placé / confiné / restauré, fermeture par Échap ; focus visible sur les radios Dépense / Entrée
+- Sidebar : aria-current sur « Historique » quand un mois passé est affiché (aujourd'hui, surbrillance seulement visuelle)
+- Grille de l'année : getBalance appelé pour chaque mois cliquable (remonte jusqu'au premier mois à chaque fois) : à optimiser si l'historique devient long
+- CSS : classes heading / error absentes du module de PastManualModal, styles de case à cocher inutilisés, règle .grid .grid a (Years) qui ne correspond à rien ; classe info de DeletePastConfirmation à styliser
+
+### Finitions de texte (en toute fin)
+
+- « Reste de octobre » → élision devant une voyelle (« d'octobre », « d'avril », « d'août ») dans MonthSummary
+- Humeurs de l'écureuil : minuscule après « L'écureuil est : »
+
+---
+
+## Modèle de données à dates (format de sauvegarde version 3)
+
+### Pourquoi
+
+Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, sans erreur de saisie. Causes :
+
+- pas d'opération « solde de départ » (−663,49 €) → à saisir tout de suite, sans code ;
+- règles de novembre comptées alors qu'elles n'étaient pas encore passées à la banque (+443,46 €) → l'app raisonne au MOIS, la banque au JOUR ;
+- frais hors zone euro non suivis (+1,58 €) → réglé : règle CLAUDE passée à −23,18 €.
+- deux opérations rangées dans le mauvais mois, faute de date.
+
+### Décisions
+
+- **Date sur les opérations :** `date: "YYYY-MM-DD"`. **Jour sur les règles :** `day` (1–31). Matérialisation : si le jour n'existe pas dans le mois (31 en février), on prend le dernier jour du mois.
+- **Statut prévu / passé : CALCULÉ, jamais stocké** (date <= aujourd'hui → passé). Permet :
+  - un solde « à ce jour » (proche de la banque, jamais garanti identique : délais de passage) ;
+  - le prochain prélèvement ;
+  - un solde de fin de mois prévisionnel (option).
+  - Week-end : pas de décalage au jour ouvré pour commencer (un prélèvement du samedi apparaît « passé » avant la banque). À revoir si gênant.
+- **Trois champs séparés, chacun une seule information :**
+
+| Champ     | Question                                      | Valeurs                          |
+| --------- | --------------------------------------------- | -------------------------------- |
+| type      | Dans quel sens va l'argent ? (donne le signe) | "expense" / "income" (inchangé)  |
+| origin    | D'où vient l'opération ?                      | "rule" / "manual" / "adjustment" |
+| accountId | Mouvement vers l'épargne ?                    | null, ou id d'un compte (V3)     |
+
+- **origin "adjustment" :** solde de départ et corrections de rapprochement. Exclus des statistiques de dépenses / revenus (sinon ils gonflent les revenus). Les mouvements avec accountId sont aussi exclus des stats, mais comptent dans le solde du compte courant.
+- **Centimes en entiers (optionnel) :** si on le fait, le faire DANS cette même migration (une seule migration au lieu de deux). Formatage (÷ 100) uniquement à l'affichage. Les erreurs des flottants restent invisibles à l'affichage aujourd'hui : pas urgent.
+- **Migration :** fonctions par étapes (migrateV1toV2 pour l'épargne, puis migrateV2toV3 pour les dates), enchaînées à l'import et au démarrage. Une sauvegarde v1 passe par toutes les étapes. Opérations sans date : date par défaut à décider (1er du mois ?). META_SCHEMA_VERSION → 3.
+- La validation de l'import accepte les versions <= version actuelle (puis migre), et refuse les versions supérieures (sauvegarde d'une app plus récente).
+
+### Plus tard
+
+- Case « pointé » sur les opérations (seul moyen d'une égalité stricte avec la banque)
+- Import du CSV bancaire avec rapprochement automatique (même montant à quelques centimes près, date à ±5 jours)
+
+---
+
+## Feuille de route — novembre 2026 (réordonnée le 09/11)
+
+1. ~~**V1.2 historique, phase 1 :** grille des années, routes, page d'un mois passé en lecture~~ — FAIT
+2. ~~**V1.2 historique, phase 2 :** ajouter / supprimer des opérations ponctuelles dans un mois passé~~ — FAIT (V1.2 terminée le 12/11, en 4 jours au lieu de ~2 semaines prévues)
+3. **Épargne :** comptes + accountId, page /savings, format de sauvegarde version 2, migrateV1toV2 — objectif : fini ou presque vers le 23/11
+4. **Modèle à dates :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), format version 3, migrateV2toV3 ; ajouter le champ date à la modale des mois passés
+5. **Plus tard :** pointage, import CSV bancaire, ajustement bancaire proposé en début de mois
+
+Une étape mergée avant de commencer la suivante. Si ça déborde : mieux vaut une étape solide qu'une étape bâclée.
+Sans code, tout de suite : ajouter l'opération « solde de départ » dans le premier mois.
+
+---
+
+## Option BDD
 
 - Base de données : Supabase (données + authentification), front sur Vercel, réécriture de storage.js uniquement
 - Profil utilisateur via Context, données serveur via TanStack Query
