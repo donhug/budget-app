@@ -27,7 +27,6 @@ function PastMonths() {
   const firstMonth = getFirstMonth();
   const currentMonth = getCurrentMonth();
   const { monthKey } = useParams();
-  const previousMonth = getPreviousMonth(monthKey);
   if (!isMonthKey(monthKey)) {
     return <NotFound />;
   }
@@ -56,6 +55,7 @@ function PastMonths() {
     deleteOperation(monthKey, operationToDelete.id);
     setOperationToDelete(null);
   }
+  const previousMonth = getPreviousMonth(monthKey);
   const pastOperations = getOperations(monthKey);
   const pastMonthlyOps = pastOperations.filter((op) => op.origin === "rule");
   const pastManualOps = pastOperations.filter((op) => op.origin === "manual");
