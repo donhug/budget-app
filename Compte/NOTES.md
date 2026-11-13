@@ -180,13 +180,9 @@ Application de gestion de budget mois par mois
 - Mention « non appliquée au mois en cours » pour les règles actives sans opération ce mois-ci
 - Champ de fréquence pour les règles (mensuelle, trimestrielle, annuelle…)
 
-### Épargne (page /savings)
+### Épargne
 
-- Entité compte : { id, name, initialBalance } (Livret A, jeune, LDD, PEL…)
-- Opérations et règles avec un accountId optionnel : négatif = versement vers le compte, positif = retrait depuis le compte
-- Solde d'un compte CALCULÉ : tous ses mouvements, sur tous les mois de la racine au mois courant
-- Sauvegarde : la forme des données change (comptes + accountId) → META_SCHEMA_VERSION passe à 2. Migration v1 → v2 (migrateV1toV2) : aucun compte (accounts: []), accountId: null partout.
-- Virement interne (LDD, Livret A, PEA…) = une opération avec un accountId. Pas de type "transfer" séparé.
+- Voir la section « V1.3 — Épargne » plus bas.
 
 ### Raffinements / idées
 
@@ -274,6 +270,51 @@ Application de gestion de budget mois par mois
 
 ---
 
+## V1.3 — Épargne (branche feat/savings)
+
+### Décisions
+
+- **Compte d'épargne :** `{ id, name, initialBalance, ceiling, rate }`, rangés dans une nouvelle clé localStorage `"accounts"` (tableau).
+  - `initialBalance` : SAISI par l'utilisateur à la création (un livret a déjà de l'argent), contrairement au solde initial du budget (toujours 0).
+  - `ceiling` : plafond du livret. `rate` : taux d'intérêt, optionnel pour un compte créé à la main.
+- **Catalogue de livrets** (constants/) : nom, plafond, taux par défaut des livrets réglementés (Livret A, LDDS, LEP, Livret Jeune…). Vérifier les montants officiels (service-public.fr) au moment de coder.
+  - Les plafonds changent rarement ; les TAUX changent deux fois par an (février / août) → le catalogue ne donne qu'un taux PAR DÉFAUT, chaque compte garde son propre taux, modifiable.
+  - Livret absent du catalogue : création à la main avec au minimum le nom et le plafond ; le taux est optionnel.
+- **Virement = une opération (ou une règle) avec un `accountId`.** Pas de type "transfer" séparé.
+- **Convention de signes (vue du compte courant) :** valeur négative = versement VERS le livret ; valeur positive = retrait DEPUIS le livret.
+- **Deux soldes distincts :** le solde du mois (compte courant, inchangé) et le solde de chaque livret, affiché sur la page /savings.
+- **Solde d'un livret : CALCULÉ, jamais stocké** = initialBalance − somme des valeurs de ses opérations, sur tous les mois (getAllOperationsByMonth). Ex : versement de −50 € dans le budget → +50 € sur le livret.
+- **Intérêts : ESTIMÉS, calculés, jamais stockés ni ajoutés au solde** (≈ solde × taux sur l'année, affiché à côté du solde). Le vrai calcul (par quinzaines) n'est pas reproduit.
+- **Suppression d'un livret :** autorisée, avec un avertissement.
+  - Les RÈGLES liées au livret (virement automatique) sont supprimées (ou terminées).
+  - Les OPÉRATIONS passées liées restent dans le budget (l'argent a réellement quitté le compte courant ; le passé est figé). Leur `accountId` devient une TRACE, comme `ruleId` (affichage « compte supprimé »).
+- **Versements / retraits :** depuis la page /savings (bouton sur chaque livret). L'opération apparaît dans le mois en cours et dans l'Historique. Plus tard : un bouton dédié sur la page du mois.
+- **Format de sauvegarde version 2** (META_SCHEMA_VERSION → 2) : `accounts` dans l'export ; `accountId` sur les opérations et les règles. migrateV1toV2 : `accounts: []`, `accountId: null` partout. La validation accepte les versions ≤ 2 (et migre), refuse les supérieures.
+
+### À affiner en codant
+
+- Données existantes dans le navigateur (sans champ `accountId`) : traiter un `accountId` ABSENT comme `null` partout, ou migrer le stockage une fois au démarrage ?
+- Règles vers l'épargne : materializeRules devra recopier `accountId` de la règle vers l'opération.
+- Statistiques futures : exclure les opérations avec un `accountId` des dépenses / revenus.
+
+### Phase 1 (objectif : vers le 23/11)
+
+- [ ] Catalogue de livrets + création d'un compte (nom, solde initial, plafond, taux)
+- [ ] Page /savings : liste des livrets avec leur solde calculé
+- [ ] Versement / retrait ponctuel depuis un livret (opération dans le mois en cours, avec `accountId`)
+- [ ] Suppression d'un livret avec avertissement (règles liées supprimées, opérations passées conservées)
+- [ ] Format de sauvegarde v2 : export des comptes, migrateV1toV2, validation mise à jour
+
+### Phase 2
+
+- [ ] Intérêts estimés affichés
+- [ ] Alerte quand un versement dépasse le plafond
+- [ ] Règles avec `accountId` (virement automatique vers un livret)
+- [ ] Historique des mouvements d'un livret
+- [ ] Bouton « épargne » sur la page du mois
+
+---
+
 ## Modèle de données à dates (format de sauvegarde version 3)
 
 ### Pourquoi
@@ -317,7 +358,7 @@ Rapprochement avec le relevé bancaire (07/11/2026) : écart de −218,45 €, s
 
 1. ~~**V1.2 historique, phase 1 :** grille des années, routes, page d'un mois passé en lecture~~ — FAIT
 2. ~~**V1.2 historique, phase 2 :** ajouter / supprimer des opérations ponctuelles dans un mois passé~~ — FAIT (V1.2 terminée le 12/11, en 4 jours au lieu de ~2 semaines prévues)
-3. **Épargne :** comptes + accountId, page /savings, format de sauvegarde version 2, migrateV1toV2 — objectif : fini ou presque vers le 23/11
+3. **Épargne (V1.3, en cours) :** voir la section « V1.3 — Épargne » — phase 1 visée vers le 23/11
 4. **Modèle à dates :** dates et jours, statut calculé, solde à ce jour, origin "adjustment", centimes (si retenu), format version 3, migrateV2toV3 ; ajouter le champ date à la modale des mois passés
 5. **Plus tard :** pointage, import CSV bancaire, ajustement bancaire proposé en début de mois
 
