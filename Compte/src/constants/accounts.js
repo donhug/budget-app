@@ -15,12 +15,16 @@
  *   kind: "livret" | "placement",
  *   ceiling: number | null,
  *   rate: number | null,
+ *   rateEditable: boolean
+ *   ceilingEditable: boolean
  * }>}
  * - `id` : identifiant stable, stocké dans le compte (`catalogId`). Ne jamais le modifier.
  * - `label` : nom affiché.
  * - `kind` : "livret" (solde, intérêts estimés) ou "placement" (montant versé, sans intérêts).
  * - `ceiling` : plafond en euros, `null` s'il n'y en a pas.
  * - `rate` : taux annuel en % (1.7 = 1,7 %), `null` pour un placement.
+ * - `rateEditable`: true si l’utilisateur peut modifier le taux (taux fixé par la banque)
+ * - `ceilingEditable`: true si l'utilisateur peut modifier le plafond.
  *   Livret Jeune : taux minimum, modifiable par l'utilisateur.
  */
 export const SAVINGS_CATALOG = [
@@ -30,6 +34,8 @@ export const SAVINGS_CATALOG = [
     kind: "livret",
     ceiling: 22950,
     rate: 1.7,
+    rateEditable: false,
+    ceilingEditable: false,
   },
   {
     id: "ldds",
@@ -37,6 +43,8 @@ export const SAVINGS_CATALOG = [
     kind: "livret",
     ceiling: 12000,
     rate: 1.7,
+    rateEditable: false,
+    ceilingEditable: false,
   },
   {
     id: "lep",
@@ -44,6 +52,8 @@ export const SAVINGS_CATALOG = [
     kind: "livret",
     ceiling: 10000,
     rate: 2.5,
+    rateEditable: false,
+    ceilingEditable: false,
   },
   {
     id: "livretJeune",
@@ -51,6 +61,8 @@ export const SAVINGS_CATALOG = [
     kind: "livret",
     ceiling: 1600,
     rate: 1.7,
+    rateEditable: true,
+    ceilingEditable: false,
   },
   {
     id: "cel",
@@ -58,6 +70,8 @@ export const SAVINGS_CATALOG = [
     kind: "livret",
     ceiling: 15300,
     rate: 1.25,
+    rateEditable: false,
+    ceilingEditable: false,
   },
   {
     id: "pea",
@@ -65,6 +79,8 @@ export const SAVINGS_CATALOG = [
     kind: "placement",
     ceiling: 150000,
     rate: null,
+    rateEditable: false,
+    ceilingEditable: true,
   },
   {
     id: "cto",
@@ -72,6 +88,8 @@ export const SAVINGS_CATALOG = [
     kind: "placement",
     ceiling: null,
     rate: null,
+    rateEditable: false,
+    ceilingEditable: false,
   },
   {
     id: "assuranceVie",
@@ -79,5 +97,7 @@ export const SAVINGS_CATALOG = [
     kind: "placement",
     ceiling: null,
     rate: null,
+    rateEditable: false,
+    ceilingEditable: false,
   },
 ];
