@@ -14,6 +14,7 @@ import Footer from "./components/Footer/Footer";
 import ScrollBubble from "./components/ScrollBubble/ScrollBubble";
 import Years from "./pages/Years/Years";
 import PastMonths from "./pages/PastMonths/PastMonths";
+import Savings from "./pages/Savings/Savings";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -42,10 +43,7 @@ function App() {
                   path="/dashboard"
                   element={<UnderConstruction title="Dashboard" />}
                 />
-                <Route
-                  path="/savings"
-                  element={<UnderConstruction title="Épargne" />}
-                />
+                <Route path="/savings" element={<Savings title="Épargne" />} />
                 <Route
                   path="/account"
                   element={<UnderConstruction title="Compte" />}
