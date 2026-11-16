@@ -12,25 +12,38 @@ function CreateAccountModal({ onSubmit, onClose }) {
   const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
 
+  const selectedEntry = SAVINGS_CATALOG.find((entry) => entry.id === catalogId);
+  const isNothingSelected = catalogId === "";
+  const isOther = catalogId === "Autre";
+
   function handleValidate() {
     const errors = [];
     setError("");
-
-    if (accountName.trim() === "") errors.push("le nom du Compte");
+    if (isNothingSelected) {
+      setError("Vous n'avez rien sélectionné.");
+      return;
+    }
+    if (Number(accountBalance) < 0) {
+      setError("Le montant ne peut pas être négatif.");
+      return;
+    }
+    if (accountName.trim() === "") errors.push("le nom du compte");
     if (accountKind === "") errors.push("la nature (livret ou placement)");
     if (errors.length > 0) {
       setError("Il manque : " + errors.join(", "));
       return;
     }
+
     setStatus("loading");
     setTimeout(() => {
       setStatus("success");
       setTimeout(() => {
         onSubmit({
+          catalogId: isOther ? null : catalogId,
           accountName,
-          accountBalance,
-          accountCeiling,
-          accountRate,
+          accountBalance: Number(accountBalance),
+          accountCeiling: accountCeiling === "" ? null : Number(accountCeiling),
+          accountRate: accountRate === "" ? null : Number(accountRate),
           accountKind,
         });
       }, 400);
@@ -54,9 +67,6 @@ function CreateAccountModal({ onSubmit, onClose }) {
     setAccountRate(catalogEntry.rate ?? "");
     setAccountKind(catalogEntry.kind);
   }
-  const selectedEntry = SAVINGS_CATALOG.find((entry) => entry.id === catalogId);
-  const isNothingSelected = catalogId === "";
-  const isOther = catalogId === "Autre";
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
@@ -68,21 +78,21 @@ function CreateAccountModal({ onSubmit, onClose }) {
         >
           <FaXmark />
         </button>
-        <h2 className={style.heading}>Ajouter un compte d'epargne</h2>
+        <h2 className={style.heading}>Ajouter un compte d'épargne</h2>
         <div className={style.warning}>
           <FaCircleInfo />
           <p>
             Livret : compte permettant de mettre de l’argent de côté et de
             percevoir des intérêts. <br />
-            Placement( PEA, CTO, Assurance-vie ) : permet d’investir de l’argent
+            Placement (PEA, CTO, assurance-vie) : permet d’investir de l’argent
             dans des actifs financiers, comme des actions ou des obligations.
             L'application suit les montants versés, et non pas la valeur en
-            bourse!
+            bourse !
           </p>
         </div>
-        <label htmlFor="catalog">Type de Compte</label>
+        <label htmlFor="catalog">Type de compte</label>
         <select id="catalog" value={catalogId} onChange={handleCatalogChange}>
-          <option value="">--Sélectionnez un compte--</option>
+          <option value="">-- Sélectionnez un compte --</option>
           {SAVINGS_CATALOG.map((entry) => {
             return (
               <option key={entry.id} value={entry.id}>
@@ -175,7 +185,7 @@ function CreateAccountModal({ onSubmit, onClose }) {
           onClick={handleValidate}
           disabled={status !== "idle"}
         >
-          {status === "idle" && "Ajouter l'epargne"}
+          {status === "idle" && "Ajouter le compte"}
           {status === "loading" && <span className={style.spinner} />}
           {status === "success" && <span className={style.checkmark}>✓</span>}
         </button>
