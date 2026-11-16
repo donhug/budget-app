@@ -223,3 +223,28 @@ export function notifyBudgetUpdated() {
   const update = new Event(BUDGET_UPDATED_EVENT);
   window.dispatchEvent(update);
 }
+
+/**
+ * Enregistre la liste des comptes d'épargne, dans le localStorage, sous forme de chaîne JSON.
+ *
+ * @param {Array} accountsParam - le tableau des comptes à stocker
+ */
+export function setAccounts(accountsParam) {
+  const accountsString = JSON.stringify(accountsParam);
+  localStorage.setItem("accounts", accountsString);
+  notifyBudgetUpdated();
+}
+
+/**
+ * Récupère la liste des comptes d'épargne depuis le localStorage.
+ *
+ * @returns {Array} - le tableau des comptes, ou un tableau vide si rien n'est stocké
+ */
+export function getAccounts() {
+  const accountsString = localStorage.getItem("accounts");
+  if (accountsString === null) {
+    return [];
+  } else {
+    return JSON.parse(accountsString);
+  }
+}
