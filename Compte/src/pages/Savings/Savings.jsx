@@ -2,9 +2,39 @@ import style from "./Savings.module.css";
 import CreateAccountModal from "../../components/CreateAccountModal/CreateAccountModal";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-
+import { getAccounts, setAccounts } from "../../services/storage";
+import { SAVINGS_CATALOG } from "../../constants/accounts";
 function Savings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  function handleCreateAccount({
+    catalogId,
+    accountName,
+    accountBalance,
+    accountCeiling,
+    accountRate,
+    accountKind,
+  }) {
+    const selectedEntry = SAVINGS_CATALOG.find(
+      (entry) => entry.id === catalogId,
+    );
+    const newAccount = {
+      id: crypto.randomUUID(),
+      catalogId,
+      name: accountName,
+      initialBalance: accountBalance,
+      kind: accountKind,
+      ceiling:
+        selectedEntry?.ceilingEditable || catalogId === null
+          ? accountCeiling
+          : null,
+      rate:
+        selectedEntry?.rateEditable || catalogId === null ? accountRate : null,
+    };
+    const currentAccounts = getAccounts();
+    const accountsUpdated = [...currentAccounts, newAccount];
+    setAccounts(accountsUpdated);
+    setIsModalOpen(false);
+  }
   return (
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
@@ -21,7 +51,7 @@ function Savings() {
       {isModalOpen && (
         <CreateAccountModal
           onClose={() => setIsModalOpen(false)}
-          onSubmit={() => setIsModalOpen(false)}
+          onSubmit={handleCreateAccount}
         />
       )}
     </div>
