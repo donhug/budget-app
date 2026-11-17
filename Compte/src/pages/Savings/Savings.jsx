@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { getAccounts, setAccounts } from "../../services/storage";
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
-import { SAVINGS_CATALOG } from "../../constants/accounts";
+import { getCatalogEntry } from "../../services/savings";
 function Savings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dataVersion = useBudgetVersion();
@@ -18,9 +18,7 @@ function Savings() {
     accountRate,
     accountKind,
   }) {
-    const selectedEntry = SAVINGS_CATALOG.find(
-      (entry) => entry.id === catalogId,
-    );
+    const selectedEntry = getCatalogEntry(catalogId);
     const newAccount = {
       id: crypto.randomUUID(),
       catalogId,
