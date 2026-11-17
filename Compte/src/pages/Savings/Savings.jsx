@@ -8,6 +8,7 @@ import {
   getCatalogEntry,
   getAccountCeiling,
   getAccountRate,
+  getAccountBalance,
 } from "../../services/savings";
 import { formatBalance } from "../../utils/format";
 function Savings() {
@@ -67,9 +68,9 @@ function Savings() {
         {accounts.map((account) => {
           const rate = getAccountRate(account);
           const ceiling = getAccountCeiling(account);
-          const balance = formatBalance(account.initialBalance);
+          const balance = formatBalance(getAccountBalance(account));
           return (
-            <div key={account.id}>
+            <div key={account.id} className={style.addTile}>
               <p>{account.name}</p>
               {rate !== null && <p>Taux : {rate} %</p>}
               {ceiling !== null && <p>Plafond :{formatBalance(ceiling)}</p>}

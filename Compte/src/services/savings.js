@@ -1,4 +1,5 @@
 import { SAVINGS_CATALOG } from "../constants/accounts";
+import { getAllOperationsByMonth } from "./budget";
 
 /**
  * Retrouve l'entrée du catalogue correspondant à un identifiant.
@@ -38,4 +39,19 @@ export function getAccountCeiling(account) {
   const ceiling = account.ceiling ?? accountEntry?.ceiling ?? null;
 
   return ceiling;
+}
+
+export function getAccountBalance(account) {
+  const allOperationByMonth = getAllOperationsByMonth();
+  const listOperation = Object.values(allOperationByMonth);
+  const allOperations = listOperation.flat();
+  const accountOperations = allOperations.filter(
+    (operation) => operation.accountId === account.id,
+  );
+  const sumOperation = accountOperations.reduce(
+    (total, operation) => total + operation.value,
+    0,
+  );
+  const accountBalance = account.initialBalance - sumOperation;
+  return accountBalance;
 }
