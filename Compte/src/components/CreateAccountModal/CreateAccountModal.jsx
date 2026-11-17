@@ -47,7 +47,7 @@ function CreateAccountModal({ onSubmit, onClose }) {
           accountKind,
         });
       }, 400);
-    });
+    }, 400);
   }
   function handleCatalogChange(e) {
     const selectedId = e.target.value;
@@ -87,21 +87,24 @@ function CreateAccountModal({ onSubmit, onClose }) {
             Placement (PEA, CTO, assurance-vie) : permet d’investir de l’argent
             dans des actifs financiers, comme des actions ou des obligations.
             L'application suit les montants versés, et non pas la valeur en
-            bourse !
+            bourse !
           </p>
         </div>
-        <label htmlFor="catalog">Type de compte</label>
-        <select id="catalog" value={catalogId} onChange={handleCatalogChange}>
-          <option value="">-- Sélectionnez un compte --</option>
-          {SAVINGS_CATALOG.map((entry) => {
-            return (
-              <option key={entry.id} value={entry.id}>
-                {entry.label}
-              </option>
-            );
-          })}
-          <option value="Autre">Autre</option>
-        </select>
+        <div className={style.field}>
+          <label htmlFor="catalog">Type de compte</label>
+          <select id="catalog" value={catalogId} onChange={handleCatalogChange}>
+            <option value="">-- Sélectionnez un compte --</option>
+            {SAVINGS_CATALOG.map((entry) => {
+              return (
+                <option key={entry.id} value={entry.id}>
+                  {entry.label}
+                </option>
+              );
+            })}
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+
         <div className={style.field}>
           <label htmlFor="label">Nom du compte</label>
           <input
