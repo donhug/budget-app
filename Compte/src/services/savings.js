@@ -16,11 +16,11 @@ export function getCatalogEntry(catalogId) {
  * sinon, on lit celui du catalogue, pour suivre les changements de taux officiels.
  *
  * @param {object} account - le compte d'épargne
- * @returns {number|null|undefined} - le taux annuel en % (1.7 = 1,7 %), ou `null` / `undefined` s'il n'y en a pas
+ * @returns {number|null} - le taux annuel en % (1.7 = 1,7 %), ou `null` s'il n'y en a pas
  */
 export function getAccountRate(account) {
   const accountEntry = getCatalogEntry(account.catalogId);
-  const rate = account.rate ?? accountEntry?.rate;
+  const rate = account.rate ?? accountEntry?.rate ?? null;
 
   return rate;
 }
@@ -31,11 +31,11 @@ export function getAccountRate(account) {
  * sinon, on lit celui du catalogue.
  *
  * @param {object} account - le compte d'épargne
- * @returns {number|null|undefined} - le plafond en euros, ou `null` / `undefined` s'il n'y en a pas
+ * @returns {number|null} - le plafond en euros, ou `null` s'il n'y en a pas
  */
 export function getAccountCeiling(account) {
   const accountEntry = getCatalogEntry(account.catalogId);
-  const ceiling = account.ceiling ?? accountEntry?.ceiling;
+  const ceiling = account.ceiling ?? accountEntry?.ceiling ?? null;
 
   return ceiling;
 }

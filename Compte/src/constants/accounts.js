@@ -6,7 +6,7 @@
  * Source de vérité pour le plafond et le taux : un compte créé depuis le
  * catalogue ne les stocke pas, il garde seulement son `catalogId` et relit
  * ces valeurs ici. Un taux ou un plafond saisi par l'utilisateur dans le
- * compte reste prioritaire (cas du Livret Jeune).
+ * compte reste prioritaire (taux du Livret Jeune, plafond du PEA).
  * Un compte « Autre » n'a pas d'entrée ici (`catalogId: null`).
  *
  * @type {Array<{
@@ -15,17 +15,19 @@
  *   kind: "livret" | "placement",
  *   ceiling: number | null,
  *   rate: number | null,
- *   rateEditable: boolean
- *   ceilingEditable: boolean
+ *   rateEditable: boolean,
+ *   ceilingEditable: boolean,
  * }>}
  * - `id` : identifiant stable, stocké dans le compte (`catalogId`). Ne jamais le modifier.
  * - `label` : nom affiché.
  * - `kind` : "livret" (solde, intérêts estimés) ou "placement" (montant versé, sans intérêts).
  * - `ceiling` : plafond en euros, `null` s'il n'y en a pas.
  * - `rate` : taux annuel en % (1.7 = 1,7 %), `null` pour un placement.
- * - `rateEditable`: true si l’utilisateur peut modifier le taux (taux fixé par la banque)
- * - `ceilingEditable`: true si l'utilisateur peut modifier le plafond.
  *   Livret Jeune : taux minimum, modifiable par l'utilisateur.
+ * - `rateEditable` : `true` si l'utilisateur peut modifier le taux (taux fixé par la banque).
+ *   Le taux saisi est alors stocké dans le compte.
+ * - `ceilingEditable` : `true` si l'utilisateur peut modifier le plafond (ex. PEA jeune ou PEA-PME).
+ *   Le plafond saisi est alors stocké dans le compte.
  */
 export const SAVINGS_CATALOG = [
   {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaXmark, FaCircleInfo } from "react-icons/fa6";
 import style from "./CreateAccountModal.module.css";
 import { SAVINGS_CATALOG } from "../../constants/accounts";
+import { getCatalogEntry } from "../../services/savings";
 function CreateAccountModal({ onSubmit, onClose }) {
   const [catalogId, setCatalogId] = useState("");
   const [accountName, setAccountName] = useState("");
@@ -12,7 +13,7 @@ function CreateAccountModal({ onSubmit, onClose }) {
   const [error, setError] = useState("");
   const [status, setStatus] = useState("idle");
 
-  const selectedEntry = SAVINGS_CATALOG.find((entry) => entry.id === catalogId);
+  const selectedEntry = getCatalogEntry(catalogId);
   const isNothingSelected = catalogId === "";
   const isOther = catalogId === "Autre";
 
