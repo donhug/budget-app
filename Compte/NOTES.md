@@ -274,10 +274,13 @@ Application de gestion de budget mois par mois
 
 ### Décisions
 
-- **Compte d'épargne :** `{ id, name, kind, initialBalance, ceiling, rate }`, rangés dans une nouvelle clé localStorage `"accounts"` (tableau).
+- **Compte d'épargne :** `{ id, catalogId, name, kind, initialBalance, ceiling, rate }`, rangés dans une nouvelle clé localStorage `"accounts"` (tableau). Getter / setter : `getAccounts` / `setAccounts` (storage.js).
+  - `id` : identifiant du compte (`crypto.randomUUID()`), dit QUI est le compte. `catalogId` : lien vers l'entrée du catalogue (ex. `"livretA"`), dit DE QUEL PRODUIT il vient ; `null` pour un compte « Autre ». Jamais de lien par le nom (renommable) ni par l'index (change si on insère).
   - `kind` : `"livret"` (taux, intérêts estimés, affichage « Solde ») ou `"placement"` (PEA, CTO, assurance-vie : pas de taux ni d'intérêts estimés, affichage « Montant versé »).
   - `initialBalance` : SAISI par l'utilisateur à la création (un livret a déjà de l'argent), contrairement au solde initial du budget (toujours 0).
   - `ceiling` : plafond, `null` s'il n'y en a pas (CTO). `rate` : taux d'intérêt, `null` pour un placement, optionnel pour un compte créé à la main.
+  - **Plafond et taux NON stockés pour un compte du catalogue** (`null` dans le compte) : relus dans le catalogue, pour suivre automatiquement les changements officiels (taux révisé le 01/02 → tous les Livrets A suivent). Stockés seulement si l'utilisateur pouvait les saisir : compte « Autre », ou entrée avec `rateEditable` (Livret Jeune : taux selon la banque) / `ceilingEditable` (PEA : PEA jeune 20 000 €, PEA-PME).
+  - **Règle de lecture** (services/savings.js) : `getAccountRate(account)` = `account.rate ?? entrée?.rate ?? null` (compte prioritaire, catalogue en secours) ; `getAccountCeiling(account)` idem ; `getCatalogEntry(catalogId)` retrouve l'entrée par `.find()`. Toujours un nombre ou `null` → tester `!== null` (un taux de 0 reste affiché).
 - **Placements (PEA, CTO, assurance-vie) suivis en MONTANT VERSÉ**, sans tenir compte de la bourse : l'app affiche ce qui a réellement été versé, jamais une valeur de marché (libellé « Montant versé », pas « Solde »). Le plafond du PEA (150 000 €) porte justement sur les versements. Valorisation boursière : peut-être un jour, pas prévue.
 - **Catalogue** (constants/) : nom, kind, plafond, taux par défaut. Valeurs vérifiées le 13/11/2026 (taux en vigueur du 01/08/2026 au 31/01/2027, prochaine révision le 01/02/2027) :
 
@@ -291,20 +294,26 @@ Application de gestion de budget mois par mois
 | PEA | placement | 150 000 € (versements) | — |
 | CTO | placement | aucun | — |
 | Assurance-vie | placement | aucun | — |
-| Autre (création manuelle) | au choix | saisi (obligatoire pour un livret) | saisi (optionnel) |
+| Autre (création manuelle) | au choix | saisi (optionnel) | saisi (optionnel) |
 
   - Hors catalogue : Livret Bleu (= Livret A du Crédit Mutuel, doublon) ; livrets bancaires, super livrets, comptes à terme (plafond / taux selon la banque → création manuelle) ; PEL (versements obligatoires, taux figé à l'ouverture : ne colle pas au modèle de versements libres) ; LEE, PEP, PEAC (rares ou fermés aux nouvelles ouvertures).
-  - Les plafonds changent rarement ; les TAUX changent deux fois par an (février / août) → le catalogue ne donne qu'un taux PAR DÉFAUT, chaque compte garde son propre taux, modifiable.
-  - Livret absent du catalogue : création à la main avec au minimum le nom et le plafond ; le taux est optionnel.
+  - Les plafonds changent rarement ; les TAUX changent deux fois par an (février / août) → on met à jour le catalogue et on redéploie ; les comptes du catalogue suivent seuls (voir ci-dessus).
+  - Champs du catalogue en plus : `rateEditable` (true : Livret Jeune) et `ceilingEditable` (true : PEA). Ajouter un produit au taux ou plafond libre = passer un `false` à `true`, sans toucher au JSX.
+  - « Autre » n'est PAS une entrée du catalogue : `<option>` ajoutée à la main après le `.map()`, `catalogId: null` dans le compte.
+  - Compte « Autre » : nom et nature (livret / placement) obligatoires ; plafond et taux optionnels (une enveloppe de liquide n'a ni l'un ni l'autre).
 - **Virement = une opération (ou une règle) avec un `accountId`.** Pas de type "transfer" séparé.
 - **Convention de signes (vue du compte courant) :** valeur négative = versement VERS le livret ; valeur positive = retrait DEPUIS le livret.
-- **Deux soldes distincts :** le solde du mois (compte courant, inchangé) et le solde de chaque livret, affiché sur la page /savings.
+- **Deux soldes distincts :** le solde du mois (compte courant, inchangé) et le solde de chaque livret.
+- **Pages :**
+  - **/savings = vue d'ensemble :** une tuile par compte avec le nom ; au centre, une JAUGE solde ÷ plafond (en %) pour un livret, la somme pour un placement. Livret sans plafond (« Autre ») → la somme, pas de jauge. Au-dessus de 100 % (possible : les intérêts peuvent dépasser le plafond) → jauge bloquée à 100 % visuellement, ou signalée. Clic sur la tuile → page du compte. Tuile « + » pour créer un compte (CreateAccountModal).
+  - **/savings/:accountId = page d'un compte** (useParams, comme /month/:monthKey) : solde, taux, plafond, intérêts estimés (livret), bouton versement / retrait ; plus tard l'historique, la modification, la suppression.
 - **Solde d'un livret : CALCULÉ, jamais stocké** = initialBalance − somme des valeurs de ses opérations, sur tous les mois (getAllOperationsByMonth). Ex : versement de −50 € dans le budget → +50 € sur le livret.
 - **Intérêts : ESTIMÉS, calculés, jamais stockés ni ajoutés au solde** (≈ solde × taux sur l'année, affiché à côté du solde), pour les `"livret"` seulement. Le vrai calcul (par quinzaines) n'est pas reproduit.
 - **Suppression d'un livret :** autorisée, avec un avertissement.
   - Les RÈGLES liées au livret (virement automatique) sont supprimées (ou terminées).
   - Les OPÉRATIONS passées liées restent dans le budget (l'argent a réellement quitté le compte courant ; le passé est figé). Leur `accountId` devient une TRACE, comme `ruleId` (affichage « compte supprimé »).
-- **Versements / retraits :** depuis la page /savings (bouton sur chaque livret). L'opération apparaît dans le mois en cours et dans l'Historique. Plus tard : un bouton dédié sur la page du mois.
+- **Versements / retraits :** depuis la page du compte (/savings/:accountId). L'opération apparaît dans le mois en cours et dans l'Historique. Plus tard : un bouton dédié sur la page du mois.
+- **Modifier un compte (phase 2) :** nom, solde initial (erreur de saisie à la création : 500 € saisis, 750 € en réalité), taux / plafond s'ils sont modifiables. Le solde affiché suit, puisqu'il est calculé à partir de `initialBalance`. Jamais de « modification du solde » directe.
 - **Format de sauvegarde version 2** (META_SCHEMA_VERSION → 2) : `accounts` dans l'export ; `accountId` sur les opérations et les règles. migrateV1toV2 : `accounts: []`, `accountId: null` partout. La validation accepte les versions ≤ 2 (et migre), refuse les supérieures.
 
 ### À affiner en codant
@@ -313,20 +322,25 @@ Application de gestion de budget mois par mois
 - Règles vers l'épargne : materializeRules devra recopier `accountId` de la règle vers l'opération.
 - Statistiques futures : exclure les opérations avec un `accountId` des dépenses / revenus.
 
-### Phase 1 (objectif : vers le 23/11)
+### Phase 1 (objectif : démo le 23/11, finie vers le 21-22)
 
-- [ ] Catalogue + création d'un compte (nom, kind, solde initial, plafond, taux) ; « Autre » pour la création manuelle
-- [ ] Page /savings : liste des comptes avec leur solde calculé (« Solde » pour un livret, « Montant versé » pour un placement)
-- [ ] Versement / retrait ponctuel depuis un livret (opération dans le mois en cours, avec `accountId`)
-- [ ] Suppression d'un livret avec avertissement (règles liées supprimées, opérations passées conservées)
+- [x] Catalogue (constants/accounts.js) avec `rateEditable` / `ceilingEditable`
+- [x] `getAccounts` / `setAccounts` (storage.js) ; service savings.js (`getCatalogEntry`, `getAccountRate`, `getAccountCeiling`)
+- [x] Création d'un compte : CreateAccountModal (select du catalogue + « Autre », champs bloqués selon le catalogue, validation), construction du compte dans la page (plafond / taux stockés seulement s'ils étaient modifiables)
+- [x] Page /savings : liste des comptes (useBudgetVersion + useMemo), tuiles provisoires (nom, solde initial, taux, plafond)
+- [ ] `getAccountBalance(account)` (savings.js) : initialBalance − somme des opérations du compte — prérequis de la jauge, de la page du compte et des intérêts
+- [ ] Tuiles avec jauge (livret avec plafond) ou somme (placement, livret sans plafond) ; clic → page du compte
+- [ ] Page du compte /savings/:accountId : solde, taux, plafond, intérêts estimés (livret)
+- [ ] Versement / retrait ponctuel depuis la page du compte (opération dans le mois en cours, avec `accountId`)
+- [ ] Suppression d'un compte avec avertissement (règles liées supprimées, opérations passées conservées)
 - [ ] Format de sauvegarde v2 : export des comptes, migrateV1toV2, validation mise à jour
 
 ### Phase 2
 
-- [ ] Intérêts estimés affichés
+- [ ] Historique des mouvements d'un compte (page du compte)
+- [ ] Modifier un compte (nom, solde initial, taux / plafond si modifiables)
 - [ ] Alerte quand un versement dépasse le plafond
 - [ ] Règles avec `accountId` (virement automatique vers un livret)
-- [ ] Historique des mouvements d'un livret
 - [ ] Bouton « épargne » sur la page du mois
 
 ---
