@@ -1,6 +1,7 @@
 import style from "./Savings.module.css";
 import CreateAccountModal from "../../components/CreateAccountModal/CreateAccountModal";
 import { useState, useMemo } from "react";
+import { Link } from "react-router";
 import { FaPlus } from "react-icons/fa6";
 import { getAccounts, setAccounts } from "../../services/storage";
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
@@ -15,6 +16,7 @@ import { formatBalance } from "../../utils/format";
 function Savings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dataVersion = useBudgetVersion();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const accounts = useMemo(() => getAccounts(), [dataVersion]);
   /**
@@ -74,18 +76,20 @@ function Savings() {
           const isOverCeiling = percent !== null && percent >= 100;
           return (
             <div key={account.id} className={style.addTile}>
-              <p>{account.name}</p>
-              {rate !== null && <p>Taux : {rate} %</p>}
-              {ceiling !== null && <p>Plafond :{formatBalance(ceiling)}</p>}
-              <p>
-                {account.kind === "livret" ? "Solde" : "Montant versé"}:
-                {balance}
-              </p>
-              {percent !== null && (
-                <p className={isOverCeiling ? style.over : undefined}>
-                  {percent}%
+              <Link to={`/savings/${account.id}`}>
+                <p>{account.name}</p>
+                {rate !== null && <p>Taux : {rate} %</p>}
+                {ceiling !== null && <p>Plafond :{formatBalance(ceiling)}</p>}
+                <p>
+                  {account.kind === "livret" ? "Solde" : "Montant versé"}:
+                  {balance}
                 </p>
-              )}
+                {percent !== null && (
+                  <p className={isOverCeiling ? style.over : undefined}>
+                    {percent}%
+                  </p>
+                )}
+              </Link>
             </div>
           );
         })}

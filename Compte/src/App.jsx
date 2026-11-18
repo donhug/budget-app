@@ -15,6 +15,7 @@ import ScrollBubble from "./components/ScrollBubble/ScrollBubble";
 import Years from "./pages/Years/Years";
 import PastMonths from "./pages/PastMonths/PastMonths";
 import Savings from "./pages/Savings/Savings";
+import SavingsAccount from "./pages/SavingsAccount/SavingsAccount";
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -44,6 +45,7 @@ function App() {
                   element={<UnderConstruction title="Dashboard" />}
                 />
                 <Route path="/savings" element={<Savings title="Épargne" />} />
+                <Route path="/savings/:accountId" element={<SavingsAccount />} />
                 <Route
                   path="/account"
                   element={<UnderConstruction title="Compte" />}
