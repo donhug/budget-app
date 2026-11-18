@@ -7,8 +7,6 @@ import { getAccounts, setAccounts } from "../../services/storage";
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
 import {
   getCatalogEntry,
-  getAccountCeiling,
-  getAccountRate,
   getAccountBalance,
   getAccountFillPercent,
 } from "../../services/savings";
@@ -69,8 +67,6 @@ function Savings() {
           Ajouter un compte ou une épargne
         </button>
         {accounts.map((account) => {
-          const rate = getAccountRate(account);
-          const ceiling = getAccountCeiling(account);
           const balance = formatBalance(getAccountBalance(account));
           const percent = getAccountFillPercent(account);
           const isOverCeiling = percent !== null && percent >= 100;
@@ -78,8 +74,6 @@ function Savings() {
             <div key={account.id} className={style.addTile}>
               <Link to={`/savings/${account.id}`}>
                 <p>{account.name}</p>
-                {rate !== null && <p>Taux : {rate} %</p>}
-                {ceiling !== null && <p>Plafond :{formatBalance(ceiling)}</p>}
                 <p>
                   {account.kind === "livret" ? "Solde" : "Montant versé"}:
                   {balance}

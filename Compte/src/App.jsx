@@ -45,7 +45,10 @@ function App() {
                   element={<UnderConstruction title="Dashboard" />}
                 />
                 <Route path="/savings" element={<Savings title="Épargne" />} />
-                <Route path="/savings/:accountId" element={<SavingsAccount />} />
+                <Route
+                  path="/savings/:accountId"
+                  element={<SavingsAccount />}
+                />
                 <Route
                   path="/account"
                   element={<UnderConstruction title="Compte" />}
