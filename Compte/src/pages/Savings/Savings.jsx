@@ -9,6 +9,7 @@ import {
   getAccountCeiling,
   getAccountRate,
   getAccountBalance,
+  getAccountFillPercent,
 } from "../../services/savings";
 import { formatBalance } from "../../utils/format";
 function Savings() {
@@ -69,6 +70,8 @@ function Savings() {
           const rate = getAccountRate(account);
           const ceiling = getAccountCeiling(account);
           const balance = formatBalance(getAccountBalance(account));
+          const percent = getAccountFillPercent(account);
+          const isOverCeiling = percent !== null && percent >= 100;
           return (
             <div key={account.id} className={style.addTile}>
               <p>{account.name}</p>
@@ -78,6 +81,11 @@ function Savings() {
                 {account.kind === "livret" ? "Solde" : "Montant versé"}:
                 {balance}
               </p>
+              {percent !== null && (
+                <p className={isOverCeiling ? style.over : undefined}>
+                  {percent}%
+                </p>
+              )}
             </div>
           );
         })}

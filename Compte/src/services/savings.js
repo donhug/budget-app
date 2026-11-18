@@ -65,3 +65,26 @@ export function getAccountBalance(account) {
   const accountBalance = account.initialBalance - sumOperation;
   return accountBalance;
 }
+
+/**
+ * Calcule le taux de remplissage d'un compte : solde ÷ plafond, en %.
+ * Renvoie le VRAI pourcentage, arrondi à une décimale, y compris au-dessus de 100
+ * (possible : les intérêts peuvent faire dépasser le plafond). Le blocage à 100 %
+ * pour la jauge se fait à l'affichage, pas ici.
+ *
+ * @param {object} account - le compte d'épargne
+ * @returns {number|null} - le pourcentage (ex. 5.2 pour 5,2 %), ou `null` si le compte
+ *    n'a pas de plafond (ou un plafond à 0) : pas de jauge possible, on affiche le solde
+ */
+export function getAccountFillPercent(account) {
+  const balance = getAccountBalance(account);
+  const ceiling = getAccountCeiling(account);
+
+  if (ceiling === null || ceiling === 0) {
+    return null;
+  }
+  const accountPercent = (balance / ceiling) * 100;
+  const roundPercent = Math.round(accountPercent * 10) / 10;
+
+  return roundPercent;
+}
