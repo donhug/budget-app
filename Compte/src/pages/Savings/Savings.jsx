@@ -58,6 +58,34 @@ function Savings() {
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
       <div className={style.grid}>
+        {accounts.map((account) => {
+          const balance = formatBalance(getAccountBalance(account));
+          const percent = getAccountFillPercent(account);
+          const isOverCeiling = percent !== null && percent >= 100;
+          return (
+            <Link
+              key={account.id}
+              className={style.accountTile}
+              to={`/savings/${account.id}`}
+            >
+              <p className={style.accountName}>{account.name}</p>
+              {percent !== null ? (
+                <div
+                  className={`${style.ring} ${isOverCeiling ? style.over : ""}`}
+                  style={{ "--percent": Math.min(percent, 100) }}
+                >
+                  <span className={style.ringValue}>{percent}%</span>
+                </div>
+              ) : (
+                <p className={style.bigAmount}>{balance}</p>
+              )}
+              <p className={style.accountBalance}>
+                {account.kind === "livret" ? "Solde : " : "Montant versé : "}
+                {balance}
+              </p>
+            </Link>
+          );
+        })}
         <button
           type="button"
           className={style.addTile}
@@ -66,27 +94,6 @@ function Savings() {
           <FaPlus className={style.addIcon} />
           Ajouter un compte ou une épargne
         </button>
-        {accounts.map((account) => {
-          const balance = formatBalance(getAccountBalance(account));
-          const percent = getAccountFillPercent(account);
-          const isOverCeiling = percent !== null && percent >= 100;
-          return (
-            <div key={account.id} className={style.addTile}>
-              <Link to={`/savings/${account.id}`}>
-                <p>{account.name}</p>
-                <p>
-                  {account.kind === "livret" ? "Solde" : "Montant versé"}:
-                  {balance}
-                </p>
-                {percent !== null && (
-                  <p className={isOverCeiling ? style.over : undefined}>
-                    {percent}%
-                  </p>
-                )}
-              </Link>
-            </div>
-          );
-        })}
       </div>
       {isModalOpen && (
         <CreateAccountModal

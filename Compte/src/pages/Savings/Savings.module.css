@@ -13,7 +13,8 @@
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-auto-rows: 1fr;
   gap: var(--space-3);
 }
 
@@ -23,7 +24,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  aspect-ratio: 4/3;
   padding: var(--space-3);
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-md);
@@ -38,6 +38,85 @@
     background-color 0.2s ease;
 }
 
+.accountTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.accountTile:hover {
+  border-color: var(--color-brand);
+  transform: translateY(-2px);
+}
+.accountTile:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.accountName {
+  margin: 0;
+  max-width: 100%;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.accountBalance {
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.bigAmount {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+/* --- L'anneau --- */
+.ring {
+  --ring-color: var(--color-brand);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--ring-color) calc(var(--percent) * 1%),
+    var(--color-border) 0
+  );
+}
+
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+}
+
+.ringValue {
+  position: relative;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.over {
+  --ring-color: var(--color-warning);
+}
 .addTile:hover,
 .addTile:focus-visible {
   border-color: var(--color-brand);
