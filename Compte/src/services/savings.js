@@ -41,6 +41,16 @@ export function getAccountCeiling(account) {
   return ceiling;
 }
 
+/**
+ * Calcule le solde d'un compte d'épargne : jamais stocké, toujours recalculé.
+ * Solde = solde initial − somme des opérations du compte (tous les mois confondus).
+ * Convention de signe (vue du compte courant) : un versement vaut −50 dans le budget,
+ * donc +50 sur le compte ; un retrait vaut +30 dans le budget, donc −30 sur le compte.
+ * Les opérations sans `accountId` (dépenses, revenus) sont ignorées.
+ *
+ * @param {object} account - le compte d'épargne
+ * @returns {number} - le solde du compte, en euros
+ */
 export function getAccountBalance(account) {
   const allOperationByMonth = getAllOperationsByMonth();
   const listOperation = Object.values(allOperationByMonth);
