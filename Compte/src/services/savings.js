@@ -88,3 +88,14 @@ export function getAccountFillPercent(account) {
 
   return roundPercent;
 }
+
+export function getInterest(account) {
+  const rate = getAccountRate(account);
+  const balance = getAccountBalance(account);
+
+  if (rate === null) {
+    return null;
+  }
+  const interest = (balance * rate) / 100;
+  return interest;
+}
