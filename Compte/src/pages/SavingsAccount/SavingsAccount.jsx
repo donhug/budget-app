@@ -2,7 +2,7 @@ import style from "./SavingsAccount.module.css";
 import { useParams } from "react-router";
 import NotFound from "../NotFound/NotFound";
 import { getAccounts } from "../../services/storage";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   getAccountCeiling,
   getAccountRate,
@@ -12,9 +12,13 @@ import {
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
 import { formatBalance } from "../../utils/format";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
+import TransferModal from "../../components/TransferModal/TransferModal";
+import { getCurrentMonth } from "../../utils/dates";
+import { getOperations, setOperations } from "../../services/storage";
 function SavingsAccount() {
   const dataVersion = useBudgetVersion();
   const { accountId } = useParams();
+  const [transferMode, setTransferMode] = useState(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const allAccounts = useMemo(() => getAccounts(), [dataVersion]);
   const account = allAccounts.find((entry) => entry.id === accountId);
@@ -28,6 +32,28 @@ function SavingsAccount() {
   const formatCeiling = ceiling && formatBalance(ceiling);
   const balance = getAccountBalance(account);
   const balanceFormat = formatBalance(balance);
+
+  function handleTransfer({ label, amount }) {
+    const autoLabel =
+      transferMode === "deposit"
+        ? `Versement vers ${account.name}`
+        : `Retrait depuis ${account.name}`;
+    const finalLabel = label.trim() === "" ? autoLabel : label;
+    const newOperation = {
+      id: crypto.randomUUID(),
+      ruleId: null,
+      label: finalLabel,
+      value: transferMode === "deposit" ? -amount : +amount,
+      type: transferMode === "deposit" ? "expense" : "income",
+      origin: "manual",
+      accountId: account.id,
+    };
+    const currentMonth = getCurrentMonth();
+    const currentOperations = getOperations(currentMonth);
+    const updatedManualOperations = [...currentOperations, newOperation];
+    setOperations(currentMonth, updatedManualOperations);
+    setTransferMode(null);
+  }
   return (
     <div className={style.page}>
       <h2 className={style.title}>
@@ -38,6 +64,7 @@ function SavingsAccount() {
           <button
             type="button"
             className={`${style.actionBtn} ${style.secondary}`}
+            onClick={() => setTransferMode("deposit")}
           >
             <FaArrowDown />
             Versement
@@ -45,6 +72,7 @@ function SavingsAccount() {
           <button
             type="button"
             className={`${style.actionBtn} ${style.secondary}`}
+            onClick={() => setTransferMode("withdraw")}
           >
             <FaArrowUp />
             Retrait
@@ -78,6 +106,16 @@ function SavingsAccount() {
           </div>
         </dl>
       </aside>
+      {transferMode !== null && (
+        <TransferModal
+          accountName={account.name}
+          balance={balance}
+          ceiling={ceiling}
+          mode={transferMode}
+          onSubmit={handleTransfer}
+          onClose={() => setTransferMode(null)}
+        />
+      )}
     </div>
   );
 }
