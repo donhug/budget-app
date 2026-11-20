@@ -37,7 +37,7 @@ function SavingsAccount() {
         <div className={style.actions}>
           <button
             type="button"
-            className={`${style.actionBtn} ${style.primary}`}
+            className={`${style.actionBtn} ${style.secondary}`}
           >
             <FaArrowDown />
             Versement
