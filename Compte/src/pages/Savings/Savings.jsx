@@ -14,6 +14,8 @@ import { formatBalance } from "../../utils/format";
 function Savings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dataVersion = useBudgetVersion();
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const accounts = useMemo(() => getAccounts(), [dataVersion]);
@@ -53,10 +55,19 @@ function Savings() {
     setAccounts(accountsUpdated);
     setIsModalOpen(false);
   }
+  function handleToggleDeleteMode() {
+    setIsDeleteMode(!isDeleteMode);
+    setSelectedIds([]);
+  }
 
   return (
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
+
+      <button type="button" onClick={handleToggleDeleteMode}>
+        {isDeleteMode ? "Fermer" : "Supprimer des comptes"}
+      </button>
+
       <div className={style.grid}>
         {accounts.map((account) => {
           const balance = formatBalance(getAccountBalance(account));
