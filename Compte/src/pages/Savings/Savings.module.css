@@ -53,6 +53,14 @@
   transition:
     border-color 0.2s ease,
     transform 0.2s ease;
+  font: inherit;
+  color: inherit;
+}
+.deleteMode {
+  opacity: 0.5;
+}
+.selected {
+  border-color: var(--color-warning);
 }
 .accountTile:hover {
   border-color: var(--color-brand);

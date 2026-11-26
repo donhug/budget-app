@@ -16,6 +16,7 @@ function Savings() {
   const dataVersion = useBudgetVersion();
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const selectedCount = selectedIds.length;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const accounts = useMemo(() => getAccounts(), [dataVersion]);
@@ -59,26 +60,34 @@ function Savings() {
     setIsDeleteMode(!isDeleteMode);
     setSelectedIds([]);
   }
+  function handleToggleSelected(id) {
+    const isAlreadySelected = selectedIds.includes(id);
+    const newSelection = isAlreadySelected
+      ? selectedIds.filter((selectedId) => selectedId !== id)
+      : [...selectedIds, id];
+    setSelectedIds(newSelection);
+  }
 
   return (
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
-
-      <button type="button" onClick={handleToggleDeleteMode}>
-        {isDeleteMode ? "Fermer" : "Supprimer des comptes"}
-      </button>
+      <div>
+        <button type="button" onClick={handleToggleDeleteMode}>
+          {isDeleteMode ? "Fermer" : "Supprimer des comptes"}
+        </button>
+        {isDeleteMode && selectedIds.length !== 0 && (
+          <button type="button">Supprimer ({selectedCount})</button>
+        )}
+      </div>
 
       <div className={style.grid}>
         {accounts.map((account) => {
           const balance = formatBalance(getAccountBalance(account));
           const percent = getAccountFillPercent(account);
           const isOverCeiling = percent !== null && percent >= 100;
-          return (
-            <Link
-              key={account.id}
-              className={style.accountTile}
-              to={`/savings/${account.id}`}
-            >
+          const isSelected = selectedIds.includes(account.id);
+          const tileContent = (
+            <>
               <p className={style.accountName}>{account.name}</p>
               {percent !== null ? (
                 <div
@@ -94,13 +103,36 @@ function Savings() {
                 {account.kind === "livret" ? "Solde : " : "Montant versé : "}
                 {balance}
               </p>
+            </>
+          );
+          return !isDeleteMode ? (
+            <Link
+              key={account.id}
+              className={style.accountTile}
+              to={`/savings/${account.id}`}
+            >
+              {tileContent}
             </Link>
+          ) : (
+            <button
+              key={account.id}
+              className={`
+                ${style.accountTile} 
+                ${isDeleteMode ? style.deleteMode : ""} 
+                ${isSelected ? style.selected : ""}
+              `}
+              type="button"
+              onClick={() => handleToggleSelected(account.id)}
+            >
+              {tileContent}
+            </button>
           );
         })}
         <button
           type="button"
           className={style.addTile}
           onClick={() => setIsModalOpen(true)}
+          disabled={isDeleteMode ? true : ""}
         >
           <FaPlus className={style.addIcon} />
           Ajouter un compte ou une épargne
