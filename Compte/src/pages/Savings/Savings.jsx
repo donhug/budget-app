@@ -11,15 +11,21 @@ import {
   getAccountFillPercent,
 } from "../../services/savings";
 import { formatBalance } from "../../utils/format";
+import DeleteAccountConfirmation from "../../components/DeleteAccountConfirmation/DeleteAccountConfirmation";
 function Savings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dataVersion = useBudgetVersion();
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [isConfirmDelete, setIsConfirmDelete] = useState(false);
   const selectedCount = selectedIds.length;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const accounts = useMemo(() => getAccounts(), [dataVersion]);
+  const accountNames = accounts
+    .filter((account) => selectedIds.includes(account.id))
+    .map((account) => account.name)
+    .join(", ");
   /**
    * Construit un compte d'épargne à partir des valeurs de la modale, puis l'ajoute à la liste.
    * Le plafond et le taux ne sont stockés que si l'utilisateur pouvait les modifier
@@ -59,6 +65,7 @@ function Savings() {
   function handleToggleDeleteMode() {
     setIsDeleteMode(!isDeleteMode);
     setSelectedIds([]);
+    setIsConfirmDelete(false);
   }
   function handleToggleSelected(id) {
     const isAlreadySelected = selectedIds.includes(id);
@@ -76,7 +83,9 @@ function Savings() {
           {isDeleteMode ? "Fermer" : "Supprimer des comptes"}
         </button>
         {isDeleteMode && selectedIds.length !== 0 && (
-          <button type="button">Supprimer ({selectedCount})</button>
+          <button type="button" onClick={() => setIsConfirmDelete(true)}>
+            Supprimer ({selectedCount})
+          </button>
         )}
       </div>
 
@@ -132,7 +141,7 @@ function Savings() {
           type="button"
           className={style.addTile}
           onClick={() => setIsModalOpen(true)}
-          disabled={isDeleteMode ? true : ""}
+          disabled={isDeleteMode}
         >
           <FaPlus className={style.addIcon} />
           Ajouter un compte ou une épargne
@@ -142,6 +151,13 @@ function Savings() {
         <CreateAccountModal
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleCreateAccount}
+        />
+      )}
+      {isConfirmDelete && (
+        <DeleteAccountConfirmation
+          names={accountNames}
+          onCancel={() => setIsConfirmDelete(false)}
+          onDeleteAccount=""
         />
       )}
     </div>
