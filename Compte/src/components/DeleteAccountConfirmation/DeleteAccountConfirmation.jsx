@@ -4,11 +4,19 @@ function DeleteAccountConfirmation({ onDeleteAccount, onCancel, names }) {
   return (
     <div className={style.overlay}>
       <div className={style.modal}>
-        <p className={style.message}>Supprimer les comptes suivants ?</p>
+        <p className={style.message}>
+          {names.length > 1
+            ? "Supprimer ces comptes ?"
+            : "Supprimer ce compte ?"}
+        </p>
         <p className={style.info}>
           Les versements et retraits déjà effectués restent dans votre budget.
         </p>
-        <p>{names}</p>
+        <ul className={style.names}>
+          {names.map((account) => (
+            <li key={account}>{account}</li>
+          ))}
+        </ul>
         <div className={style.actions}>
           <button
             className={style.dangerBtn}

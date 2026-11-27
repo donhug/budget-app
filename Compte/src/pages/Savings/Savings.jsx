@@ -2,7 +2,7 @@ import style from "./Savings.module.css";
 import CreateAccountModal from "../../components/CreateAccountModal/CreateAccountModal";
 import { useState, useMemo } from "react";
 import { Link } from "react-router";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaCheck } from "react-icons/fa6";
 import { getAccounts, setAccounts } from "../../services/storage";
 import { useBudgetVersion } from "../../hooks/useBudgetVersion";
 import {
@@ -24,8 +24,7 @@ function Savings() {
   const accounts = useMemo(() => getAccounts(), [dataVersion]);
   const accountNames = accounts
     .filter((account) => selectedIds.includes(account.id))
-    .map((account) => account.name)
-    .join(", ");
+    .map((account) => account.name);
   /**
    * Construit un compte d'épargne à partir des valeurs de la modale, puis l'ajoute à la liste.
    * Le plafond et le taux ne sont stockés que si l'utilisateur pouvait les modifier
@@ -84,12 +83,20 @@ function Savings() {
   return (
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
-      <div>
-        <button type="button" onClick={handleToggleDeleteMode}>
-          {isDeleteMode ? "Fermer" : "Supprimer des comptes"}
+      <div className={style.toolbar}>
+        <button
+          className={style.toolbarBtn}
+          type="button"
+          onClick={handleToggleDeleteMode}
+        >
+          {isDeleteMode ? "Annuler" : "Supprimer des comptes"}
         </button>
         {isDeleteMode && selectedIds.length !== 0 && (
-          <button type="button" onClick={() => setIsConfirmDelete(true)}>
+          <button
+            className={style.dangerBtn}
+            type="button"
+            onClick={() => setIsConfirmDelete(true)}
+          >
             Supprimer ({selectedCount})
           </button>
         )}
@@ -131,14 +138,17 @@ function Savings() {
           ) : (
             <button
               key={account.id}
+              aria-pressed={isSelected}
               className={`
-                ${style.accountTile} 
-                ${isDeleteMode ? style.deleteMode : ""} 
+                ${style.accountTile} ${style.selectabled}
                 ${isSelected ? style.selected : ""}
               `}
               type="button"
               onClick={() => handleToggleSelected(account.id)}
             >
+              <span className={style.checkMark} aria-hidden="true">
+                {isSelected && <FaCheck />}
+              </span>
               {tileContent}
             </button>
           );

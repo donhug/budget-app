@@ -11,6 +11,37 @@
   padding-bottom: var(--space-2);
   border-bottom: 2px solid var(--color-brand);
 }
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.toolbarBtn,
+.dangerBtn {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toolbarBtn {
+  border: 1px solid var(--color-border);
+  background: none;
+  color: var(--color-text-muted);
+}
+.toolbarBtn:hover {
+  border-color: var(--color-expense);
+  color: var(--color-expense);
+}
+
+.dangerBtn {
+  border: 1px solid var(--color-expense);
+  background-color: var(--color-expense);
+  color: #ffffff;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -37,8 +68,20 @@
     color 0.5s ease,
     background-color 0.2s ease;
 }
+.addTile:hover:not(:disabled),
+.addTile:focus-visible {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  background-color: var(--color-brand-soft);
+  outline: none;
+}
 
+.addTile:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 .accountTile {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,11 +99,35 @@
   font: inherit;
   color: inherit;
 }
-.deleteMode {
-  opacity: 0.5;
+.checkMark {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  color: #ffffff;
+  font-size: 0.7rem;
 }
+.selectable:hover {
+  border-color: var(--color-expense);
+}
+
 .selected {
-  border-color: var(--color-warning);
+  border: 2px solid var(--color-expense);
+  background-color: var(--color-expense-bg);
+}
+.selected .checkMark {
+  border-color: var(--color-expense);
+  background-color: var(--color-expense);
+}
+
+.selected .ring::before {
+  background-color: var(--color-expense-bg);
 }
 .accountTile:hover {
   border-color: var(--color-brand);
