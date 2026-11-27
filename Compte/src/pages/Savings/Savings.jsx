@@ -74,7 +74,13 @@ function Savings() {
       : [...selectedIds, id];
     setSelectedIds(newSelection);
   }
-
+  function handleDeleteAccounts() {
+    const keepAccounts = accounts.filter(
+      (account) => !selectedIds.includes(account.id),
+    );
+    setAccounts(keepAccounts);
+    handleToggleDeleteMode();
+  }
   return (
     <div className={style.page}>
       <h2 className={style.title}>Épargnes</h2>
@@ -157,7 +163,7 @@ function Savings() {
         <DeleteAccountConfirmation
           names={accountNames}
           onCancel={() => setIsConfirmDelete(false)}
-          onDeleteAccount=""
+          onDeleteAccount={handleDeleteAccounts}
         />
       )}
     </div>
